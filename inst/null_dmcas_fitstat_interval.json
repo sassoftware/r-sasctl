@@ -1,0 +1,174 @@
+{
+  "creationTimeStamp" : null,
+  "modifiedTimeStamp" : null,
+  "createdBy" : null,
+  "modifiedBy" : null,
+  "id" : null,
+  "name" : "dmcas_fitstat",
+  "description" : null,
+  "revision" : 0,
+  "groupName" : null,
+  "order" : 0,
+  "type" : null,
+  "parameterMap" : {
+    "_ASE_" : {
+      "label" : "Average Squared Error",
+      "length" : 8,
+      "order" : 6,
+      "parameter" : "_ASE_",
+      "preformatted" : false,
+      "type" : "num",
+      "values" : [ "_ASE_" ]
+    },
+    "_DIV_" : {
+      "label" : "Divisor for ASE",
+      "length" : 8,
+      "order" : 7,
+      "parameter" : "_DIV_",
+      "preformatted" : false,
+      "type" : "num",
+      "values" : [ "_DIV_" ]
+    },
+    "_DataRole_" : {
+      "label" : "Data Role",
+      "length" : 10,
+      "order" : 2,
+      "parameter" : "_DataRole_",
+      "preformatted" : false,
+      "type" : "char",
+      "values" : [ "_DataRole_" ]
+    },
+    "_MAE_" : {
+      "label" : "Mean Absolute Error",
+      "length" : 8,
+      "order" : 9,
+      "parameter" : "_MAE_",
+      "preformatted" : false,
+      "type" : "num",
+      "values" : [ "_MAE_" ]
+    },
+    "_MSLE_" : {
+      "label" : "Mean Squared Logarithmic Error",
+      "length" : 8,
+      "order" : 11,
+      "parameter" : "_MSLE_",
+      "preformatted" : false,
+      "type" : "num",
+      "values" : [ "_MSLE_" ]
+    },
+    "_NObs_" : {
+      "label" : "Sum of Frequencies",
+      "length" : 8,
+      "order" : 5,
+      "parameter" : "_NObs_",
+      "preformatted" : false,
+      "type" : "num",
+      "values" : [ "_NObs_" ]
+    },
+    "_PartInd_" : {
+      "label" : "Partition Indicator",
+      "length" : 8,
+      "order" : 3,
+      "parameter" : "_PartInd_",
+      "preformatted" : false,
+      "type" : "num",
+      "values" : [ "_PartInd_" ]
+    },
+    "_RASE_" : {
+      "label" : "Root Average Squared Error",
+      "length" : 8,
+      "order" : 8,
+      "parameter" : "_RASE_",
+      "preformatted" : false,
+      "type" : "num",
+      "values" : [ "_RASE_" ]
+    },
+    "_RMAE_" : {
+      "label" : "Root Mean Absolute Error",
+      "length" : 8,
+      "order" : 10,
+      "parameter" : "_RMAE_",
+      "preformatted" : false,
+      "type" : "num",
+      "values" : [ "_RMAE_" ]
+    },
+    "_RMSLE_" : {
+      "label" : "Root Mean Squared Logarithmic Error",
+      "length" : 8,
+      "order" : 12,
+      "parameter" : "_RMSLE_",
+      "preformatted" : false,
+      "type" : "num",
+      "values" : [ "_RMSLE_" ]
+    },
+    "_TargetName_" : {
+      "label" : "Target Name",
+      "length" : 3,
+      "order" : 1,
+      "parameter" : "_TargetName_",
+      "preformatted" : false,
+      "type" : "char",
+      "values" : [ "_TargetName_" ]
+    },
+    "_formattedPartition_" : {
+      "label" : "Formatted Partition",
+      "length" : 12,
+      "order" : 4,
+      "parameter" : "_formattedPartition_",
+      "preformatted" : false,
+      "type" : "char",
+      "values" : [ "_formattedPartition_" ]
+    }
+  },
+  "data" : [ {
+    "dataMap" : {
+      "_ASE_" : null,
+      "_DIV_" : null,
+      "_DataRole_" : "VALIDATE",
+      "_MAE_" : null,
+      "_MSLE_" : null,
+      "_NObs_" : null,
+      "_PartInd_" : null,
+      "_RASE_" : null,
+      "_RMAE_" : null,
+      "_RMSLE_" : null,
+      "_TargetName_" : null,
+      "_formattedPartition_" : "           0"
+    },
+    "rowNumber" : 1
+  }, {
+    "dataMap" : {
+      "_ASE_" : null,
+      "_DIV_" : null,
+      "_DataRole_" : "TRAIN",
+      "_MAE_" : null,
+      "_MSLE_" : null,
+      "_NObs_" : null,
+      "_PartInd_" : null,
+      "_RASE_" : null,
+      "_RMAE_" : null,
+      "_RMSLE_" : null,
+      "_TargetName_" : null,
+      "_formattedPartition_" : "           1"
+    },
+    "rowNumber" : 2
+  }, {
+    "dataMap" : {
+      "_ASE_" : null,
+      "_DIV_" : null,
+      "_DataRole_" : "TEST",
+      "_MAE_" : null,
+      "_MSLE_" : null,
+      "_NObs_" : null,
+      "_PartInd_" : null,
+      "_RASE_" : null,
+      "_RMAE_" : null,
+      "_RMSLE_" : null,
+      "_TargetName_" : null,
+      "_formattedPartition_" : "           2"
+    },
+    "rowNumber" : 3
+  } ],
+  "xInteger" : false,
+  "yInteger" : false
+}

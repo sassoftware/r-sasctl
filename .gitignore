@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+r-sasctl.Rproj
+local_auth.R
+docs
+dev
+TODO.md
+README_cache
+..Rcheck
+_authinfo
+README_old.md

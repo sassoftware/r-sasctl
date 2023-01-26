@@ -1,0 +1,36 @@
+Package: sasctl
+Title: The sasctl package enables easy communication between the SAS Viya platform APIs and the R runtime
+Version: 0.6.1
+Author: Eduardo Hellas
+Authors@R: c(
+    person(given = "Eduardo",
+           family = "Hellas",
+           role = c("aut", "cre"),
+           email = "eduardo.hellas@sas.com"),
+    person("SAS", role = c("cph", "fnd"))
+    )
+Maintainer: Eduardo Hellas <eduardo.hellas@sas.com>
+Description: The sasctl package enables easy communication between the SAS Viya platform APIs and the R runtime.
+License: file LICENSE
+Encoding: UTF-8
+LazyData: false
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    pmml,
+    future,
+    swat (>= 1.8.0),
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports: 
+    jsonlite,
+    httr,
+    uuid,
+    furrr,
+    ROCR,
+    fitdistrplus,
+    utils,
+    reshape2,
+    methods
+Remotes: 
+    github::sassoftware/R-swat

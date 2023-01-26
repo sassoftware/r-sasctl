@@ -1,32 +1,44 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # R sasctl
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 ## Table of Contents
+1. [Overview](#overview)
+2. [Installation](#installation)  
+3. [Session](#session)  
+4. [Examples](#examples)  
+    * [PMML to SAS Example](#pmml-to-sas-example)  
+    * [A native R model example](#a-native-r-model-example)  
+    * [vPOST and vGET convenient functions](#vpost-and-vget-convenient-functions)  
 
-1.  [Overview](#overview)
-2.  [Installation](#installation)  
-3.  [Session](#session)  
-4.  [Examples](#examples)
-    -   [PMML to SAS Example](#pmml-to-sas-example)  
-    -   [A native R model example](#a-native-r-model-example)  
-    -   [vPOST and vGET convenient
-        functions](#vpost-and-vget-convenient-functions)
-5.  [Model Management helpers](#model-management-helpers)
+5. [Model Management helpers](#model-management-helpers)
 
 ## Overview
 
-The goal of sasctl is to provide tools for easy access of SAS Viya APIs
-from an R perspective. It has useful tools to make model management
-easier.
+The goal of sasctl is to provide tools for easy access of SAS Viya APIs from an R perspective. It has useful tools to make model management easier.
 
 ## Installation
 
-``` r
+```{r, eval=FALSE}
 remotes::install_git("https://https://github.com/sassoftware/r-sasctl")
 
 library("sasctl")
@@ -34,10 +46,15 @@ library("sasctl")
 
 ## Session
 
-You have a few options on how to make a connections to the SAS Viya
-server. The first example uses password authentication.
+You have a few options on how to make a connections to the SAS Viya server. The first example uses password authentication.
 
-``` r
+```{r reg_connection_real, echo=FALSE, include=FALSE, cache = FALSE}
+
+source("local_auth.R")
+
+```
+
+```{r reg_connection, eval=FALSE}
 sess <- session(hostname = "http://myserver.sas.com",
                 username = "sasuser",
                 password = "s3cr3t")
@@ -47,7 +64,7 @@ sess
 
 You may also use the .authinfo file.
 
-``` r
+```{r token_connection, eval=FALSE}
 ## authinfo file (recommended)
 
 sess <- session(hostname = "http://myserver.sas.com",
@@ -59,12 +76,12 @@ sess <- session(hostname = "http://myserver.sas.com",
 ## or for mutiple hosts in a single file but hostname must match otherwise will fail
 # host http://server1.sas.com login sasuser password s3cr3t
 # host https://server2.sas.com login sasuser password s3cr3t
+
 ```
 
-If you were provided access tokens or client_id and client_secret, you
-may follow one of the following methods.
+If you were provided access tokens or client_id and client_secret, you may follow one of the following methods.
 
-``` r
+```{r token_connection2, eval=FALSE}
 ## cient_id and client_secret
 sess <- session(hostname = "http://myserver.sas.com",
                 client_id = "client_id",
@@ -88,18 +105,18 @@ sess2 <- session(hostname = "https://myserver.sas.com",
                 client_secret = "",
                 auth_code = TRUE 
                 )
+
+
 ```
+
 
 ## Examples
 
-The following examples offer different options of the model management
-life cycle. First, the model is created. Then the model is registered
-and published. Finally, the model is scored. The code samples include
-expected responses inline as well.
+The following examples offer different options of the model management life cycle. First, the model is created. Then the model is registered and published. Finally, the model is scored. The code samples include expected responses inline as well.
 
 ### PMML to SAS Example
 
-``` r
+```{r full_example_part1, cache = TRUE}
 hmeq <- read.csv("https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv")
 
 ## removing missing data
@@ -143,11 +160,12 @@ delete_project(sess, "rsasctl_auto")
 
 ## delete the published model
 delete_masmodule(sess, "R_model_pmml")
+
 ```
 
 ### A native R model example
 
-``` r
+```{r example2, cache = TRUE}
 library("MASS")
 
 hmeq <- read.csv("https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv")
@@ -253,6 +271,7 @@ mod <- register_model(
 
 ## deleteing a project delete all associated models
 delete_project(sess, "R_sasctl")
+
 ```
 
 ### vPOST and vGET convenient functions
@@ -261,17 +280,17 @@ delete_project(sess, "R_sasctl")
 
 You can make generic calls to endpoints with minimal effort.
 
-``` r
+```{r convenient_get, cache = TRUE}
 models <- vGET(sess, 
                   "microanalyticScore/modules/")
 
 models$items[c(2:3, 8)]
 ```
 
-Next, we need to create the transform table using the correct JSON
+Next, we need to create the transform table using the correct JSON 
 payload for a MAS call, which doesn’t have a standard format.
 
-``` json
+```{json, cache = TRUE}
 ### Payload for Viya MAS
 
  {"inputs": [
@@ -297,21 +316,22 @@ payload for a MAS call, which doesn’t have a standard format.
   }
 ```
 
-There is a helper function that transform all the rows in a vector of
-strings, where each string is a JSON payload, since you cannot send data
-for batch scoring.
+There is a helper function that transform all the rows in a vector
+of strings, where each string is a JSON payload, since you cannot send
+data for batch scoring.
 
-``` r
+```{r json_transform, cache = TRUE}
 hmeq <- read.csv("https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv")
 
 hmeq_json <- format_data_json(head(hmeq)) ## use argument scr = TRUE for newer format
 
 jsonlite::prettify(hmeq_json[1])
+
 ```
 
 Then you can make a call to a Model.
 
-``` r
+```{r, cache = TRUE}
 output <- sasctl::vPOST(sess, 
                  path = "microanalyticScore/modules/dt_hmeq/steps/score",
                  payload = hmeq_json[3], ## choose a row
@@ -320,17 +340,19 @@ output <- sasctl::vPOST(sess,
                  )
 
 output
+
 ```
 
 ### Model Management helpers
 
-``` r
+```{r, cache = TRUE}
 ## to write inputVar.json
 ## removing BAD column
 write_in_out_json(hmeq[,2:ncol(hmeq)], input = FALSE)
+
 ```
 
-``` r
+```{r, cache = TRUE}
 ## to write outputVar.json
 ## you should create your own output dataframe since it will be what you
 ## put in your score code, which usually means EM_PROBABILITY, EM_CLASSIFICATION,
@@ -341,16 +363,18 @@ out_example <- data.frame(P_BAD0 = 0.78,
                            BAD = '1')
 
 write_in_out_json(out_example)
+
 ```
 
-``` r
+```{r, cache = TRUE}
 ## to write fileMetadata.json
 ## defaults should be fine, unless you use different file names
 
 write_fileMetadata_json()
+
 ```
 
-``` r
+```{r, cache = TRUE}
 ## to write ModelProperties.json
 ## defaults should be fine, unless you use different file names
 
@@ -364,4 +388,12 @@ write_ModelProperties_json(modelName = "My R Model",
                            targetVariable = "P_BAD1",
                            eventProbVar = "P_BAD1",
                            modeler = "John SAS")
+
+```
+
+
+```{r delete_files, echo=FALSE, include=FALSE}
+unlink(c('inputVar.json', 'outputVar.json', "ModelProperties.json", "fileMetadata.json", 
+         "my_model.pmml", "my_model_converted42.pmml", 
+         "myModel"), recursive = TRUE)
 ```

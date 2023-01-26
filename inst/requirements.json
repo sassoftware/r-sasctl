@@ -1,0 +1,6 @@
+[
+    {
+        "step":"install r packages ",
+        "command":"Rscript -e 'install.packages('package1', repos='https://cloud.r-project.org')'"
+     }
+]
