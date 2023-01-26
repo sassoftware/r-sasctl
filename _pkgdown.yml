@@ -1,16 +1,13 @@
-url: https://github.com/sassoftware/r-sasctl
-template: 
+url: https://sassoftware.github.io/r-sasctl/
+template: ~
 bootstrap: 5
-
 authors:
   SAS:
     href: https://www.sas.com
     html: <img src='man/figures/SAS_logo.png' alt='SAS' width='72' />
-
 navbar:
   right:
   - icon: fa-github fa-lg
-    text: ""
+    text: ''
     href: https://github.com/sassoftware/r-sasctl
-
 

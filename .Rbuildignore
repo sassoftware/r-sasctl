@@ -16,3 +16,4 @@
 ^pkgdown$
 ^TODO\.md$
 ^local_auth\.R$
+^\.github$
