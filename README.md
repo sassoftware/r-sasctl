@@ -27,13 +27,12 @@ easier.
 ## Installation
 
 ``` r
-
 # dev version
 remotes::install_git("https://github.com/sassoftware/r-sasctl")
 
 # released version
 
-install.packages("https://github.com/sassoftware/r-sasctl/releases/download/X.X.X/r-sasctl_X.X.X.tar.gz")
+install.packages("https://github.com/sassoftware/r-sasctl/releases/download/X.X.X/r-sasctl_X.X.X.tar.gz", type = "source", repos = NULL)
 
 library("sasctl")
 ```
