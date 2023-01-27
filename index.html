@@ -278,16 +278,16 @@
 <span>                         path <span class="op">=</span> <span class="va">path</span><span class="op">)</span> <span class="co">## safely ignore warning, knitr bug</span></span>
 <span></span>
 <span></span>
-<span><span class="co">## since R sasctl can't automatically generate an score code, you can use this</span></span>
-<span><span class="co">## with a sample, which has to be edited manually to the correct.</span></span>
-<span><span class="co">## for this example you can get the score code sample here: https://gitlab.sas.com/edhell/mm-r-model</span></span>
+<span><span class="co">## since R sasctl can't automatically generate an score code (yet), you can use</span></span>
+<span><span class="co">## this function to create a sample, which has to be edited manually to work properly</span></span>
+<span></span>
 <span><span class="fu"><a href="reference/create_scoreSample.html">create_scoreSample</a></span><span class="op">(</span><span class="va">path</span>, </span>
 <span>                   openFile <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#</span></span>
+<span></span>
+<span><span class="co">## writing other files</span></span>
 <span><span class="fu"><a href="reference/write_in_out_json.html">write_in_out_json</a></span><span class="op">(</span><span class="va">hmeq</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, input <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## we don't need the partition info</span></span>
 <span><span class="fu"><a href="reference/write_in_out_json.html">write_in_out_json</a></span><span class="op">(</span><span class="va">scoreddf</span><span class="op">[</span><span class="op">-</span><span class="fl">4</span><span class="op">]</span>, input <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/write_fileMetadata_json.html">write_fileMetadata_json</a></span><span class="op">(</span>scoreCodeName <span class="op">=</span> <span class="st">"scoreCode.R"</span>,</span>
