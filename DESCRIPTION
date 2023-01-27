@@ -19,7 +19,6 @@ RoxygenNote: 7.2.3
 Suggests: 
     pmml,
     future,
-    swat (>= 1.8.0),
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
@@ -31,6 +30,4 @@ Imports:
     utils,
     reshape2,
     methods
-Remotes: 
-    github::sassoftware/R-swat
 URL: https://sassoftware.github.io/r-sasctl/

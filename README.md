@@ -12,10 +12,10 @@
 2.  [Installation](#installation)  
 3.  [Session](#session)  
 4.  [Examples](#examples)
-    -   [PMML to SAS Example](#pmml-to-sas-example)  
-    -   [A native R model example](#a-native-r-model-example)  
-    -   [vPOST and vGET convenient
-        functions](#vpost-and-vget-convenient-functions)
+    - [PMML to SAS Example](#pmml-to-sas-example)  
+    - [A native R model example](#a-native-r-model-example)  
+    - [vPOST and vGET convenient
+      functions](#vpost-and-vget-convenient-functions)
 5.  [Model Management helpers](#model-management-helpers)
 
 ## Overview
@@ -27,7 +27,13 @@ easier.
 ## Installation
 
 ``` r
-remotes::install_git("https://https://github.com/sassoftware/r-sasctl")
+
+# dev version
+remotes::install_git("https://github.com/sassoftware/r-sasctl")
+
+# released version
+
+install.packages("https://github.com/sassoftware/r-sasctl/releases/download/X.X/r-sasctl_X.X.X.tar.gz")
 
 library("sasctl")
 ```
