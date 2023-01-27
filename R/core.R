@@ -14,7 +14,7 @@
 #' @param auth_code logical, if TRUE will open a browser with the user and request the authentication code to continue the authentication process. Viya 2022+ only.
 #' @param authinfo A `character` string that specifies an alternative path to a `.authinfo` file that is used for authentication. By default, `~/.authinfo` is used on Linux and `%HOMEDRIVE%` or `\%HOMEPATH%\_authinfo` is used on Windows.
 #' @param verbose logical, return print API call information
-#' @param cacert ca certificat list
+#' @param cacert ca certificate list
 #' @param platform logical, make a get call to get platform information (release, OS, siteName)
 #' 
 #' @return `viya_connection` class object
@@ -392,8 +392,8 @@ vGET <- function(session,
 #' @param path character, path to the GET api endpoint
 #' @param payload list or json string, if it is a list, will be transformed in a json string using `jsonlite::toJSON`
 #' @param ... additional parameters to be passed to `httr::POST` such as `httr::add_headers`
-#' @param query list, additional URL query paramenters
-#' @param fragment string, additional URL fragment paramenter `url.com?query#fragment`
+#' @param query list, additional URL query parameters
+#' @param fragment string, additional URL fragment parameter `url.com?query#fragment`
 #' @param encode payload encoding type, to be passed to `httr::POST`.
 #' @param verbose logical, return print API call information
 #' @param output string, if `output = "json"` will return `httr::fromJSON(httr::content(response, as = "text"))`,

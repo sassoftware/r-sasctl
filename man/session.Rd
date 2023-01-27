@@ -37,7 +37,7 @@ session(
 
 \item{verbose}{logical, return print API call information}
 
-\item{cacert}{ca certificat list}
+\item{cacert}{ca certificate list}
 
 \item{platform}{logical, make a get call to get platform information (release, OS, siteName)}
 }

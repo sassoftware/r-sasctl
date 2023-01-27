@@ -64,5 +64,5 @@ diagnosticsJson(df[df$partition == 1, ],
  
 }
 \seealso{
-All parameters are passed to \code{\link[=calculateLiftStat]{calculateLiftStat()}}, \code{\link[=calculateLiftStat]{calculateLiftStat()}} and \code{\link[=calculateLiftStat]{calculateLiftStat()}} for matching paramentes.
+All parameters are passed to \code{\link[=calculateLiftStat]{calculateLiftStat()}}, \code{\link[=calculateLiftStat]{calculateLiftStat()}} and \code{\link[=calculateLiftStat]{calculateLiftStat()}} for matching parameters.
 }

@@ -51,7 +51,7 @@ register_model(
 a \code{MMmodel} class list
 }
 \description{
-Registers a zip formated model in sas Model Manager.
+Registers a zip formatted model in SAS Model Manager.
 }
 \examples{
 

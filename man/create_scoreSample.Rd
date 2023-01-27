@@ -21,13 +21,13 @@ For official documentation go to \href{https://go.documentation.sas.com/doc/en/m
 \details{
 \itemize{
 \item The file should start with a function with all the input variables which SAS Viya will use to insert data
-\item Then it is followed by a comment line \verb{#output: outvar1, outvar2} which is case sensitve annd must follow that
+\item Then it is followed by a comment line \verb{#output: outvar1, outvar2} which is case sensitive and must follow that
 structure so SAS can receive the function output properly.
 \item If you are using a previously created model, it should be read, we recommend \code{.rda} format, but could be
 a \code{pmml} file or other format that suits you, just make sure that it is properly classified as scoring resource
 when using inside SAS Model Manager.
 \item You then can use any logic to score the model or just an arbitrary R code.
-\item To pass the information back to SAS it must return a list of the variables defined at the beggining of the
+\item To pass the information back to SAS it must return a list of the variables defined at the beginning of the
 script.
 }
 }

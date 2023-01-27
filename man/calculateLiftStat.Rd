@@ -37,7 +37,7 @@ calculateLiftStat(
 }
 \description{
 Calculates the lift curves from user data and writes to a JSON file for
-importing into the common model repository. Binary reponse only.
+importing into the common model repository. Binary response only.
 }
 \examples{
 

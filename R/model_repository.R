@@ -3,7 +3,7 @@
 
 #' Register a zip file inside model manager
 #' 
-#' Registers a zip formated model in sas Model Manager.
+#' Registers a zip formatted model in SAS Model Manager.
 #' 
 #' @param session viya_connection object, obtained through `session` function
 #' @param file path to file
@@ -1022,7 +1022,7 @@ delete_model_contents <- function(session, model, content, exact = TRUE){
 #' @param start the index of the first content to return
 #' @param exact boolean, If the filter query should use "contains" for partial match or "eq" for exact match
 #' @param ... additional parameters to be passed to `httr::GET` such as `httr::add_headers`
-#' @return A `MMmodelContentList` list with the list of contets
+#' @return A `MMmodelContentList` list with the list of contents
 #' @examples
 #' 
 #' \dontrun{
@@ -1326,7 +1326,7 @@ add_model_content <-  function(session, file,
 #' 
 #' - The file should start with a function with all the input variables which SAS Viya will use to insert data
 #' 
-#' - Then it is followed by a comment line `#output: outvar1, outvar2` which is case sensitve annd must follow that
+#' - Then it is followed by a comment line `#output: outvar1, outvar2` which is case sensitive and must follow that
 #' structure so SAS can receive the function output properly.
 #' 
 #' - If you are using a previously created model, it should be read, we recommend `.rda` format, but could be
@@ -1335,7 +1335,7 @@ add_model_content <-  function(session, file,
 #' 
 #' - You then can use any logic to score the model or just an arbitrary R code.
 #' 
-#' - To pass the information back to SAS it must return a list of the variables defined at the beggining of the
+#' - To pass the information back to SAS it must return a list of the variables defined at the beginning of the
 #' script.
 #' 
 #' @param path path to create file, default current working directory

@@ -20,7 +20,7 @@ list_model_contents(session, model, start = 0, limit = 20, exact = FALSE, ...)
 \item{...}{additional parameters to be passed to \code{httr::GET} such as \code{httr::add_headers}}
 }
 \value{
-A \code{MMmodelContentList} list with the list of contets
+A \code{MMmodelContentList} list with the list of contents
 }
 \description{
 Returns a list of models from Model Manager

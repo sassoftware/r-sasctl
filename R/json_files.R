@@ -635,7 +635,7 @@ calculateFitStat <- function(validadedf,
 #' Write dmcas_roc Json
 #'
 #' Calculates the ROC curve from user data and writes it to a JSON file for
-#' importing into the common model repository. Binary reponse only.
+#' importing into the common model repository. Binary response only.
 #'
 #' @param validadedf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param testdf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
@@ -831,7 +831,7 @@ calculateROCStat <- function(validadedf,
 #' Write dmcas_lift Json
 #'
 #' Calculates the lift curves from user data and writes to a JSON file for
-#' importing into the common model repository. Binary reponse only.
+#' importing into the common model repository. Binary response only.
 #'
 #' @param validadedf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param testdf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
@@ -1115,7 +1115,7 @@ compute_lift_coordinates <- function(DepVar,
 #' 
 #' @seealso 
 #' 
-#' All parameters are passed to [sasctl::calculateLiftStat()], [sasctl::calculateLiftStat()] and [sasctl::calculateLiftStat()] for matching paramentes.
+#' All parameters are passed to [sasctl::calculateLiftStat()], [sasctl::calculateLiftStat()] and [sasctl::calculateLiftStat()] for matching parameters.
 #' 
 #' @examples
 #'

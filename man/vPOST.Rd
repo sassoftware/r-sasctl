@@ -25,9 +25,9 @@ vPOST(
 
 \item{...}{additional parameters to be passed to \code{httr::POST} such as \code{httr::add_headers}}
 
-\item{query}{list, additional URL query paramenters}
+\item{query}{list, additional URL query parameters}
 
-\item{fragment}{string, additional URL fragment paramenter \code{url.com?query#fragment}}
+\item{fragment}{string, additional URL fragment parameter \code{url.com?query#fragment}}
 
 \item{encode}{payload encoding type, to be passed to \code{httr::POST}.}
 
