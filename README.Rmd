@@ -232,16 +232,16 @@ diags <- diagnosticsJson(validadedf = scoreddf[scoreddf$partition == 3,],
                          path = path) ## safely ignore warning, knitr bug
 
 
-## since R sasctl can't automatically generate an score code, you can use this
-## with a sample, which has to be edited manually to the correct.
-## for this example you can get the score code sample here: https://gitlab.sas.com/edhell/mm-r-model
+## since R sasctl can't automatically generate an score code (yet), you can use
+## this function to create a sample, which has to be edited manually to work properly
+
 create_scoreSample(path, 
                    openFile = FALSE)
 
-#
+
+## writing other files
 write_in_out_json(hmeq[,-1], input = TRUE, path = path)
 
-## we don't need the partition info
 write_in_out_json(scoreddf[-4], input = FALSE, path = path)
 
 write_fileMetadata_json(scoreCodeName = "scoreCode.R",

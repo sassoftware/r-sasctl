@@ -535,7 +535,7 @@ calculateFitStat <- function(validadedf,
     
     if (nrow(data[[i]] != 0)) {
       
-      predictions   <- ROCR::prediction(data[[i]][,2],data[[i]][,1], label.ordering = label.ordering)
+      predictions <- ROCR::prediction(data[[i]][,2],data[[i]][,1], label.ordering = label.ordering)
       accuracyRoc <- ROCR::performance(predictions, 'acc')
       tpr_fpr <- ROCR::performance(predictions,"tpr","fpr")
       
