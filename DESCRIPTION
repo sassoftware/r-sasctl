@@ -32,5 +32,4 @@ Imports:
     utils,
     reshape2,
     methods
-Remotes: url::https://github.com/sassoftware/R-swat/
 URL: https://sassoftware.github.io/r-sasctl/
