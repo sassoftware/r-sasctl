@@ -32,4 +32,6 @@ Imports:
     utils,
     reshape2,
     methods
+Remotes: 
+    url::https://github.com/sassoftware/R-swat/releases/download/v1.8.2/R-swat-1.8.2+vb22090-linux-64.tar.gz
 URL: https://sassoftware.github.io/r-sasctl/
