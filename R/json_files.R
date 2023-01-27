@@ -487,6 +487,10 @@ calculateFitStat <- function(validadedf,
                              cutoff = 0.5, 
                              noFile = FALSE) {
   
+  
+  ## TODO GAMMA 
+  ## see: https://go.documentation.sas.com/doc/en/pgmsascdc/v_034/casstat/casstat_assess_details02.htm
+  
   if (missing(validadedf)) {
     validadedf <- data.frame(target = numeric(), label = numeric())
   }
@@ -546,7 +550,7 @@ calculateFitStat <- function(validadedf,
       
       outputJSON$data$dataMap[['_GINI_']][i]          <- (2 * ROCR::performance(predictions,"auc")@y.values[[1]]) - 1
       
-      outputJSON$data$dataMap[['_GAMMA_']][i]         <- 1 / fitdistrplus::fitdist(data[[i]][,2], distr = "gamma", method = "mle")$estimate[1]
+      outputJSON$data$dataMap[['_GAMMA_']][i]         <- NA
       
       outputJSON$data$dataMap[['_MCE_']][i]           <- 1 - acc
       

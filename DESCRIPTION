@@ -28,7 +28,6 @@ Imports:
     uuid,
     furrr,
     ROCR,
-    fitdistrplus,
     utils,
     reshape2,
     methods
