@@ -26,15 +26,34 @@ easier.
 
 ## Installation
 
+### Install from R
+
 ``` r
-# dev version
+## dev version
 remotes::install_git("https://github.com/sassoftware/r-sasctl")
 
-# released version
+## released version
+## You first have to install the dependencies
 
+install.packages(c("jsonlite", "httr", "uuid", "furrr", "ROCR", "reshape2"))
+
+## then the package
 install.packages("https://github.com/sassoftware/r-sasctl/releases/download/X.X.X/r-sasctl_X.X.X.tar.gz", type = "source", repos = NULL)
 
 library("sasctl")
+```
+
+### Install from terminal
+
+The SWAT package for R is available from SAS as a tar.gz file. You can
+download releases from
+<https://github.com/sassoftware/r-sasctl/releases>.
+
+After you download the package, you can install the package with a
+command that is similar to the following:
+
+``` bash
+R CMD INSTALL r-sasctl-X.X.X.tar.gz
 ```
 
 ## Session
