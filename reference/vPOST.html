@@ -99,8 +99,8 @@
 
 
 <dt>output</dt>
-<dd><p>string, if <code>output = "json"</code> will return <code>httr::fromJSON(httr::content(response, as = "text"))</code>,
-else if <code>output = "response"</code> will return a <code><a href="https://httr.r-lib.org/reference/response.html" class="external-link">httr::response()</a></code> object</p></dd>
+<dd><p>string, if <code>json</code> will return <code>httr::fromJSON(httr::content(response, as = "text"))</code> with etag information parsed,
+else if <code>response</code> will return a <code><a href="https://httr.r-lib.org/reference/response.html" class="external-link">httr::response()</a></code> object, if <code>text</code> will return <code>content(response, as = "text")</code></p></dd>
 
 </dl></div>
     <div id="value">
