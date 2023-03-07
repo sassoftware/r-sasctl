@@ -17,8 +17,8 @@ vGET(session, path, ..., query, verbose = FALSE, output = "json")
 
 \item{verbose}{logical, return print API call information}
 
-\item{output}{string, if \code{output = "json"} will return \code{httr::fromJSON(httr::content(response, as = "text"))},
-else if \code{output = "response"} will return a \code{httr::response()} object}
+\item{output}{string, if \code{json} will return \code{httr::fromJSON(httr::content(response, as = "text"))} with etag information parsed,
+else if \code{response} will return a \code{httr::response()} object, if \code{text} will return \code{content(response, as = "text")}}
 }
 \value{
 list if \code{output = "json"} default. \code{httr::response()} if \code{output = response}.

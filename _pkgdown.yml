@@ -11,3 +11,78 @@ navbar:
     text: ''
     href: https://github.com/sassoftware/r-sasctl
 
+reference:
+
+- title: Authentication
+  desc:  Authentication and client management functions
+  contents:
+  - session
+  - oauth_consul
+  - delete_client
+  - get_client
+  - list_clients
+  - register_client
+  
+- title: Rest Calls
+  desc:  Basic functions for http requests to a Viya environment
+  contents:
+  - vDELETE
+  - vGET
+  - vHEAD
+  - vPOST
+  - vPUT
+
+- title: Model Manager
+  desc: Manage models and repository
+  contents:
+  - add_model_content
+  - add_model_version
+  - create_project
+  - delete_model
+  - delete_model_contents
+  - delete_project
+  - get_model
+  - get_project
+  - list_model_contents
+  - list_models
+  - list_projects
+  - list_repositories
+  - model_exists
+  - project_exists
+  - register_model
+  - update_model
+  - update_model_variables
+  - update_project
+  - update_project_variables
+  
+- title: Model Scoring and Publish
+  desc: Publish, score and manage models and destinations
+  contents:
+  - delete_masmodule
+  - get_destination
+  - get_masmodule
+  - list_destinations
+  - list_modules
+  - publish_model
+  - masScore
+
+- title: Json Files
+  desc: Create Json files or other data parsing
+  contents:
+  - calculateFitStat
+  - calculateLiftStat
+  - calculateROCStat
+  - diagnosticsJson
+  - format_data_json
+  - write_ModelProperties_json
+  - write_fileMetadata_json
+  - write_in_out_json
+
+- title: Other helpers
+  desc: Other helper functions
+  contents:
+  - create_scoreSample
+  - convert_to_pmml42
+
+
+

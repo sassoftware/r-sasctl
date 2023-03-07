@@ -57,7 +57,7 @@ session <- function(hostname, username = NULL, password = NULL,
                               username = username, 
                               filepath = authinfo)
   
-  username <- authinfo_$username
+  username <- authinfo_$username 
   password <- authinfo_$password
   
   }
@@ -290,8 +290,8 @@ is_viya_session <- function(session) {
 #' @param ... additional parameters to be passed to `httr::GET` such as `httr::add_headers`
 #' @param query list, additional URL query parameters
 #' @param verbose logical, return print API call information
-#' @param output string, if `output = "json"` will return `httr::fromJSON(httr::content(response, as = "text"))`,
-#' else if `output = "response"` will return a `httr::response()` object
+#' @param output string, if `json` will return `httr::fromJSON(httr::content(response, as = "text"))` with etag information parsed,
+#' else if `response` will return a `httr::response()` object, if `text` will return `content(response, as = "text")`
 #' @return list if `output = "json"` default. `httr::response()` if `output = response`.
 #' @examples 
 #' 
@@ -396,8 +396,8 @@ vGET <- function(session,
 #' @param fragment string, additional URL fragment parameter `url.com?query#fragment`
 #' @param encode payload encoding type, to be passed to `httr::POST`.
 #' @param verbose logical, return print API call information
-#' @param output string, if `output = "json"` will return `httr::fromJSON(httr::content(response, as = "text"))`,
-#' else if `output = "response"` will return a `httr::response()` object
+#' @param output string, if `json` will return `httr::fromJSON(httr::content(response, as = "text"))` with etag information parsed,
+#' else if `response` will return a `httr::response()` object, if `text` will return `content(response, as = "text")`
 #' @return list if `output = "json"` default. `httr::response()` if `output = response`.
 #' @examples 
 #' 
@@ -527,8 +527,8 @@ vPOST <- function(session,
 #' @param encode payload encoding type, to be passed to `httr::POST`.
 #' @param ... additional parameters to be passed to `httr::PUT` such as `httr::add_headers`
 #' @param verbose logical, return print API call information
-#' @param output string, if `output = "json"` will return `httr::fromJSON(httr::content(response, as = "text"))`,
-#' else if `output = "response"` will return a `httr::response()` object
+#' @param output string, if `json` will return `httr::fromJSON(httr::content(response, as = "text"))` with etag information parsed,
+#' else if `response` will return a `httr::response()` object, if `text` will return `content(response, as = "text")`
 #' @return list if `output = "json"` default. `httr::response()` if `output = response`.
 #' @examples 
 #' 
@@ -716,8 +716,8 @@ vDELETE <- function(session,
 #' @param payload list or json string, if it is a list, will be transformed in a json string using `jsonlite::toJSON`
 #' @param ... additional parameters to be passed to `httr::PUT` such as `httr::add_headers`
 #' @param verbose logical, return print API call information
-#' @param output string, if `output = "json"` will return `httr::fromJSON(httr::content(response, as = "text"))`,
-#' else if `output = "response"` will return a `httr::response()` object
+#' @param output string, if `json` will return `httr::fromJSON(httr::content(response, as = "text"))` with etag information parsed,
+#' else if `response` will return a `httr::response()` object, if `text` will return `content(response, as = "text")`
 #' @return list if `output = "json"` default. `httr::response()` if `output = response`.
 #' @examples 
 #' 
@@ -806,7 +806,7 @@ vHEAD <- function(session,
 
 #' Simpler query list
 #' 
-#' @param query_list a list of filter options according to `https://developer.sas.com/apis/rest/Topics/#filters`.
+#' @param filters a list of filter options according to `https://developer.sas.com/apis/rest/Topics/#filters`.
 #' @param exact boolean, if TRUE, will use exact match "equal" instead of "contains"
 #' @return a `list` of filters queries in Viya API format 
 #' @noRd

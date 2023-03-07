@@ -1358,8 +1358,13 @@ create_scoreSample <- function(path = ".", openFile = TRUE){
   
   file.copy(orFile, path)
   
+  
   if (openFile) {
-    utils::file.edit(paste0(path, "scoreCode.R"))
+    if (.Platform$GUI == "RStudio") {
+      rstudioapi::documentOpen(paste0(path, "/scoreCode.R"))
+    } else {
+      utils::file.edit(paste0(path, "/scoreCode.R"))
+      }
   }
   
   path <- ifelse(grepl("\\/$", path), path, paste0(path, "/"))
