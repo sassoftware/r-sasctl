@@ -29,5 +29,6 @@ Imports:
     ROCR,
     utils,
     reshape2,
-    methods
+    methods,
+    base64enc
 URL: https://sassoftware.github.io/r-sasctl/

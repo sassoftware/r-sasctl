@@ -164,7 +164,57 @@ session <- function(hostname, username = NULL, password = NULL,
     authorization$platform <- NA
   }
   
+  authorization$clientInfo <- base64enc::base64encode(charToRaw(paste0(client_id, ":", client_secret)))
+  
   return(authorization)
+}
+
+#' Refresh a Viya Session token
+#' 
+#' Refresh a viya session object Oauth token
+#' 
+#' @param session viya_connection object, obtained through `session` function
+#' @param verbose logical, return print API call information
+#' 
+#' @examples 
+#' 
+#' \dontrun{
+#' sess <- refresh_session(sess)
+#' }
+#' 
+#' @family authentication
+#' 
+#' @export
+#' 
+
+refresh_session <- function(session, verbose = FALSE){
+  
+  url <- httr::parse_url(sess$hostname)
+  url$path <- "/SASLogon/oauth/token"
+  url$fragment <- "refresh_token"
+  httr::build_url(url)
+  
+  payload <- list(grant_type = "refresh_token",
+                  refresh_token = sess$refresh_token)
+  
+  response <- httr::POST(url = httr::build_url(url),
+                   body = payload,
+                   httr::add_headers(Authorization = paste0("Basic ", sess$clientInfo)),
+                   if (verbose) verbose())
+  
+  httr::stop_for_status(response)
+  
+  refreshed <- jsonlite::fromJSON(
+    httr::content(response, as = "text")
+  )
+  
+  for (i in names(refreshed)) { 
+    sess[[i]] <- refreshed[[i]]
+    
+  }
+  
+  return(sess)
+  
 }
 
 #' Viya oauth token

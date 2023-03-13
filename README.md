@@ -35,7 +35,7 @@ remotes::install_git("https://github.com/sassoftware/r-sasctl")
 ## released version
 ## You first have to install the dependencies
 
-install.packages(c("jsonlite", "httr", "uuid", "furrr", "ROCR", "reshape2"))
+install.packages(c("jsonlite", "httr", "uuid", "furrr", "ROCR", "reshape2", "base64enc"))
 
 ## then the package
 install.packages("https://github.com/sassoftware/r-sasctl/releases/download/X.X.X/r-sasctl_X.X.X.tar.gz", type = "source", repos = NULL)

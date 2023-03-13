@@ -21,6 +21,7 @@ reference:
   - delete_client
   - get_client
   - list_clients
+  - refresh_session
   - register_client
   
 - title: Rest Calls
