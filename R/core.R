@@ -62,12 +62,14 @@ session <- function(hostname, username = NULL, password = NULL,
   
   }
   
+  if (!(auth_code && !is.null(client_id))) {
   # check if client_id and client_secret are defined  
-  if (is.null(client_id) && !is.null(client_secret) | 
-      !is.null(client_id) && is.null(client_secret)) {
-        stop("'client_id' and 'client_secret' must be defined.")
+    if (is.null(client_id) && !is.null(client_secret) | 
+        !is.null(client_id) && is.null(client_secret)) {
+          stop("'client_id' and 'client_secret' must be defined.")
+    }
   }
-      
+  
   # set login type
   if (!is.null(client_id) && !is.null(client_secret) && !is.null(username) && !is.null(password) && !auth_code) {
     grant_type <- "password"
@@ -99,17 +101,19 @@ session <- function(hostname, username = NULL, password = NULL,
   
   if (auth_code) {
 
-  if (interactive()) {
-    url <- paste0(hostname$hostname, "/SASLogon/oauth/authorize?client_id=", client_id,"&response_type=code")
-    utils::browseURL(url)
-    message(paste0("If a browser don't open automatically, use the following url: ", url))
-    code <- readline("Authorization code from browser:")
     
-    } else {
-      stop("Authentication code method can't be used outside an interactive session.")
-    }
-
+      url <- paste0(hostname$hostname, "/SASLogon/oauth/authorize?client_id=", client_id,"&response_type=code")
+    
+      message(paste0("If a browser don't open automatically, use the following url: ", url))
+    
+      code <- readline("Authorization code from browser:")
   
+      if (interactive()) {
+        utils::browseURL(url)
+      } else {
+        warning("Authentication code method shouldn't be used outside an interactive session.")
+      }
+      
   grant_type <- "authorization_code"
   
   } else {

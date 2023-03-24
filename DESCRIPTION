@@ -30,5 +30,6 @@ Imports:
     utils,
     reshape2,
     methods,
-    base64enc
+    base64enc,
+    dplyr
 URL: https://sassoftware.github.io/r-sasctl/
