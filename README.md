@@ -35,7 +35,7 @@ remotes::install_git("https://github.com/sassoftware/r-sasctl")
 ## released version
 ## You first have to install the dependencies
 
-install.packages(c("jsonlite", "httr", "uuid", "furrr", "ROCR", "reshape2", "base64enc"))
+install.packages(c("jsonlite", "httr", "uuid", "furrr", "ROCR", "reshape2", "base64enc", "dplyr"))
 
 ## then the package
 install.packages("https://github.com/sassoftware/r-sasctl/releases/download/X.X.X/r-sasctl_X.X.X.tar.gz", type = "source", repos = NULL)
@@ -108,9 +108,9 @@ sess2
 ## set client secret as "", only a client_id with authorization_code permission
 
 sess2 <- session(hostname = "https://myserver.sas.com",
-                client_id = "client_id",
-                client_secret = "",
-                auth_code = TRUE 
+                 username = "username" # not required, you will be prompt on browser
+                 client_id = "client_id", # only if default was removed
+                 auth_code = TRUE 
                 )
 ```
 
