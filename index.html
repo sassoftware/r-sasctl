@@ -112,7 +112,7 @@
 <span><span class="co">## released version</span></span>
 <span><span class="co">## You first have to install the dependencies</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jsonlite"</span>, <span class="st">"httr"</span>, <span class="st">"uuid"</span>, <span class="st">"furrr"</span>, <span class="st">"ROCR"</span>, <span class="st">"reshape2"</span>, <span class="st">"base64enc"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jsonlite"</span>, <span class="st">"httr"</span>, <span class="st">"uuid"</span>, <span class="st">"furrr"</span>, <span class="st">"ROCR"</span>, <span class="st">"reshape2"</span>, <span class="st">"base64enc"</span>, <span class="st">"dplyr"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## then the package</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"https://github.com/sassoftware/r-sasctl/releases/download/X.X.X/r-sasctl_X.X.X.tar.gz"</span>, type <span class="op">=</span> <span class="st">"source"</span>, repos <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
@@ -151,30 +151,29 @@
 <span><span class="co"># host http://server1.sas.com login sasuser password s3cr3t</span></span>
 <span><span class="co"># host https://server2.sas.com login sasuser password s3cr3t</span></span></code></pre></div>
 <p>If you were provided access tokens or client_id and client_secret, you may follow one of the following methods.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## cient_id and client_secret</span></span>
-<span><span class="va">sess</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/session.html">session</a></span><span class="op">(</span>hostname <span class="op">=</span> <span class="st">"http://myserver.sas.com"</span>,</span>
-<span>                client_id <span class="op">=</span> <span class="st">"client_id"</span>,</span>
-<span>                client_secret <span class="op">=</span> <span class="st">"client_s3cr3t"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## token type</span></span>
-<span></span>
-<span><span class="va">sess2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/session.html">session</a></span><span class="op">(</span>hostname <span class="op">=</span> <span class="st">"https://myserver.sas.com"</span>,</span>
-<span>                 oauth_token <span class="op">=</span> <span class="va">token</span><span class="op">$</span><span class="va">access_token</span> </span>
-<span>                  <span class="op">)</span></span>
-<span></span>
-<span><span class="va">sess2</span></span>
-<span></span>
-<span></span>
-<span><span class="co">## if you want to use authorization code from Viya 4</span></span>
-<span><span class="co">## will open a browser, login and then  copy and paste the code in the R prompt terminal</span></span>
-<span><span class="co">## set client secret as "", only a client_id with authorization_code permission</span></span>
-<span></span>
-<span><span class="va">sess2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/session.html">session</a></span><span class="op">(</span>hostname <span class="op">=</span> <span class="st">"https://myserver.sas.com"</span>,</span>
-<span>                client_id <span class="op">=</span> <span class="st">"client_id"</span>,</span>
-<span>                client_secret <span class="op">=</span> <span class="st">""</span>,</span>
-<span>                auth_code <span class="op">=</span> <span class="cn">TRUE</span> </span>
-<span>                <span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## cient_id and client_secret</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sess <span class="ot">&lt;-</span> <span class="fu">session</span>(<span class="at">hostname =</span> <span class="st">"http://myserver.sas.com"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">client_id =</span> <span class="st">"client_id"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">client_secret =</span> <span class="st">"client_s3cr3t"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="do">## token type</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>sess2 <span class="ot">&lt;-</span> <span class="fu">session</span>(<span class="at">hostname =</span> <span class="st">"https://myserver.sas.com"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">oauth_token =</span> token<span class="sc">$</span>access_token </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                  )</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>sess2</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="do">## if you want to use authorization code from Viya 4</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="do">## will open a browser, login and then  copy and paste the code in the R prompt terminal</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="do">## set client secret as "", only a client_id with authorization_code permission</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>sess2 <span class="ot">&lt;-</span> <span class="fu">session</span>(<span class="at">hostname =</span> <span class="st">"https://myserver.sas.com"</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">username =</span> <span class="st">"username"</span> <span class="co"># not required, you will be prompt on browser</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>                 <span class="at">client_id =</span> <span class="st">"client_id"</span>, <span class="co"># only if default was removed</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">auth_code =</span> <span class="cn">TRUE</span> </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                )</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
