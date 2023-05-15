@@ -160,9 +160,24 @@ session <- function(hostname, username = NULL, password = NULL,
   
   if (platform) {
   authorization$platform <- vGET(authorization,
-                                 path = "licenses/site")[c("release", 
-                                                           "osName",
-                                                           "siteName")]
+                                 path = "licenses/site")
+  
+  authorization$platform[c("links", "version")] <- NULL
+
+  if (authorization$platform$release == "V04") {
+    
+    releaseInfo <- vGET(sess, "/deploymentData/cadenceVersion")
+    releaseInfo[c("links", "version")] <- NULL
+    
+    cadences <- as.numeric(unlist(strsplit(releaseInfo$cadenceVersion, ".", fixed = TRUE)))
+    names(cadences) <- c("major", "minor")
+    
+    authorization$platform <- append(authorization$platform, releaseInfo)
+    authorization$platform <- append(authorization$platform, as.list(cadences))
+    
+    
+  }
+  
   }
   else {
     authorization$platform <- NA
@@ -878,12 +893,14 @@ build_filter_query <- function(filters, exact = FALSE){
   }
 
   ## creating a filters with "contains"
+  use_or <- length(filters) > 1
+  
   query_list <- sapply(seq_along(filters), function(x){
-    paste0('or(',
+    paste0(ifelse(use_or, 'or(', ""),
            paste0(paste0(operator, "("),
                   names(filters)[[x]], ", '", filters[[x]], "')", 
                   collapse = ','),
-           ')')
+           ifelse(use_or, ')', ""))
   })
   
   ## merging filters

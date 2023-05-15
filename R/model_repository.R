@@ -213,7 +213,20 @@ register_model <- function(session, file, name, project, type,
       stop("The file is not .zip")
     }
     
-    sfile <- list(file = httr::upload_file(file))
+    if (session$platform$release == "V03") {
+      sfile <- list(file = httr::upload_file(file))
+    }
+    
+    else if (session$platform$major >= 2023 & 
+             session$platform$minor >= 3) {
+
+      sfile <- httr::upload_file(file)} 
+    
+    else {
+      ### releases older than 2023.3 (and 3.5) requires this format
+      sfile <- list(file = httr::upload_file(file))
+    }
+    
   }
   
   
@@ -489,7 +502,7 @@ create_project <-  function(session, name, description = NULL,
   
   ### getting SAS Viya model default model repository and folderId
   repositories <- sasctl::list_repositories(session)
-  default_repository <- repositories[repositories$defaultRepository == TRUE,][c("id","folderId")]
+  default_repository <- repositories[repositories$defaultRepository == TRUE & !is.na(repositories$defaultRepository),][c("id","folderId")][1,]
   
   ### defining the payload to configure the function
   
