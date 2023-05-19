@@ -166,7 +166,7 @@ session <- function(hostname, username = NULL, password = NULL,
 
   if (authorization$platform$release == "V04") {
     
-    releaseInfo <- vGET(sess, "/deploymentData/cadenceVersion")
+    releaseInfo <- vGET(authorization, "/deploymentData/cadenceVersion")
     releaseInfo[c("links", "version")] <- NULL
     
     cadences <- as.numeric(unlist(strsplit(releaseInfo$cadenceVersion, ".", fixed = TRUE)))
