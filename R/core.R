@@ -208,17 +208,17 @@ session <- function(hostname, username = NULL, password = NULL,
 
 refresh_session <- function(session, verbose = FALSE){
   
-  url <- httr::parse_url(sess$hostname)
+  url <- httr::parse_url(session$hostname)
   url$path <- "/SASLogon/oauth/token"
   url$fragment <- "refresh_token"
   httr::build_url(url)
   
   payload <- list(grant_type = "refresh_token",
-                  refresh_token = sess$refresh_token)
+                  refresh_token = session$refresh_token)
   
   response <- httr::POST(url = httr::build_url(url),
                    body = payload,
-                   httr::add_headers(Authorization = paste0("Basic ", sess$clientInfo)),
+                   httr::add_headers(Authorization = paste0("Basic ", session$clientInfo)),
                    if (verbose) verbose())
   
   httr::stop_for_status(response)
@@ -228,11 +228,11 @@ refresh_session <- function(session, verbose = FALSE){
   )
   
   for (i in names(refreshed)) { 
-    sess[[i]] <- refreshed[[i]]
+    session[[i]] <- refreshed[[i]]
     
   }
   
-  return(sess)
+  return(session)
   
 }
 
