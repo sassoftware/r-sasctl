@@ -170,7 +170,15 @@ session <- function(hostname, username = NULL, password = NULL,
     releaseInfo[c("links", "version")] <- NULL
     
     cadences <- as.numeric(unlist(strsplit(releaseInfo$cadenceVersion, ".", fixed = TRUE)))
-    names(cadences) <- c("major", "minor")
+    
+    if (length(cadences) > 1) {
+    
+      names(cadences) <- c("major", "minor")
+    
+    } else {
+      
+      names(cadences) <- c("major")
+    }
     
     authorization$platform <- append(authorization$platform, releaseInfo)
     authorization$platform <- append(authorization$platform, as.list(cadences))

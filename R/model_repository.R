@@ -213,12 +213,12 @@ register_model <- function(session, file, name, project, type,
       stop("The file is not .zip")
     }
     
-    if (session$platform$release == "V03") {
+    if (session$platform$release == "V03" | is.null(session$platform$minor)) {
       sfile <- list(file = httr::upload_file(file))
     }
     
     else if (session$platform$major >= 2023 & 
-             session$platform$minor >= 3) {
+             session$platform$minor >= 3 ) {
 
       sfile <- httr::upload_file(file)} 
     
