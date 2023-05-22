@@ -1,3 +1,7 @@
+# sasctl (development version)
+
+* Fixed correct release retrieval when using `session` to connect to Viya 2020.x
+
 # sasctl 0.6.4
 
 * Added a `NEWS.md` file to track changes to the package.
