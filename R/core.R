@@ -134,11 +134,26 @@ session <- function(hostname, username = NULL, password = NULL,
       password = if (grant_type %in% c("authorization_code", "client_credentials")) {NULL} else {password},
       code = code
     )
+  
+  if (auth_code == TRUE) {
+    heads <- httr::add_headers("authorization" = 
+                                 paste("Basic", 
+                                       base64enc::base64encode(charToRaw("api.client:api.secret")
+                                       )))
+    payload$client_id <- NULL
+    payload$client_secret <- NULL
+    
+  } else {
+    heads <- httr::add_headers()
 
+  }
+  
   response <- httr::POST(
     url = httr::build_url(url),
     
     httr::content_type("application/x-www-form-urlencoded"),
+    heads,
+    
     body = payload,
     encode = "form",
     if (verbose) httr::verbose()
