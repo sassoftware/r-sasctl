@@ -23,7 +23,7 @@
 #' # simple regression
 #' model <- lm(Petal.Length ~ ., data = iris)
 #' 
-#' codegen(iris)
+#' codegen(model)
 #'  
 #' 
 #' @export

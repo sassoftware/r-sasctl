@@ -33,7 +33,7 @@ iris <- gsub("\\\\.", "_", colnames(iris))
 # simple regression
 model <- lm(Petal.Length ~ ., data = iris)
 
-codegen(iris)
+codegen(model)
  
 
 }
