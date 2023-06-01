@@ -17,14 +17,15 @@
 #' @return a code string
 #' @examples
 #' 
+#' \dontrun{
 #' # SAS viya doesn't play nice with variables with '.' in the names
-#' iris <- gsub("\\.", "_", colnames(iris))
+#' colnames(iris) <- gsub("\\.", "_", colnames(iris))
 #' 
 #' # simple regression
 #' model <- lm(Petal.Length ~ ., data = iris)
 #' 
 #' codegen(model)
-#'  
+#' } 
 #' 
 #' @export
 
