@@ -37,4 +37,13 @@ script.
 create_scoreSample()
 }
 
+# SAS does not expect the following outputs necessarily
+# but if you follow that structure it will play nice with other SAS Features
+
+# EM_CLASSIFICATION - Predicted for target
+# EM_EVENTPROBABILITY - Probability target=1 
+# EM_PROBABILITY - Probability of Classification
+# I_<<target>> - eg.: I_BAD - Into: BAD
+# I_<<target>><<level>> eg.: I_BAD1 - predicted level
+
 }
