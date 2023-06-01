@@ -96,6 +96,15 @@ script.</p></li>
 <span class="r-in"><span><span class="fu">create_scoreSample</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># SAS does not expect the following outputs necessarily</span></span></span>
+<span class="r-in"><span><span class="co"># but if you follow that structure it will play nice with other SAS Features</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># EM_CLASSIFICATION - Predicted for target</span></span></span>
+<span class="r-in"><span><span class="co"># EM_EVENTPROBABILITY - Probability target=1 </span></span></span>
+<span class="r-in"><span><span class="co"># EM_PROBABILITY - Probability of Classification</span></span></span>
+<span class="r-in"><span><span class="co"># I_&lt;&lt;target&gt;&gt; - eg.: I_BAD - Into: BAD</span></span></span>
+<span class="r-in"><span><span class="co"># I_&lt;&lt;target&gt;&gt;&lt;&lt;level&gt;&gt; eg.: I_BAD1 - predicted level</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
