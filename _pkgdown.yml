@@ -83,6 +83,7 @@ reference:
   desc: Other helper functions
   contents:
   - create_scoreSample
+  - codegen
   - convert_to_pmml42
 
 
