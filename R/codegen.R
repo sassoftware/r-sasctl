@@ -1,5 +1,5 @@
 
-#' SAS standard score code generation \strong{(EXPERIMENTAL)}
+#' SAS standard score code generation Generic Function \strong{(EXPERIMENTAL)}
 #' 
 #' @description
 #' 
@@ -32,7 +32,7 @@ codegen <- function(model, path, rds, ...) {
   UseMethod("codegen")
 }
 
-#' Code generator for Linear models
+#' @describeIn codegen Code generator for Linear models
 #' @export 
 
 codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds") {
@@ -70,7 +70,7 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds") {
   invisible(scorecode)
 }
 
-#' Code generator for General Linear models, specifically logistic regression
+#' @describeIn codegen generator for `glm` General Linear models, specifically logistic regression
 #' @export 
 
 codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff = 0.5) {

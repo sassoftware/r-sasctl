@@ -2,9 +2,15 @@
 % Please edit documentation in R/codegen.R
 \name{codegen}
 \alias{codegen}
-\title{SAS standard score code generation \strong{(EXPERIMENTAL)}}
+\alias{codegen.lm}
+\alias{codegen.glm}
+\title{SAS standard score code generation Generic Function \strong{(EXPERIMENTAL)}}
 \usage{
 codegen(model, path, rds, ...)
+
+\method{codegen}{lm}(model, path = "scoreCode.R", rds = "model.rds")
+
+\method{codegen}{glm}(model, path = "scoreCode.R", rds = "model.rds", cutoff = 0.5)
 }
 \arguments{
 \item{model}{model object (lm, glm ...)}
@@ -25,6 +31,13 @@ Score code will only be generated successfully for supported models.
 Other models and frameworks will be added in due time.
 Use \code{\link[=create_scoreSample]{create_scoreSample()}} to get a structure sample
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{codegen(lm)}: Code generator for Linear models
+
+\item \code{codegen(glm)}: generator for \code{glm} General Linear models, specifically logistic regression
+
+}}
 \examples{
 
 # SAS viya doesn't play nice with variables with '.' in the names
