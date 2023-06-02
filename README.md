@@ -12,10 +12,10 @@
 2.  [Installation](#installation)  
 3.  [Session](#session)  
 4.  [Examples](#examples)
-    -   [PMML to SAS Example](#pmml-to-sas-example)  
-    -   [A native R model example](#a-native-r-model-example)  
-    -   [vPOST and vGET convenient
-        functions](#vpost-and-vget-convenient-functions)
+    - [PMML to SAS Example](#pmml-to-sas-example)  
+    - [A native R model example](#a-native-r-model-example)  
+    - [vPOST and vGET convenient
+      functions](#vpost-and-vget-convenient-functions)
 5.  [Model Management helpers](#model-management-helpers)
 
 ## Overview
@@ -35,7 +35,7 @@ remotes::install_git("https://github.com/sassoftware/r-sasctl")
 ## released version
 ## You first have to install the dependencies
 
-install.packages(c("jsonlite", "httr", "uuid", "furrr", "ROCR", "reshape2", "base64enc", "dplyr"))
+install.packages(c("jsonlite", "httr", "uuid", "furrr", "ROCR", "reshape2", "base64enc", "dplyr", "glue"))
 
 ## then the package
 install.packages("https://github.com/sassoftware/r-sasctl/releases/download/X.X.X/r-sasctl_X.X.X.tar.gz", type = "source", repos = NULL)

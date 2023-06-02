@@ -2,6 +2,7 @@
 
 S3method(codegen,glm)
 S3method(codegen,lm)
+S3method(codegen,workflow)
 export(add_model_content)
 export(add_model_version)
 export(calculateFitStat)

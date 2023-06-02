@@ -130,4 +130,100 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff =
 }
 
 
+#' @describeIn codegen generator for [tidymodels] `workflow` class models
+#' @export 
+
+codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds", referenceLevel = NULL) {
+  
+  inputs <- colnames(tm_workflow[["pre"]][["mold"]][["predictors"]])
+  target <- colnames(tm_workflow[["pre"]][["mold"]][["outcomes"]])
+  mode <- tm_workflow[["fit"]][["fit"]][["spec"]][["mode"]]
+  
+  if (mode == "classification") {
+  
+    ## TODO alternate code for reponse_type = "response"
+    target_labels <- levels(tm_workflow[["pre"]][["mold"]][["outcomes"]][[1]])
+    response_type <- "prob"
+    p_labels <- glue::glue_collapse(glue::glue('P_<<target>><<target_labels>> = predictions[[".pred_<<target_labels>>"]]', .open = "<<", .close = ">>"), sep = ",\n")
+    target_labels_string <- paste0('target_labels <- c(',paste0("'",target_labels, "'", collapse = ", "), ')')
+    
+    if (is.null(referenceLevel)) {
+
+      referenceLevel <- target_labels[1]
+      
+    } else {
+      
+      if (!(referenceLevel %in% target_labels)) {
+        stop(glue::glue("referenceLevel must be: ", 
+                        glue::glue_collapse(glue::glue("'{target_labels}'"), 
+                                            sep = ", ",last = " or "))
+        )
+      }
+    }
+        
+    p_labels <- glue::glue_collapse(glue::glue('P_<<target>><<target_labels>> = predictions[[".pred_<<target_labels>>"]]', .open = "<<", .close = ">>"), sep = ",\n")
+    outputSpec <- glue::glue("EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, <<paste0('P_',target, target_labels, collapse = ', ')>>",
+                            .open = "<<",
+                            .close = ">>")
+        
+    pred_format <- glue::glue('boolClass <- (predictions == do.call(pmax, predictions))
+      predictions[".pred"] <- apply(boolClass, 1 , function(x) target_labels[x])
+  
+      output_list <- list(EM_CLASSIFICATION = predictions[[".pred"]], 
+                          EM_EVENTPROBABILITY = predictions[[".pred_<<referenceLevel>>"]],
+                          EM_PROBABILITY = subset(predictions, select = -c(.pred))[boolClass],
+                          I_<<target>> = predictions[[".pred"]],
+                          <<p_labels>>
+                          )', 
+      .open = "<<",
+      .close = ">>")
+    
+  } else if (mode == "regression") {
+    
+    outputSpec <- glue::glue("EM_PREDICTION, P_<<target>>", .open = "<<", .close = ">>")
+    response_type <- "numeric"
+    target_labels_string <- ""
+    
+    pred_format <- glue::glue("output_list <- list(EM_PREDICTION = predictions[['.pred']], P_<<target>> = predictions[['.pred']])", 
+                              .open = "<<",
+                              .close = ">>")
+  } else {
+    
+    stop(glue::glue("Workflow scoring code for workflow model '{mode}' mode is not implemented"))
+    
+  }
+  
+  
+  scorecode <- glue::glue({
+    
+    '
+    scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
+    {
+      #output: <<outputSpec>>
+      
+      if (!exists("sasctlRmodel"))
+      {
+        assign("sasctlRmodel", readRDS(file = paste(rdsPath, "<<rds>>", sep = "")), envir = .GlobalEnv)
+        <<target_labels_string>>
+      }
+      
+      data <- data.frame(<<paste(inputs," = ", inputs, collapse = ",\n                         ")>>)
+  
+      predictions <- predict(sasctlRmodel, new_data = data, type = "<<response_type>>")
+    
+      <<pred_format>>
+    
+      return(output_list)
+    }
+    '
+  },
+  .open = "<<",
+  .close = ">>")
+  
+  
+  message(paste("File written to:", path))
+  writeLines(scorecode, path)
+  
+  invisible(scorecode)
+}
 

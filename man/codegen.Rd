@@ -4,6 +4,7 @@
 \alias{codegen}
 \alias{codegen.lm}
 \alias{codegen.glm}
+\alias{codegen.workflow}
 \title{SAS standard score code generation Generic Function \strong{(EXPERIMENTAL)}}
 \usage{
 codegen(model, path, rds, ...)
@@ -11,6 +12,13 @@ codegen(model, path, rds, ...)
 \method{codegen}{lm}(model, path = "scoreCode.R", rds = "model.rds")
 
 \method{codegen}{glm}(model, path = "scoreCode.R", rds = "model.rds", cutoff = 0.5)
+
+\method{codegen}{workflow}(
+  tm_workflow,
+  path = "scoreCode.R",
+  rds = "model.rds",
+  referenceLevel = NULL
+)
 }
 \arguments{
 \item{model}{model object (lm, glm ...)}
@@ -36,6 +44,8 @@ Use \code{\link[=create_scoreSample]{create_scoreSample()}} to get a structure s
 \item \code{codegen(lm)}: Code generator for \code{lm} class models
 
 \item \code{codegen(glm)}: generator for \code{glm} class models, specifically logistic regression
+
+\item \code{codegen(workflow)}: generator for \link{tidymodels} \code{workflow} class models
 
 }}
 \examples{

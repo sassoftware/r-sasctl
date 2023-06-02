@@ -31,5 +31,6 @@ Imports:
     reshape2,
     methods,
     base64enc,
-    dplyr
+    dplyr,
+    glue
 URL: https://sassoftware.github.io/r-sasctl/
