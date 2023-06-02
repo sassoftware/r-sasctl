@@ -40,13 +40,14 @@ Use \code{\link[=create_scoreSample]{create_scoreSample()}} to get a structure s
 }}
 \examples{
 
+\dontrun{
 # SAS viya doesn't play nice with variables with '.' in the names
-iris <- gsub("\\\\.", "_", colnames(iris))
+colnames(iris) <- gsub("\\\\.", "_", colnames(iris))
 
 # simple regression
 model <- lm(Petal.Length ~ ., data = iris)
 
 codegen(model)
- 
+} 
 
 }
