@@ -33,9 +33,9 @@ Use \code{\link[=create_scoreSample]{create_scoreSample()}} to get a structure s
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{codegen(lm)}: Code generator for Linear models
+\item \code{codegen(lm)}: Code generator for \code{lm} class models
 
-\item \code{codegen(glm)}: generator for \code{glm} General Linear models, specifically logistic regression
+\item \code{codegen(glm)}: generator for \code{glm} class models, specifically logistic regression
 
 }}
 \examples{

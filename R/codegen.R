@@ -33,20 +33,20 @@ codegen <- function(model, path, rds, ...) {
   UseMethod("codegen")
 }
 
-#' @describeIn codegen Code generator for Linear models
+#' @describeIn codegen Code generator for `lm` class models
 #' @export 
 
 codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds") {
   
-  inputs <- attr(model[['terms']], "term.labels")
-  target <- model[['terms']][[2]]
+  inputs <- attr(terms(model), "term.labels")
+  target <- terms(model)[[2]]
   
   scorecode <- glue::glue({
     
     '
     scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
     {
-      #output: paste0(EM_PREDICTION, P_<<target>>)
+      #output: EM_PREDICTION, P_<<target>>
       
       if (!exists("sasctlRmodel"))
       {
@@ -57,7 +57,7 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds") {
   
       pred <- predict(sasctlRmodel, newdata = data, type = "response")
     
-      output_list <- list("EM_PREDICTION" = pred, P_<<target>> = pred)
+      output_list <- list(EM_PREDICTION = pred, P_<<target>> = pred)
       return(output_list)
     }
     '
@@ -71,13 +71,13 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds") {
   invisible(scorecode)
 }
 
-#' @describeIn codegen generator for `glm` General Linear models, specifically logistic regression
+#' @describeIn codegen generator for `glm` class models, specifically logistic regression
 #' @export 
 
 codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff = 0.5) {
   
-  inputs <- attr(model[['terms']], "term.labels")
-  target <- model[['terms']][[2]]
+  inputs <- attr(terms(model), "term.labels")
+  target <- terms(model)[[2]]
   
   ## SAS does not expect the following outputs necessarily
   ## but if you follow that structure it will play nice with other SAS Features
@@ -93,7 +93,7 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff =
     '
     scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
     {
-      #output: paste0(EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, P_<<target>>1, P_<<target>>0)
+      #output: EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, P_<<target>>1, P_<<target>>0
       
       if (!exists("sasctlRmodel"))
       {
