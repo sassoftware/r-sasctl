@@ -8,7 +8,8 @@ calculateLiftStat(
   validadedf,
   traindf,
   testdf,
-  targetName = NA,
+  targetName,
+  targetPredicted,
   targetEventValue = 1,
   path = "./",
   noFile = FALSE
@@ -21,7 +22,9 @@ calculateLiftStat(
 
 \item{testdf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
 
-\item{targetName}{target column name}
+\item{targetName}{target variable column name (actuals)}
+
+\item{targetPredicted}{target variable predicted probability column name}
 
 \item{targetEventValue}{target class name for ROC reference, if model is nominal, all other class will be counted as "not target"}
 
@@ -48,7 +51,8 @@ df <- data.frame(label = sample(c(1,0), 6000, replace = TRUE),
 calculateLiftStat(df[df$partition == 1, ], 
                    df[df$partition == 2, ],
                    df[df$partition == 3, ],
-                   targetName = "BAD",
+                   targetName = "label",
+                   targetPredicted = "prob",
                    noFile = TRUE)
                                     
                                     

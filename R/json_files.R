@@ -439,7 +439,8 @@ write_json_row_scr <- function(row, metadata_columns = NULL) {
 #' @param validadedf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param testdf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param traindf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
-#' @param targetName target variable name
+#' @param targetName target variable column name (actuals)
+#' @param targetPredicted target variable column name. When `type = "binary"` it should be a probability.
 #' @param targetEventValue if `type = "binary"` target class name for fit stat reference, if model is nominal, all other class will be counted as "not target"
 #' @param type `"binary"` or `"interval"`
 #' @param cutoff cutoff to be used for calculation of miss classification for binary
@@ -459,51 +460,63 @@ write_json_row_scr <- function(row, metadata_columns = NULL) {
 #'                 partition = rep_len(1:3, 6000))
 #'                
 #' calculateFitStat(df[df$partition == 1, ], 
-#'                       df[df$partition == 2, ],
-#'                       df[df$partition == 3, ],
-#'                       noFile = TRUE)
+#'                  df[df$partition == 2, ],
+#'                  df[df$partition == 3, ],
+#'                  targetName = "label",
+#'                  targetPredicted = "prob",
+#'                  noFile = TRUE)
 #'                                     
 #'                                     
 #' df2 <- data.frame(actual = rnorm(6000, 1000, 100),
-#'                  predicted = rnorm(6000, 1000, 100),
-#'                  partition = rep_len(1:3, 6000))
+#'                   predicted = rnorm(6000, 1000, 100),
+#'                   partition = rep_len(1:3, 6000))
 #'  
 #' calculateFitStat(df2[df2$partition == 1, ],
-#'                       df2[df2$partition == 2, ],
-#'                       df2[df2$partition == 3, ],
-#'                       type = "interval",
-#'                       noFile = TRUE)
+#'                  df2[df2$partition == 2, ],
+#'                  df2[df2$partition == 3, ],
+#'                  targetName = "actual",
+#'                  targetPredicted = "predicted",
+#'                  type = "interval",
+#'                  noFile = TRUE)
 #'  
 #' @export
 
 calculateFitStat <- function(validadedf, 
                              traindf, 
                              testdf,
+                             targetName,
+                             targetPredicted,
                              type = "binary",
                              targetEventValue = 1,
                              path = "./", 
                              label.ordering = c(0, 1),
-                             targetName = NA,
                              cutoff = 0.5, 
                              noFile = FALSE) {
   
   
+    
+    
   ## TODO GAMMA 
   ## see: https://go.documentation.sas.com/doc/en/pgmsascdc/v_034/casstat/casstat_assess_details02.htm
   
   if (missing(validadedf)) {
     validadedf <- data.frame(target = numeric(), label = numeric())
+    colnames(validadedf) <- c(targetPredicted, targetName)
   }
   
   if (missing(traindf)) {
     traindf <- data.frame(target = numeric(), label = numeric())
+    colnames(traindf) <- c(targetPredicted, targetName)
   }
   
   if (missing(testdf)) {
     testdf <- data.frame(target = numeric(), label = numeric())
+    colnames(testdf) <- c(targetPredicted, targetName)
   }
   
-  data <- list(validadedf, traindf, testdf)
+  data <- list(validadedf[, c(targetName, targetPredicted)], 
+               traindf[, c(targetName, targetPredicted)],
+               testdf[, c(targetName, targetPredicted)])
   
   if (all(sapply(data, nrow) == 0)) {
     stop('validadedf, traindf or testdf must not be an empty data.frame')
@@ -516,13 +529,13 @@ calculateFitStat <- function(validadedf,
   if (targetEventValue != 1 ) {
     data <- lapply(data, 
                    function(x) {
-                     x[,1] <- ifelse(x[,1] == targetEventValue, 1, 0)
+                     x[,targetName] <- ifelse(x[,targetName] == targetEventValue, 1, 0)
                      return(x) }
     )
   }
   
   
-  if (any(sapply(data, function(x) length(unique(x[,1])) > 2))) {
+  if (any(sapply(data, function(x) length(unique(x[,targetName])) > 2))) {
     stop('Output must be binary, if you set targetclassname it will convert non target labels to 0')
   }
   
@@ -535,14 +548,14 @@ calculateFitStat <- function(validadedf,
     
     if (nrow(data[[i]] != 0)) {
       
-      predictions <- ROCR::prediction(data[[i]][,2],data[[i]][,1], label.ordering = label.ordering)
+      predictions <- ROCR::prediction(data[[i]][,2], data[[i]][,1], label.ordering = label.ordering)
       accuracyRoc <- ROCR::performance(predictions, 'acc')
       tpr_fpr <- ROCR::performance(predictions,"tpr","fpr")
       
       # which accuracy fits the chosen cutoff
       cutoffrow <- which.min(abs(accuracyRoc@x.values[[1]] - cutoff)) ## Accuracy based on cutoff
       acc <- accuracyRoc@y.values[[1]][cutoffrow]
-      ase <- mean((data[[i]][,1] - data[[i]][,2])^2)
+      ase <- mean((data[[i]][,1][[1]] - data[[i]][,2][[1]])^2)
       
       outputJSON$data$dataMap[['_RASE_']][i]          <- sqrt(ase)
       
@@ -556,7 +569,7 @@ calculateFitStat <- function(validadedf,
       
       outputJSON$data$dataMap[['_ASE_']][i]           <- ase
       
-      outputJSON$data$dataMap[['_MCLL_']][i]          <- (-1/nrow(data[[i]])) * sum(data[[i]][,1] * log(pmax(pmin(data[[i]][,2], 1 - 1e-15), 1e-15)))
+      outputJSON$data$dataMap[['_MCLL_']][i]          <- (-1/nrow(data[[i]])) * sum(data[[i]][,1][[1]] * log(pmax(pmin(data[[i]][,2][[1]], 1 - 1e-15), 1e-15)))
       
       outputJSON$data$dataMap[['_KS_']][i]            <- max(tpr_fpr@y.values[[1]] - tpr_fpr@x.values[[1]])
       
@@ -640,7 +653,8 @@ calculateFitStat <- function(validadedf,
 #' @param validadedf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param testdf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param traindf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
-#' @param targetName target column name
+#' @param targetName target variable column name (actuals)
+#' @param targetPredicted target variable predicted probability column name
 #' @param targetEventValue target class name for ROC reference, if model is nominal, all other class will be counted as "not target"
 #' @param path default to current work dir
 #' @param label.ordering The default ordering (cf.details) of the classes can be changed by supplying a vector containing the negative and the positive class label. See [ROCR::prediction()]
@@ -658,7 +672,8 @@ calculateFitStat <- function(validadedf,
 #' calculateROCStat(df[df$partition == 1, ], 
 #'                       df[df$partition == 2, ],
 #'                       df[df$partition == 3, ],
-#'                       targetName = "BAD",
+#'                       targetName = "label",
+#'                       targetPredicted = "prob",
 #'                       noFile = TRUE)
 #'                                     
 #'                                     
@@ -669,6 +684,7 @@ calculateROCStat <- function(validadedf,
                              traindf, 
                              testdf,
                              targetName, 
+                             targetPredicted,
                              targetEventValue = 1,
                              label.ordering = c(0, 1),
                              path = "./", 
@@ -677,17 +693,22 @@ calculateROCStat <- function(validadedf,
   
   if (missing(validadedf)) {
     validadedf <- data.frame(target = numeric(), label = numeric())
+    colnames(validadedf) <- c(targetPredicted, targetName)
   }
   
   if (missing(traindf)) {
     traindf <- data.frame(target = numeric(), label = numeric())
+    colnames(traindf) <- c(targetPredicted, targetName)
   }
   
   if (missing(testdf)) {
     testdf <- data.frame(target = numeric(), label = numeric())
+    colnames(testdf) <- c(targetPredicted, targetName)
   }
   
-  data <- list(validadedf, traindf, testdf)
+  data <- list(validadedf[, c(targetName, targetPredicted)], 
+               traindf[, c(targetName, targetPredicted)],
+               testdf[, c(targetName, targetPredicted)])
   
   if (all(sapply(data, nrow) == 0)) {
     stop('validadedf, traindf or testdf must not be an empty data.frame')
@@ -696,7 +717,7 @@ calculateROCStat <- function(validadedf,
   if (targetEventValue != 1 ) {
     data <- lapply(data, 
                    function(x) {
-                     x[,1] <- ifelse(x[,1] == targetEventValue, 1, 0)
+                     x[,targetName] <- ifelse(x[,targetName] == targetEventValue, 1, 0)
                      return(x) }
                    
     )
@@ -836,7 +857,8 @@ calculateROCStat <- function(validadedf,
 #' @param validadedf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param testdf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param traindf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
-#' @param targetName target column name
+#' @param targetName target variable column name (actuals)
+#' @param targetPredicted target variable predicted probability column name
 #' @param targetEventValue target class name for ROC reference, if model is nominal, all other class will be counted as "not target"
 #' @param path default to current work dir
 #' @param noFile if you don't want to write to a file, only the output
@@ -852,7 +874,8 @@ calculateROCStat <- function(validadedf,
 #' calculateLiftStat(df[df$partition == 1, ], 
 #'                    df[df$partition == 2, ],
 #'                    df[df$partition == 3, ],
-#'                    targetName = "BAD",
+#'                    targetName = "label",
+#'                    targetPredicted = "prob",
 #'                    noFile = TRUE)
 #'                                     
 #'                                     
@@ -862,41 +885,50 @@ calculateROCStat <- function(validadedf,
 calculateLiftStat <- function(validadedf, 
                               traindf, 
                               testdf,
-                              targetName = NA, 
+                              targetName, 
+                              targetPredicted,
                               targetEventValue = 1,
                               path = "./", 
                               noFile = FALSE) {
   
-  
   if (missing(validadedf)) {
     validadedf <- data.frame(target = numeric(), label = numeric())
+    colnames(validadedf) <- c(targetPredicted, targetName)
   }
   
   if (missing(traindf)) {
     traindf <- data.frame(target = numeric(), label = numeric())
+    colnames(traindf) <- c(targetPredicted, targetName)
   }
   
   if (missing(testdf)) {
     testdf <- data.frame(target = numeric(), label = numeric())
+    colnames(testdf) <- c(targetPredicted, targetName)
   }
   
-  data <- list(validadedf, traindf, testdf)
+  data <- list(validadedf[, c(targetName, targetPredicted)], 
+               traindf[, c(targetName, targetPredicted)],
+               testdf[, c(targetName, targetPredicted)])
   
   if (all(sapply(data, nrow) == 0)) {
     stop('validadedf, traindf or testdf must not be an empty data.frame')
   }
   
+  
   if (targetEventValue != 1 ) {
     data <- lapply(data, 
                    function(x) {
-                     x[,1] <- ifelse(x[,1] == targetEventValue, 1, 0)
+                     x[,targetName] <- ifelse(x[,targetName] == targetEventValue, 1, 0)
                      return(x) }
                    
     )
   }
   
+  if (any(unlist(lapply(data, function(x) any(class(x) %in% c("tbl_df", "tbl")))))) {
+    data <- lapply(data, as.data.frame)
+  }
   
-  if (any(sapply(data, function(x) length(unique(x[,1])) > 2))) {
+  if (any(sapply(data, function(x) length(unique(x[,targetName])) > 2))) {
     stop('Output must be binary, if you set targetclassname it will convert non target labels to 0')
   }
   
@@ -954,10 +986,10 @@ calculateLiftStat <- function(validadedf,
   for (i in 1:length(data)) {
     PartInd     <- i - 1
     
-    if (i == 1)         {partition = "VALIDATE"}
-    else if (i == 2)    {partition = "TRAIN"}
-    else if (i == 3)    {partition = "TEST"}
-    else                {partition = ""}
+    if (i == 1) {partition = "VALIDATE"} else 
+    if (i == 2) {partition = "TRAIN"} else 
+    if (i == 3) {partition = "TEST"} else
+                {partition = ""}
     
     if (nrow(data[[i]] != 0)) {
       
@@ -1103,7 +1135,8 @@ compute_lift_coordinates <- function(DepVar,
 #' @param testdf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param traindf `data.frame` where the first column in the yActual (labels/value) and the second is yPrediction (target probability)
 #' @param type `"binary"` or `"interval"`
-#' @param targetName target variable name
+#' @param targetName target variable name (actuals)
+#' @param targetPredicted target variable probability column name
 #' @param targetEventValue if `type = "binary"` target class name for fit stat reference, if model is nominal, all other class will be counted as "not target"
 #' @param cutoff cutoff to be used for calculation of miss classification for binary
 #' @param label.ordering The default ordering (cf.details) of the classes can be changed by supplying a vector containing the negative and the positive class label. See [ROCR::prediction()]
@@ -1126,6 +1159,8 @@ compute_lift_coordinates <- function(DepVar,
 #' diagnosticsJson(df[df$partition == 1, ], 
 #'                  df[df$partition == 2, ],
 #'                  df[df$partition == 3, ],
+#'                  targetName = "label",
+#'                  targetPredicted = "prob",
 #'                  noFile = TRUE
 #'                  )
 #'                                     
@@ -1137,8 +1172,9 @@ compute_lift_coordinates <- function(DepVar,
 diagnosticsJson <- function(validadedf, 
                             traindf, 
                             testdf,
+                            targetName,
+                            targetPredicted,
                             type = "binary",
-                            targetName = NA,
                             targetEventValue = 1,
                             cutoff = 0.5, 
                             label.ordering = c(0, 1),
@@ -1154,6 +1190,7 @@ diagnosticsJson <- function(validadedf,
                                    traindf = traindf, 
                                    testdf = testdf,
                                    targetName = targetName, 
+                                   targetPredicted = targetPredicted,
                                    targetEventValue = targetEventValue,
                                    path = path, 
                                    noFile = noFile)
@@ -1163,6 +1200,7 @@ diagnosticsJson <- function(validadedf,
                                  traindf = traindf, 
                                  testdf = testdf,
                                  targetName = targetName, 
+                                 targetPredicted = targetPredicted,
                                  targetEventValue = targetEventValue,
                                  label.ordering = label.ordering,
                                  path = path, 
@@ -1173,10 +1211,11 @@ diagnosticsJson <- function(validadedf,
                                    traindf = traindf, 
                                    testdf = testdf,
                                    type = type,
+                                   targetName = targetName, 
+                                   targetPredicted = targetPredicted,
                                    targetEventValue = targetEventValue,
                                    path = path, 
                                    label.ordering = label.ordering,
-                                   targetName = targetName,
                                    cutoff = cutoff, 
                                    noFile = noFile)
   

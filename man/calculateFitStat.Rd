@@ -8,11 +8,12 @@ calculateFitStat(
   validadedf,
   traindf,
   testdf,
+  targetName,
+  targetPredicted,
   type = "binary",
   targetEventValue = 1,
   path = "./",
   label.ordering = c(0, 1),
-  targetName = NA,
   cutoff = 0.5,
   noFile = FALSE
 )
@@ -24,6 +25,10 @@ calculateFitStat(
 
 \item{testdf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
 
+\item{targetName}{target variable column name (actuals)}
+
+\item{targetPredicted}{target variable column name. When \code{type = "binary"} it should be a probability.}
+
 \item{type}{\code{"binary"} or \code{"interval"}}
 
 \item{targetEventValue}{if \code{type = "binary"} target class name for fit stat reference, if model is nominal, all other class will be counted as "not target"}
@@ -31,8 +36,6 @@ calculateFitStat(
 \item{path}{default to current work dir}
 
 \item{label.ordering}{The default ordering (cf.details) of the classes can be changed by supplying a vector containing the negative and the positive class label. See \code{\link[ROCR:prediction]{ROCR::prediction()}}}
-
-\item{targetName}{target variable name}
 
 \item{cutoff}{cutoff to be used for calculation of miss classification for binary}
 
@@ -58,19 +61,23 @@ df <- data.frame(label = sample(c(1,0), 6000, replace = TRUE),
                 partition = rep_len(1:3, 6000))
                
 calculateFitStat(df[df$partition == 1, ], 
-                      df[df$partition == 2, ],
-                      df[df$partition == 3, ],
-                      noFile = TRUE)
+                 df[df$partition == 2, ],
+                 df[df$partition == 3, ],
+                 targetName = "label",
+                 targetPredicted = "prob",
+                 noFile = TRUE)
                                     
                                     
 df2 <- data.frame(actual = rnorm(6000, 1000, 100),
-                 predicted = rnorm(6000, 1000, 100),
-                 partition = rep_len(1:3, 6000))
+                  predicted = rnorm(6000, 1000, 100),
+                  partition = rep_len(1:3, 6000))
  
 calculateFitStat(df2[df2$partition == 1, ],
-                      df2[df2$partition == 2, ],
-                      df2[df2$partition == 3, ],
-                      type = "interval",
-                      noFile = TRUE)
+                 df2[df2$partition == 2, ],
+                 df2[df2$partition == 3, ],
+                 targetName = "actual",
+                 targetPredicted = "predicted",
+                 type = "interval",
+                 noFile = TRUE)
  
 }

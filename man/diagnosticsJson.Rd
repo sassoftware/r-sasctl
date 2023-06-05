@@ -8,8 +8,9 @@ diagnosticsJson(
   validadedf,
   traindf,
   testdf,
+  targetName,
+  targetPredicted,
   type = "binary",
-  targetName = NA,
   targetEventValue = 1,
   cutoff = 0.5,
   label.ordering = c(0, 1),
@@ -24,9 +25,11 @@ diagnosticsJson(
 
 \item{testdf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
 
-\item{type}{\code{"binary"} or \code{"interval"}}
+\item{targetName}{target variable name (actuals)}
 
-\item{targetName}{target variable name}
+\item{targetPredicted}{target variable probability column name}
+
+\item{type}{\code{"binary"} or \code{"interval"}}
 
 \item{targetEventValue}{if \code{type = "binary"} target class name for fit stat reference, if model is nominal, all other class will be counted as "not target"}
 
@@ -57,6 +60,8 @@ df <- data.frame(label = sample(c(1,0), 6000, replace = TRUE),
 diagnosticsJson(df[df$partition == 1, ], 
                  df[df$partition == 2, ],
                  df[df$partition == 3, ],
+                 targetName = "label",
+                 targetPredicted = "prob",
                  noFile = TRUE
                  )
                                     

@@ -2,6 +2,7 @@
 
 * Fixed correct release retrieval when using `session` to connect to Viya 2020.x
 * Added `codegen` function in experimental state. Works for simple `lm`, `glm` models and [tidymodels](https://www.tidymodels.org/) `workflow` with regression or classification model mode`
+* [Breaking] All diagnostics json generator functions requires the `targetName` and `targetPredicted` arguments to be named, now it avoids variable positioning errors.
 
 # sasctl 0.6.4
 

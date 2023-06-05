@@ -192,6 +192,7 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
                           EM_EVENTPROBABILITY = predictions[[".pred_<<referenceLevel>>"]],
                           EM_PROBABILITY = subset(predictions, select = -c(.pred))[boolClass],
                           I_<<target>> = predictions[[".pred"]],
+                          <<target>> = predictions[[".pred"]],
                           <<p_labels>>
                           )', 
       .open = "<<",
