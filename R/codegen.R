@@ -11,6 +11,7 @@
 #' 
 #' @param model model object (lm, glm ...)
 #' @param path file name and path to write
+#' @param libs vector of libraries to be added to the code. Some may be guessed from the type.
 #' @param rds .rds file name to be called
 #' @param ... to be passes to individual code generators
 #' 
@@ -29,21 +30,27 @@
 #' 
 #' @export
 
-codegen <- function(model, path, rds, ...) {
+codegen <- function(model, path, rds, libs, ...) {
   UseMethod("codegen")
 }
 
 #' @describeIn codegen Code generator for `lm` class models
 #' @export 
 
-codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds") {
+codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c()) {
   
   inputs <- attr(terms(model), "term.labels")
   target <- terms(model)[[2]]
   
+  libs <- unique(c("stats", libs))
+  
+  libsCode <- paste0('library("',libs, '")', collapse = "\n")
+  
   scorecode <- glue::glue({
     
     '
+    <<libsCode>>
+    
     scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
     {
       #output: EM_PREDICTION, P_<<target>>
@@ -58,6 +65,7 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds") {
       pred <- predict(sasctlRmodel, newdata = data, type = "response")
     
       output_list <- list(EM_PREDICTION = pred, P_<<target>> = pred)
+    
       return(output_list)
     }
     '
@@ -74,10 +82,14 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds") {
 #' @describeIn codegen generator for `glm` class models, specifically logistic regression
 #' @export 
 
-codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff = 0.5) {
+codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff = 0.5, libs = c()) {
   
   inputs <- attr(terms(model), "term.labels")
   target <- terms(model)[[2]]
+  
+  libs <- unique(c("stats", libs))
+  
+  libsCode <- paste0('library("',libs, '")', collapse = "\n")
   
   ## SAS does not expect the following outputs necessarily
   ## but if you follow that structure it will play nice with other SAS Features
@@ -91,6 +103,8 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff =
   scorecode <- glue::glue({
     
     '
+    <<libsCode>>
+    
     scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
     {
       #output: EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, P_<<target>>1, P_<<target>>0
@@ -133,18 +147,23 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff =
 #' @describeIn codegen generator for [tidymodels] `workflow` class models
 #' @export 
 
-codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds", referenceLevel = NULL) {
+codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds", libs = c(), referenceLevel = NULL) {
   
   inputs <- colnames(tm_workflow[["pre"]][["mold"]][["predictors"]])
   target <- colnames(tm_workflow[["pre"]][["mold"]][["outcomes"]])
   mode <- tm_workflow[["fit"]][["fit"]][["spec"]][["mode"]]
+  mlibs <- tm_workflow[["fit"]][["fit"]][["spec"]][["method"]][["libs"]]
   
+  libs <- unique(c("tidymodels", mlibs, libs))
+  
+  libsCode <- paste0('library("',libs, '")', collapse = "\n")
+
   if (mode == "classification") {
   
     ## TODO alternate code for reponse_type = "response"
     target_labels <- levels(tm_workflow[["pre"]][["mold"]][["outcomes"]][[1]])
     response_type <- "prob"
-    p_labels <- glue::glue_collapse(glue::glue('P_<<target>><<target_labels>> = predictions[[".pred_<<target_labels>>"]]', .open = "<<", .close = ">>"), sep = ",\n")
+    p_labels <- glue::glue_collapse(glue::glue('P_<<target>><<target_labels>> = predictions[[".pred_<<target_labels>>"]]', .open = "<<", .close = ">>"), sep = ",\n                    ")
     target_labels_string <- paste0('target_labels <- c(',paste0("'",target_labels, "'", collapse = ", "), ')')
     
     if (is.null(referenceLevel)) {
@@ -161,7 +180,7 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
       }
     }
         
-    p_labels <- glue::glue_collapse(glue::glue('P_<<target>><<target_labels>> = predictions[[".pred_<<target_labels>>"]]', .open = "<<", .close = ">>"), sep = ",\n")
+    p_labels <- glue::glue_collapse(glue::glue('P_<<target>><<target_labels>> = predictions[[".pred_<<target_labels>>"]]', .open = "<<", .close = ">>"), sep = ",\n                    ")
     outputSpec <- glue::glue("EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, <<paste0('P_',target, target_labels, collapse = ', ')>>",
                             .open = "<<",
                             .close = ">>")
@@ -197,6 +216,8 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
   scorecode <- glue::glue({
     
     '
+    <<libsCode>>
+    
     scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
     {
       #output: <<outputSpec>>

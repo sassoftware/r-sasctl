@@ -7,16 +7,23 @@
 \alias{codegen.workflow}
 \title{SAS standard score code generation Generic Function \strong{(EXPERIMENTAL)}}
 \usage{
-codegen(model, path, rds, ...)
+codegen(model, path, rds, libs, ...)
 
-\method{codegen}{lm}(model, path = "scoreCode.R", rds = "model.rds")
+\method{codegen}{lm}(model, path = "scoreCode.R", rds = "model.rds", libs = c())
 
-\method{codegen}{glm}(model, path = "scoreCode.R", rds = "model.rds", cutoff = 0.5)
+\method{codegen}{glm}(
+  model,
+  path = "scoreCode.R",
+  rds = "model.rds",
+  cutoff = 0.5,
+  libs = c()
+)
 
 \method{codegen}{workflow}(
   tm_workflow,
   path = "scoreCode.R",
   rds = "model.rds",
+  libs = c(),
   referenceLevel = NULL
 )
 }
@@ -26,6 +33,8 @@ codegen(model, path, rds, ...)
 \item{path}{file name and path to write}
 
 \item{rds}{.rds file name to be called}
+
+\item{libs}{vector of libraries to be added to the code. Some may be guessed from the type.}
 
 \item{...}{to be passes to individual code generators}
 }
