@@ -1,5 +1,5 @@
 ---
-title: "Uploading a XGBoost tidymodel"
+title: "xgb-tidymodel"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{xgb-tidymodel}
