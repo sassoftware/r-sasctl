@@ -1,0 +1,205 @@
+---
+title: "Uploading a XGBoost tidymodel"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{xgb-tidymodel}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+R-sasctl has tools to help you create all the necessary files to upload an R model successfully to SAS Viya Model Manager and be able to take advantage of the many . 
+
+## Simple data preparation
+
+We will be using the well known home equity data set. We will be transforming some empty character columns to the proper `NA` format, and split the data
+
+```{r setup, warning=FALSE, message=FALSE}
+library("sasctl")
+library("tidymodels")
+
+## download and prepare data
+hmeq <- read.csv("https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv")
+
+hmeq[hmeq == ""] <- NA
+hmeq$BAD <- as.factor(hmeq$BAD)
+
+## split data
+hmeq_split <- initial_split(hmeq, prop = .8, strata = "BAD")
+
+hmeqTrain <- training(hmeq_split)
+hmeqTest <- testing(hmeq_split)
+```
+
+## Creating the Model
+
+We will be using the tidymodels framework, which helps greatly simplifing the model process and embedding pre and post processing to the model. You can get more information about how to use it [here](https://www.tidymodels.org/start/).
+
+This first model will be using a simple [XGBoost](https://github.com/dmlc/xgboost) model for classification. It requires you to have the `xgboost` package installed, but you don't have to deal if its specific features or calling the library directly.
+
+```{r specification}
+## set model specification
+xgb_spec <- boost_tree() %>%
+  set_engine("xgboost") %>%
+  set_mode("classification")
+```
+
+We will also create a "recipe", which are data pre-processing steps. In this case, whenever you score the model, it will automatically impute if any data is missing and create dummies, which is a requirement for xgboost.
+
+```{r preprocessing}
+## recipe for data transformation
+rec <- recipe(BAD ~ . , data = hmeqTrain)
+
+impute_rec <- rec %>% 
+  step_impute_mode(all_nominal_predictors()) %>%
+  step_dummy(all_nominal_predictors()) %>% 
+  step_impute_mean(all_numeric_predictors())
+
+imp <- prep(impute_rec)
+imp
+```
+Now  we will combine the model and pre-processing in a workflow. It is recommend to use a workflow because it allows you to add all the steps required to transform the data to the required model format. Even if you are not using and pre-processing, it you should add the model to a workflow as a good practice, and the `sasctl::codegen()` only generates scoring code for workflow in the current version. 
+
+```{r modeling}
+## creating the workflow
+glm_wf <- workflow() %>%
+  add_model(xgb_spec) %>%
+  add_recipe(impute_rec)
+
+## fitting the model and the pre-processing
+xgb_fitted <- glm_wf %>%
+  fit(data = hmeqTrain) 
+
+xgb_fitted
+```
+
+Now we will start creating all the files required to successfully upload the model to SAS Model Manager.
+
+```{r creating_directory}
+path <- "xgbModel/"
+modelrda <- "Rxgb.rda"
+
+dir.create(path)
+
+saveRDS(xgb_fitted, paste0(path, modelrda), version = 2)
+```
+
+
+We will score the whole dataset, add the partitions so we can create the Diagnostics json files. In parallel you can make any other file or processes, but SAS model manager expects these specific files to be able to execute its routines such as comparing models.
+
+```{r creating_files1}
+scoreddf <- predict(xgb_fitted, new_data = hmeq, type = "prob")
+
+head(scoreddf)
+```
+
+
+```{r creating_files2}
+scoreddf$partition <- NA
+scoreddf[hmeq_split$in_id,]["partition"] <- 1
+scoreddf[-hmeq_split$in_id,]["partition"] <- 2
+
+scoreddf$BAD <- as.numeric(hmeq$BAD) - 1
+colnames(scoreddf) <- c("P_BAD0", "P_BAD1", "partition", "BAD")
+head(scoreddf)
+```
+
+
+```{r creating_files3}
+diags <- diagnosticsJson(traindf = scoreddf[scoreddf$partition == 1,],
+                         testdf = scoreddf[scoreddf$partition == 2,],
+                         targetEventValue = 1,
+                         targetName = "BAD",
+                         targetPredicted = "P_BAD1",
+                         path = path)
+
+## This is not very legible, but gives an idea of all the data created
+do.call(rbind, lapply(diags$fitStat$parameterMap, as.data.frame))
+```
+Scoring codes are required to run R and Python models in SAS Model Manager, `sasctl::codegen()` helps you create a code that follows the [expected format](https://go.documentation.sas.com/doc/en/mdlmgrcdc/v_025/mdlmgrug/n04i7s6bdu7ilgn1e350am3byuxx.htm#p0m6jg3tgih1agn1cgdcexpwgp0g) for tidymodels workflows. Other models and frameworks may be added in the future.
+
+You will notice that the scoring code has many `EM_*` and `P_<<target>><<level>>` variables. They're not required, but it makes very consistent on how models made in SAS Viya UI are created. Making it easier to mix these models.
+
+```{r vars, echo=FALSE, include=FALSE}
+used_vars <- paste0("`",colnames(xgb_fitted[["pre"]][["mold"]][["predictors"]]), "`", collapse = ", ")
+expected_vars <- paste0("`",colnames(hmeq)[-1], "`", collapse = ", ")
+```
+We can use the `inputs` to generate alternate input variables. In this case it is useful because we used the pre-process step `recipes::step_dummy()` which created additional dummy variables which arend expected when scoring the model nor we want to pollute our Model Manager with dummy variables:
+
+- Model Variables: `r used_vars`
+- Input Variables: `r expected_vars` (removing the `BAD` variable, of course).
+
+```{r creating_files4}
+code <- codegen(xgb_fitted, 
+                path = paste0(path, "scoreCode.R"), 
+                inputs = colnames(hmeq)[-1],
+                rds = modelrda)
+code
+```
+
+Now we create some additional files which are required to configure SAS Model Manager when uploading the files. For the variables specifically, should match the inputs from the model and outputs (outputs may be needed to match what comes out the scoring code)
+
+```{r creating_files5}
+## note required to be correct values, just correct format
+scoreddf$I_BAD <- as.character(scoreddf$BAD)
+scoreddf$BAD <- as.character(scoreddf$BAD)
+scoreddf$EM_EVENTPROBABILITY <- 0.1
+scoreddf$EM_PROBABILITY <- 0.1
+scoreddf$EM_CLASSIFICATION <- as.character(scoreddf$BAD)
+
+
+write_in_out_json(hmeq[,-1], input = TRUE, path = path)
+write_in_out_json(scoreddf[-3], input = FALSE, path = path)
+
+
+write_fileMetadata_json(scoreCodeName = "scoreCode.R",
+                        scoreResource = modelrda,
+                        path = path)
+
+write_ModelProperties_json(modelName = "Rxgb",
+                           modelFunction = "Classification",
+                           trainTable = "hmeq",
+                           algorithm = "XGBoost",
+                           numTargetCategories = 2,
+                           targetEvent = "1",
+                           targetVariable = "BAD",
+                           eventProbVar = "P_BAD1",
+                           modeler = "sasctl man",
+                           path = path)
+
+files_to_zip <- list.files(path, "*.json|*.R|*.rda", full.names = T)
+
+### grouping all the files to a single zip
+zip(paste0(path, "Rmodel.zip"), 
+    files = files_to_zip)
+```
+
+Finally, we can upload the model to our SAS Viya server.
+
+```{r model_upload, eval=FALSE}
+sess <- sasctl::session("https://viya.server.com",
+                        username = "username",
+                        password = "s3cr3t!")
+
+mod <- register_model(
+  session = sess,
+  file = paste0(path, "Rmodel.zip"),
+  name = "Rxgb",
+  type = "zip",
+  project = "R_sasctl",
+  force = TRUE
+)
+
+```
+
+
+```{r cleanup, eval=FALSE}
+## deleting the files locally
+unlink(path, recursive = TRUE)
+```

@@ -5,11 +5,11 @@
 \title{Write dmcas_roc Json}
 \usage{
 calculateROCStat(
-  validadedf,
-  traindf,
-  testdf,
   targetName,
   targetPredicted,
+  validadedf = NULL,
+  traindf = NULL,
+  testdf = NULL,
   targetEventValue = 1,
   label.ordering = c(0, 1),
   path = "./",
@@ -17,15 +17,15 @@ calculateROCStat(
 )
 }
 \arguments{
+\item{targetName}{target variable column name (actuals)}
+
+\item{targetPredicted}{target variable predicted probability column name}
+
 \item{validadedf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
 
 \item{traindf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
 
 \item{testdf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
-
-\item{targetName}{target variable column name (actuals)}
-
-\item{targetPredicted}{target variable predicted probability column name}
 
 \item{targetEventValue}{target class name for ROC reference, if model is nominal, all other class will be counted as "not target"}
 
@@ -51,12 +51,12 @@ df <- data.frame(label = sample(c(1,0), 6000, replace = TRUE),
                  prob = runif(6000),
                  partition = rep_len(1:3, 6000)) ## partition will be ignored since it is 3rd column
                
-calculateROCStat(df[df$partition == 1, ], 
-                      df[df$partition == 2, ],
-                      df[df$partition == 3, ],
-                      targetName = "label",
-                      targetPredicted = "prob",
-                      noFile = TRUE)
+calculateROCStat(targetName = "label",
+                 targetPredicted = "prob",
+                 df[df$partition == 1, ],
+                 df[df$partition == 2, ],
+                 df[df$partition == 3, ],
+                 noFile = TRUE)
                                     
                                     
  

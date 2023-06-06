@@ -19,7 +19,9 @@ RoxygenNote: 7.2.3
 Suggests: 
     pmml,
     future,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
 Imports: 
     jsonlite,
@@ -34,3 +36,4 @@ Imports:
     dplyr,
     glue
 URL: https://sassoftware.github.io/r-sasctl/
+VignetteBuilder: knitr

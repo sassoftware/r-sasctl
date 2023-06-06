@@ -5,11 +5,11 @@
 \title{Write all diagnostic Json files}
 \usage{
 diagnosticsJson(
-  validadedf,
-  traindf,
-  testdf,
   targetName,
   targetPredicted,
+  validadedf = NULL,
+  traindf = NULL,
+  testdf = NULL,
   type = "binary",
   targetEventValue = 1,
   cutoff = 0.5,
@@ -19,15 +19,15 @@ diagnosticsJson(
 )
 }
 \arguments{
+\item{targetName}{target variable name (actuals)}
+
+\item{targetPredicted}{target variable probability column name}
+
 \item{validadedf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
 
 \item{traindf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
 
 \item{testdf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
-
-\item{targetName}{target variable name (actuals)}
-
-\item{targetPredicted}{target variable probability column name}
 
 \item{type}{\code{"binary"} or \code{"interval"}}
 

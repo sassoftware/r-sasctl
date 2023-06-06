@@ -159,7 +159,9 @@ if (!noFile) {
   print(paste0('File written to ', out_file))
 }
 
-return(properties)
+output_prop <- data.frame(value =  unlist(properties))
+
+return(output_prop)
 
 }
 
@@ -259,7 +261,9 @@ write_fileMetadata_json <- function(scoreCodeName = "scoreCode.R",
     
     }
   
-    return(metadata)
+    out_meta <- do.call(rbind, lapply(metadata, as.data.frame))
+    
+    return(out_meta)
   
 }
 
@@ -452,18 +456,16 @@ write_json_row_scr <- function(row, metadata_columns = NULL) {
 #' - 'dmcas_fitstat.json' file written to `path`       
 #' @examples
 #'
-#'
-#' ## partition will be ignored since it is 3rd column
 #'  
 #' df <- data.frame(label = sample(c(1,0), 6000, replace = TRUE),
-#'                 prob = runif(6000),
-#'                 partition = rep_len(1:3, 6000))
+#'                  prob = runif(6000),
+#'                  partition = rep_len(1:3, 6000))
 #'                
-#' calculateFitStat(df[df$partition == 1, ], 
+#' calculateFitStat(targetName = "label",
+#'                  targetPredicted = "prob",
+#'                  df[df$partition == 1, ], 
 #'                  df[df$partition == 2, ],
 #'                  df[df$partition == 3, ],
-#'                  targetName = "label",
-#'                  targetPredicted = "prob",
 #'                  noFile = TRUE)
 #'                                     
 #'                                     
@@ -471,21 +473,21 @@ write_json_row_scr <- function(row, metadata_columns = NULL) {
 #'                   predicted = rnorm(6000, 1000, 100),
 #'                   partition = rep_len(1:3, 6000))
 #'  
-#' calculateFitStat(df2[df2$partition == 1, ],
+#' calculateFitStat(targetName = "actual",
+#'                  targetPredicted = "predicted",
+#'                  df2[df2$partition == 1, ],
 #'                  df2[df2$partition == 2, ],
 #'                  df2[df2$partition == 3, ],
-#'                  targetName = "actual",
-#'                  targetPredicted = "predicted",
 #'                  type = "interval",
 #'                  noFile = TRUE)
 #'  
 #' @export
 
-calculateFitStat <- function(validadedf, 
-                             traindf, 
-                             testdf,
-                             targetName,
+calculateFitStat <- function(targetName,
                              targetPredicted,
+                             validadedf = NULL, 
+                             traindf = NULL, 
+                             testdf = NULL,
                              type = "binary",
                              targetEventValue = 1,
                              path = "./", 
@@ -499,17 +501,17 @@ calculateFitStat <- function(validadedf,
   ## TODO GAMMA 
   ## see: https://go.documentation.sas.com/doc/en/pgmsascdc/v_034/casstat/casstat_assess_details02.htm
   
-  if (missing(validadedf)) {
+  if (is.null(validadedf)) {
     validadedf <- data.frame(target = numeric(), label = numeric())
     colnames(validadedf) <- c(targetPredicted, targetName)
   }
   
-  if (missing(traindf)) {
+  if (is.null(traindf)) {
     traindf <- data.frame(target = numeric(), label = numeric())
     colnames(traindf) <- c(targetPredicted, targetName)
   }
   
-  if (missing(testdf)) {
+  if (is.null(testdf)) {
     testdf <- data.frame(target = numeric(), label = numeric())
     colnames(testdf) <- c(targetPredicted, targetName)
   }
@@ -642,7 +644,7 @@ calculateFitStat <- function(validadedf,
     print(paste0('File written to ', out_file))
   }
   
-  return(outputJSON)
+  invisible(outputJSON)
 }
 
 #' Write dmcas_roc Json
@@ -669,39 +671,39 @@ calculateFitStat <- function(validadedf,
 #'                  prob = runif(6000),
 #'                  partition = rep_len(1:3, 6000)) ## partition will be ignored since it is 3rd column
 #'                
-#' calculateROCStat(df[df$partition == 1, ], 
-#'                       df[df$partition == 2, ],
-#'                       df[df$partition == 3, ],
-#'                       targetName = "label",
-#'                       targetPredicted = "prob",
-#'                       noFile = TRUE)
+#' calculateROCStat(targetName = "label",
+#'                  targetPredicted = "prob",
+#'                  df[df$partition == 1, ],
+#'                  df[df$partition == 2, ],
+#'                  df[df$partition == 3, ],
+#'                  noFile = TRUE)
 #'                                     
 #'                                     
 #'  
 #' @export
 
-calculateROCStat <- function(validadedf, 
-                             traindf, 
-                             testdf,
-                             targetName, 
+calculateROCStat <- function(targetName, 
                              targetPredicted,
+                             validadedf = NULL, 
+                             traindf = NULL, 
+                             testdf = NULL,
                              targetEventValue = 1,
                              label.ordering = c(0, 1),
                              path = "./", 
                              noFile = FALSE) {
   
   
-  if (missing(validadedf)) {
+  if (is.null(validadedf)) {
     validadedf <- data.frame(target = numeric(), label = numeric())
     colnames(validadedf) <- c(targetPredicted, targetName)
   }
   
-  if (missing(traindf)) {
+  if (is.null(traindf)) {
     traindf <- data.frame(target = numeric(), label = numeric())
     colnames(traindf) <- c(targetPredicted, targetName)
   }
   
-  if (missing(testdf)) {
+  if (is.null(testdf)) {
     testdf <- data.frame(target = numeric(), label = numeric())
     colnames(testdf) <- c(targetPredicted, targetName)
   }
@@ -845,7 +847,7 @@ calculateROCStat <- function(validadedf,
     print(paste0('File written to ', out_file))
   }
   
-  return(outputJSON) 
+  invisible(outputJSON) 
 }
 
 
@@ -870,38 +872,38 @@ calculateROCStat <- function(validadedf,
 #' df <- data.frame(label = sample(c(1,0), 6000, replace = TRUE),
 #'                  prob = runif(6000),
 #'                  partition = rep_len(1:3, 6000)) ## partition will be ignored since it is 3rd column
-#'                
-#' calculateLiftStat(df[df$partition == 1, ], 
-#'                    df[df$partition == 2, ],
-#'                    df[df$partition == 3, ],
-#'                    targetName = "label",
-#'                    targetPredicted = "prob",
-#'                    noFile = TRUE)
+#' 
+#' calculateLiftStat(targetName = "label",
+#'                   targetPredicted = "prob",
+#'                   df[df$partition == 1, ],
+#'                   df[df$partition == 2, ],
+#'                   df[df$partition == 3, ],
+#'                   noFile = TRUE)
 #'                                     
 #'                                     
 #'  
 #' @export
 
-calculateLiftStat <- function(validadedf, 
-                              traindf, 
-                              testdf,
-                              targetName, 
+calculateLiftStat <- function(targetName, 
                               targetPredicted,
+                              validadedf = NULL, 
+                              traindf = NULL, 
+                              testdf = NULL,
                               targetEventValue = 1,
                               path = "./", 
                               noFile = FALSE) {
   
-  if (missing(validadedf)) {
+  if (is.null(validadedf)) {
     validadedf <- data.frame(target = numeric(), label = numeric())
     colnames(validadedf) <- c(targetPredicted, targetName)
   }
   
-  if (missing(traindf)) {
+  if (is.null(traindf)) {
     traindf <- data.frame(target = numeric(), label = numeric())
     colnames(traindf) <- c(targetPredicted, targetName)
   }
   
-  if (missing(testdf)) {
+  if (is.null(testdf)) {
     testdf <- data.frame(target = numeric(), label = numeric())
     colnames(testdf) <- c(targetPredicted, targetName)
   }
@@ -1057,7 +1059,7 @@ calculateLiftStat <- function(validadedf,
     print(paste0('File written to ', out_file))
   }
   
-  return(outputJSON)
+  invisible(outputJSON)
 }
 
 #' calculate Lift coordinates
@@ -1169,11 +1171,11 @@ compute_lift_coordinates <- function(DepVar,
 #' @export
 
 
-diagnosticsJson <- function(validadedf, 
-                            traindf, 
-                            testdf,
-                            targetName,
+diagnosticsJson <- function(targetName,
                             targetPredicted,
+                            validadedf = NULL, 
+                            traindf = NULL, 
+                            testdf = NULL,
                             type = "binary",
                             targetEventValue = 1,
                             cutoff = 0.5, 
@@ -1220,6 +1222,6 @@ diagnosticsJson <- function(validadedf,
                                    noFile = noFile)
   
   
-  return(all_outputs)
+  invisible(all_outputs)
   
 }

@@ -5,11 +5,11 @@
 \title{Write dmcas_fistat Json}
 \usage{
 calculateFitStat(
-  validadedf,
-  traindf,
-  testdf,
   targetName,
   targetPredicted,
+  validadedf = NULL,
+  traindf = NULL,
+  testdf = NULL,
   type = "binary",
   targetEventValue = 1,
   path = "./",
@@ -19,15 +19,15 @@ calculateFitStat(
 )
 }
 \arguments{
+\item{targetName}{target variable column name (actuals)}
+
+\item{targetPredicted}{target variable column name. When \code{type = "binary"} it should be a probability.}
+
 \item{validadedf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
 
 \item{traindf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
 
 \item{testdf}{\code{data.frame} where the first column in the yActual (labels/value) and the second is yPrediction (target probability)}
-
-\item{targetName}{target variable column name (actuals)}
-
-\item{targetPredicted}{target variable column name. When \code{type = "binary"} it should be a probability.}
 
 \item{type}{\code{"binary"} or \code{"interval"}}
 
@@ -53,18 +53,16 @@ importing into the common model repository.
 }
 \examples{
 
-
-## partition will be ignored since it is 3rd column
  
 df <- data.frame(label = sample(c(1,0), 6000, replace = TRUE),
-                prob = runif(6000),
-                partition = rep_len(1:3, 6000))
+                 prob = runif(6000),
+                 partition = rep_len(1:3, 6000))
                
-calculateFitStat(df[df$partition == 1, ], 
+calculateFitStat(targetName = "label",
+                 targetPredicted = "prob",
+                 df[df$partition == 1, ], 
                  df[df$partition == 2, ],
                  df[df$partition == 3, ],
-                 targetName = "label",
-                 targetPredicted = "prob",
                  noFile = TRUE)
                                     
                                     
@@ -72,11 +70,11 @@ df2 <- data.frame(actual = rnorm(6000, 1000, 100),
                   predicted = rnorm(6000, 1000, 100),
                   partition = rep_len(1:3, 6000))
  
-calculateFitStat(df2[df2$partition == 1, ],
+calculateFitStat(targetName = "actual",
+                 targetPredicted = "predicted",
+                 df2[df2$partition == 1, ],
                  df2[df2$partition == 2, ],
                  df2[df2$partition == 3, ],
-                 targetName = "actual",
-                 targetPredicted = "predicted",
                  type = "interval",
                  noFile = TRUE)
  

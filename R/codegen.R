@@ -13,6 +13,7 @@
 #' @param path file name and path to write
 #' @param libs vector of libraries to be added to the code. Some may be guessed from the type.
 #' @param rds .rds file name to be called
+#' @param inputs define inputs as the passed vector instead of guessed
 #' @param ... to be passes to individual code generators
 #' 
 #' @return a code string
@@ -30,7 +31,7 @@
 #' 
 #' @export
 
-codegen <- function(model, path, rds, libs, ...) {
+codegen <- function(model, path, rds, libs, inputs, ...) {
   UseMethod("codegen")
 }
 
@@ -147,9 +148,19 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff =
 #' @describeIn codegen generator for [tidymodels] `workflow` class models
 #' @export 
 
-codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds", libs = c(), referenceLevel = NULL) {
+codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds", inputs = NULL,
+                             libs = c(), referenceLevel = NULL) {
   
-  inputs <- colnames(tm_workflow[["pre"]][["mold"]][["predictors"]])
+    predictors <- colnames(tm_workflow[["pre"]][["mold"]][["predictors"]])
+  
+  if (!is.null(inputs)) {
+    
+    if (!is.vector(names(hmeqTrain))) stop("inputs must be a vector names")
+    
+    predictors <- inputs
+    
+  }
+  
   target <- colnames(tm_workflow[["pre"]][["mold"]][["outcomes"]])
   mode <- tm_workflow[["fit"]][["fit"]][["spec"]][["mode"]]
   mlibs <- tm_workflow[["fit"]][["fit"]][["spec"]][["method"]][["libs"]]
@@ -181,7 +192,7 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
     }
         
     p_labels <- glue::glue_collapse(glue::glue('P_<<target>><<target_labels>> = predictions[[".pred_<<target_labels>>"]]', .open = "<<", .close = ">>"), sep = ",\n                    ")
-    outputSpec <- glue::glue("EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, <<paste0('P_',target, target_labels, collapse = ', ')>>",
+    outputSpec <- glue::glue("EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, <<target>>, <<paste0('P_',target, target_labels, collapse = ', ')>>",
                             .open = "<<",
                             .close = ">>")
         
@@ -219,7 +230,7 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
     '
     <<libsCode>>
     
-    scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
+    scoreFunction <- function(<<paste(predictors, collapse = ", ")>>)
     {
       #output: <<outputSpec>>
       
@@ -229,7 +240,7 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
         <<target_labels_string>>
       }
       
-      data <- data.frame(<<paste(inputs," = ", inputs, collapse = ",\n                         ")>>)
+      data <- data.frame(<<paste(predictors," = ", predictors, collapse = ",\n                         ")>>)
   
       predictions <- predict(sasctlRmodel, new_data = data, type = "<<response_type>>")
     
