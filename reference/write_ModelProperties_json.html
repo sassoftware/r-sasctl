@@ -26,6 +26,16 @@ the model properties within Model Manager"><!-- mathjax --><script src="https://
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/xgb-tidymodel.html">xgb-tidymodel</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -154,48 +164,21 @@ the model properties within Model Manager</p>
 <span class="r-in"><span>                           eventProbVar <span class="op">=</span> <span class="st">"P_BAD1"</span>,</span></span>
 <span class="r-in"><span>                           modeler <span class="op">=</span> <span class="st">"John SAS"</span>,</span></span>
 <span class="r-in"><span>                           noFile <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "My R Model"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $description</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Awesome Description"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`function`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Classification"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $scoreCodeType</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "R"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $trainTable</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] " "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $trainCodeType</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "R"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $algorithm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Logistic Regression"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $targetVariable</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "P_BAD1"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $targetEvent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "BAD"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $targetLevel</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Binary"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $eventProbVar</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "P_BAD1"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $modeler</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "John SAS"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $tool</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "R"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $toolVersion</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "4.3.0"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name                    My R Model</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> description    Awesome Description</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function            Classification</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scoreCodeType                    R</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> trainTable                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> trainCodeType                    R</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> algorithm      Logistic Regression</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> targetVariable              P_BAD1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> targetEvent                    BAD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> targetLevel                 Binary</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eventProbVar                P_BAD1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> modeler                   John SAS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tool                             R</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> toolVersion                  4.3.0</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

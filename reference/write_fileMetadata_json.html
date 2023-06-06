@@ -26,6 +26,16 @@ the models files metadata within Model Manager in the first upload"><!-- mathjax
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/xgb-tidymodel.html">xgb-tidymodel</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -105,38 +115,11 @@ the models files metadata within Model Manager in the first upload</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Using default names and files</span></span></span>
 <span class="r-in"><span><span class="fu">write_fileMetadata_json</span><span class="op">(</span>noFile <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "inputVariables"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "inputVar.json"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "outputVariables"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "outputVar.json"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "score"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "scoreCode.R"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "scoreResource"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "model.rda"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              role           name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  inputVariables  inputVar.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 outputVariables outputVar.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           score    scoreCode.R</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   scoreResource      model.rda</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## addition file resources</span></span></span>
 <span class="r-in"><span><span class="co">## send 2 vectors with file names and role name, must be of same length</span></span></span>
@@ -145,54 +128,13 @@ the models files metadata within Model Manager in the first upload</p>
 <span class="r-in"><span>                        additionalFilesRoles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scoreResource"</span>, <span class="st">"scoreResource"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                        noFile <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span>                        <span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "inputVariables"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "inputVar.json"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "outputVariables"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "outputVar.json"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "score"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "scoreCode.R"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "scoreResource"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "model.rda"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "scoreResource"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "myFileName.ext"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]$role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "scoreResource"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "myFileName2.ext"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              role            name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  inputVariables   inputVar.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 outputVariables  outputVar.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           score     scoreCode.R</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   scoreResource       model.rda</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   scoreResource  myFileName.ext</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   scoreResource myFileName2.ext</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

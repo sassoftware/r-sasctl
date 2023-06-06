@@ -28,6 +28,16 @@ Use create_scoreSample() to get a structure sample"><!-- mathjax --><script src=
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/xgb-tidymodel.html">xgb-tidymodel</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -60,7 +70,7 @@ Use <code><a href="create_scoreSample.html">create_scoreSample()</a></code> to g
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">codegen</span><span class="op">(</span><span class="va">model</span>, <span class="va">path</span>, <span class="va">rds</span>, <span class="va">libs</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">codegen</span><span class="op">(</span><span class="va">model</span>, <span class="va">path</span>, <span class="va">rds</span>, <span class="va">libs</span>, <span class="va">inputs</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for lm</span></span>
 <span><span class="fu">codegen</span><span class="op">(</span><span class="va">model</span>, path <span class="op">=</span> <span class="st">"scoreCode.R"</span>, rds <span class="op">=</span> <span class="st">"model.rds"</span>, libs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -79,6 +89,7 @@ Use <code><a href="create_scoreSample.html">create_scoreSample()</a></code> to g
 <span>  <span class="va">tm_workflow</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"scoreCode.R"</span>,</span>
 <span>  rds <span class="op">=</span> <span class="st">"model.rds"</span>,</span>
+<span>  inputs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  libs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  referenceLevel <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -100,6 +111,10 @@ Use <code><a href="create_scoreSample.html">create_scoreSample()</a></code> to g
 
 <dt>libs</dt>
 <dd><p>vector of libraries to be added to the code. Some may be guessed from the type.</p></dd>
+
+
+<dt>inputs</dt>
+<dd><p>define inputs as the passed vector instead of guessed</p></dd>
 
 
 <dt>...</dt>
