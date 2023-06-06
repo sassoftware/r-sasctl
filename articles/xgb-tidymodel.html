@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@
     
 <p>R-sasctl has tools to help you create all the necessary files to
 upload an R model successfully to SAS Viya Model Manager and be able to
-take advantage of the many .</p>
+take advantage of its many features.</p>
 <div class="section level2">
 <h2 id="simple-data-preparation">Simple data preparation<a class="anchor" aria-label="anchor" href="#simple-data-preparation"></a>
 </h2>
@@ -153,7 +153,7 @@ xgboost.</p>
 <span><span class="co">#&gt; predictor: 12</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Training information</span></span>
-<span><span class="co">#&gt; Training data contained 4767 data points and 2081 incomplete rows.</span></span>
+<span><span class="co">#&gt; Training data contained 4767 data points and 2074 incomplete rows.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Operations</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mode imputation for: <span style="color: #0000BB;">REASON</span>, <span style="color: #0000BB;">JOB</span> | <span style="font-style: italic;">Trained</span></span></span>
@@ -189,7 +189,7 @@ generates scoring code for workflow in the current version.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Model ───────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; ##### xgb.Booster</span></span>
-<span><span class="co">#&gt; raw: 51.1 Kb </span></span>
+<span><span class="co">#&gt; raw: 52.3 Kb </span></span>
 <span><span class="co">#&gt; call:</span></span>
 <span><span class="co">#&gt;   xgboost::xgb.train(params = list(eta = 0.3, max_depth = 6, gamma = 0, </span></span>
 <span><span class="co">#&gt;     colsample_bytree = 1, colsample_bynode = 1, min_child_weight = 1, </span></span>
@@ -206,11 +206,11 @@ generates scoring code for workflow in the current version.</p>
 <span><span class="co">#&gt; nfeatures : 16 </span></span>
 <span><span class="co">#&gt; evaluation_log:</span></span>
 <span><span class="co">#&gt;     iter training_logloss</span></span>
-<span><span class="co">#&gt;        1        0.5202526</span></span>
-<span><span class="co">#&gt;        2        0.4241428</span></span>
+<span><span class="co">#&gt;        1        0.5194317</span></span>
+<span><span class="co">#&gt;        2        0.4199888</span></span>
 <span><span class="co">#&gt; ---                      </span></span>
-<span><span class="co">#&gt;       14        0.1758526</span></span>
-<span><span class="co">#&gt;       15        0.1689030</span></span></code></pre></div>
+<span><span class="co">#&gt;       14        0.1702882</span></span>
+<span><span class="co">#&gt;       15        0.1652070</span></span></code></pre></div>
 <p>Now we will start creating all the files required to successfully
 upload the model to SAS Model Manager.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -232,12 +232,12 @@ to execute its routines such as comparing models.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
 <span><span class="co">#&gt;   .pred_0 .pred_1</span></span>
 <span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0.139   0.861</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.218   0.782</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.115   0.885</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.191   0.809</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.668   0.332</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.338   0.662</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0.194   0.806</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.148   0.852</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.123   0.877</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.382   0.618</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.473   0.527</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.313   0.687</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span><span class="va">scoreddf</span><span class="op">[</span><span class="va">hmeq_split</span><span class="op">$</span><span class="va">in_id</span>,<span class="op">]</span><span class="op">[</span><span class="st">"partition"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -249,12 +249,12 @@ to execute its routines such as comparing models.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
 <span><span class="co">#&gt;   P_BAD0 P_BAD1 partition   BAD</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  0.139  0.861         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  0.218  0.782         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  0.115  0.885         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  0.191  0.809         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  0.668  0.332         1     0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  0.338  0.662         1     1</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  0.194  0.806         2     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  0.148  0.852         1     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  0.123  0.877         1     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  0.382  0.618         1     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  0.473  0.527         1     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  0.313  0.687         1     1</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">diags</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/diagnosticsJson.html">diagnosticsJson</a></span><span class="op">(</span>traindf <span class="op">=</span> <span class="va">scoreddf</span><span class="op">[</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">1</span>,<span class="op">]</span>,</span>
 <span>                         testdf <span class="op">=</span> <span class="va">scoreddf</span><span class="op">[</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">2</span>,<span class="op">]</span>,</span>
@@ -313,6 +313,10 @@ added in the future.</p>
 <code>P_&lt;&lt;target&gt;&gt;&lt;&lt;level&gt;&gt;</code> variables.
 They’re not required, but it makes very consistent on how models made in
 SAS Viya UI are created. Making it easier to mix these models.</p>
+</div>
+<div class="section level2">
+<h2 id="generating-the-score-code">Generating the Score code<a class="anchor" aria-label="anchor" href="#generating-the-score-code"></a>
+</h2>
 <p>We can use the <code>inputs</code> to generate alternate input
 variables. In this case it is useful because we used the pre-process
 step <code><a href="https://recipes.tidymodels.org/reference/step_dummy.html" class="external-link">recipes::step_dummy()</a></code> which created additional dummy
@@ -338,6 +342,7 @@ course).</li>
 <code class="sourceCode R"><span><span class="va">code</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/codegen.html">codegen</a></span><span class="op">(</span><span class="va">xgb_fitted</span>, </span>
 <span>                path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"scoreCode.R"</span><span class="op">)</span>, </span>
 <span>                inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">hmeq</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>                referenceLevel <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                rds <span class="op">=</span> <span class="va">modelrda</span><span class="op">)</span></span>
 <span><span class="co">#&gt; File written to: xgbModel/scoreCode.R</span></span>
 <span><span class="va">code</span></span>
@@ -351,9 +356,10 @@ course).</li>
 <span><span class="co">#&gt;   if (!exists("sasctlRmodel"))</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     assign("sasctlRmodel", readRDS(file = paste(rdsPath, "Rxgb.rda", sep = "")), envir = .GlobalEnv)</span></span>
-<span><span class="co">#&gt;     target_labels &lt;- c('0', '1')</span></span>
+<span><span class="co">#&gt;     </span></span>
 <span><span class="co">#&gt;   }</span></span>
-<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt;   target_labels &lt;- c('0', '1')</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   data &lt;- data.frame(LOAN  =  LOAN,</span></span>
 <span><span class="co">#&gt;                      MORTDUE  =  MORTDUE,</span></span>
 <span><span class="co">#&gt;                      VALUE  =  VALUE,</span></span>
@@ -373,8 +379,8 @@ course).</li>
 <span><span class="co">#&gt; predictions[".pred"] &lt;- apply(boolClass, 1 , function(x) target_labels[x])</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; output_list &lt;- list(EM_CLASSIFICATION = predictions[[".pred"]], </span></span>
-<span><span class="co">#&gt;                     EM_EVENTPROBABILITY = predictions[[".pred_0"]],</span></span>
-<span><span class="co">#&gt;                     EM_PROBABILITY = subset(predictions, select = -c(.pred))[boolClass],</span></span>
+<span><span class="co">#&gt;                     EM_EVENTPROBABILITY = predictions[[".pred_1"]],</span></span>
+<span><span class="co">#&gt;                     EM_PROBABILITY = apply(subset(predictions, select = -c(.pred)), 1, max),</span></span>
 <span><span class="co">#&gt;                     I_BAD = predictions[[".pred"]],</span></span>
 <span><span class="co">#&gt;                     BAD = predictions[[".pred"]],</span></span>
 <span><span class="co">#&gt;                     P_BAD0 = predictions[[".pred_0"]],</span></span>
@@ -383,27 +389,73 @@ course).</li>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   return(output_list)</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="testing-the-scoring-code">Testing the scoring code<a class="anchor" aria-label="anchor" href="#testing-the-scoring-code"></a>
+</h3>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">## getting the .rda Path to be called in the function</span></span>
+<span><span class="co">## this is simulating what Viya passes to R when calling it</span></span>
+<span><span class="va">rdsPath</span> <span class="op">&lt;-</span> <span class="va">path</span></span>
+<span></span>
+<span><span class="co">## Calling the generated code string as code to</span></span>
+<span><span class="co">## create the function locally</span></span>
+<span><span class="va">codeExpression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">str2expression</a></span><span class="op">(</span><span class="va">code</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">codeExpression</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'xgboost'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:dplyr':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     slice</span></span>
+<span></span>
+<span><span class="co">## this is a helper to create the variables</span></span>
+<span><span class="co">## cat(paste0(colnames(hmeq)[-1], " = hmeq[, '", colnames(hmeq)[-1],"']", collapse = ",\n " ))</span></span>
+<span></span>
+<span><span class="va">scoreRes</span> <span class="op">&lt;-</span> <span class="fu">scoreFunction</span><span class="op">(</span>LOAN <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'LOAN'</span><span class="op">]</span>,</span>
+<span>                          MORTDUE <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'MORTDUE'</span><span class="op">]</span>,</span>
+<span>                          VALUE <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'VALUE'</span><span class="op">]</span>,</span>
+<span>                          REASON <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'REASON'</span><span class="op">]</span>,</span>
+<span>                          JOB <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'JOB'</span><span class="op">]</span>,</span>
+<span>                          YOJ <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'YOJ'</span><span class="op">]</span>,</span>
+<span>                          DEROG <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'DEROG'</span><span class="op">]</span>,</span>
+<span>                          DELINQ <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'DELINQ'</span><span class="op">]</span>,</span>
+<span>                          CLAGE <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'CLAGE'</span><span class="op">]</span>,</span>
+<span>                          NINQ <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'NINQ'</span><span class="op">]</span>,</span>
+<span>                          CLNO <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'CLNO'</span><span class="op">]</span>,</span>
+<span>                          DEBTINC <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'DEBTINC'</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">scoreRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">scoreRes</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">scoreRes</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   EM_CLASSIFICATION EM_EVENTPROBABILITY EM_PROBABILITY I_BAD BAD    P_BAD0</span></span>
+<span><span class="co">#&gt; 1                 1           0.8057488      0.8057488     1   1 0.1942512</span></span>
+<span><span class="co">#&gt; 2                 1           0.8515469      0.8515469     1   1 0.1484531</span></span>
+<span><span class="co">#&gt; 3                 1           0.8774260      0.8774260     1   1 0.1225740</span></span>
+<span><span class="co">#&gt; 4                 1           0.6176715      0.6176715     1   1 0.3823285</span></span>
+<span><span class="co">#&gt; 5                 1           0.5266531      0.5266531     1   1 0.4733469</span></span>
+<span><span class="co">#&gt; 6                 1           0.6869498      0.6869498     1   1 0.3130502</span></span>
+<span><span class="co">#&gt;      P_BAD1</span></span>
+<span><span class="co">#&gt; 1 0.8057488</span></span>
+<span><span class="co">#&gt; 2 0.8515469</span></span>
+<span><span class="co">#&gt; 3 0.8774260</span></span>
+<span><span class="co">#&gt; 4 0.6176715</span></span>
+<span><span class="co">#&gt; 5 0.5266531</span></span>
+<span><span class="co">#&gt; 6 0.6869498</span></span></code></pre></div>
 <p>Now we create some additional files which are required to configure
 SAS Model Manager when uploading the files. For the variables
-specifically, should match the inputs from the model and outputs
-(outputs may be needed to match what comes out the scoring code)</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## note required to be correct values, just correct format</span></span>
-<span><span class="va">scoreddf</span><span class="op">$</span><span class="va">I_BAD</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">BAD</span><span class="op">)</span></span>
-<span><span class="va">scoreddf</span><span class="op">$</span><span class="va">BAD</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">BAD</span><span class="op">)</span></span>
-<span><span class="va">scoreddf</span><span class="op">$</span><span class="va">EM_EVENTPROBABILITY</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
-<span><span class="va">scoreddf</span><span class="op">$</span><span class="va">EM_PROBABILITY</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
-<span><span class="va">scoreddf</span><span class="op">$</span><span class="va">EM_CLASSIFICATION</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">BAD</span><span class="op">)</span></span>
-<span></span>
-<span></span>
+specifically, should match the inputs from the model and outputs. We can
+use the result from the scoring code test from the previous chunck.
+Otherwise you can create a <code>data.frame</code> with the expected
+outputs and pass it.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/write_in_out_json.html">write_in_out_json</a></span><span class="op">(</span><span class="va">hmeq</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, input <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "File written to xgbModel/inputVar.json"</span></span>
 <span><span class="co">#&gt;       name length    type    level  role</span></span>
 <span><span class="co">#&gt; 1     LOAN      8 decimal interval input</span></span>
 <span><span class="co">#&gt; 2  MORTDUE      8 decimal interval input</span></span>
 <span><span class="co">#&gt; 3    VALUE      8 decimal interval input</span></span>
-<span><span class="co">#&gt; 4   REASON     NA  string  nominal input</span></span>
-<span><span class="co">#&gt; 5      JOB     NA  string  nominal input</span></span>
+<span><span class="co">#&gt; 4   REASON      7  string  nominal input</span></span>
+<span><span class="co">#&gt; 5      JOB      7  string  nominal input</span></span>
 <span><span class="co">#&gt; 6      YOJ      8 decimal interval input</span></span>
 <span><span class="co">#&gt; 7    DEROG      8 decimal interval input</span></span>
 <span><span class="co">#&gt; 8   DELINQ      8 decimal interval input</span></span>
@@ -411,17 +463,16 @@ specifically, should match the inputs from the model and outputs
 <span><span class="co">#&gt; 10    NINQ      8 decimal interval input</span></span>
 <span><span class="co">#&gt; 11    CLNO      8 decimal interval input</span></span>
 <span><span class="co">#&gt; 12 DEBTINC      8 decimal interval input</span></span>
-<span><span class="fu"><a href="../reference/write_in_out_json.html">write_in_out_json</a></span><span class="op">(</span><span class="va">scoreddf</span><span class="op">[</span><span class="op">-</span><span class="fl">3</span><span class="op">]</span>, input <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/write_in_out_json.html">write_in_out_json</a></span><span class="op">(</span><span class="va">scoreRes</span>, input <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "File written to xgbModel/outputVar.json"</span></span>
 <span><span class="co">#&gt;                  name length    type    level   role</span></span>
-<span><span class="co">#&gt; 1              P_BAD0      8 decimal interval output</span></span>
-<span><span class="co">#&gt; 2              P_BAD1      8 decimal interval output</span></span>
-<span><span class="co">#&gt; 3                 BAD      1  string  nominal output</span></span>
+<span><span class="co">#&gt; 1   EM_CLASSIFICATION      1  string  nominal output</span></span>
+<span><span class="co">#&gt; 2 EM_EVENTPROBABILITY      8 decimal interval output</span></span>
+<span><span class="co">#&gt; 3      EM_PROBABILITY      8 decimal interval output</span></span>
 <span><span class="co">#&gt; 4               I_BAD      1  string  nominal output</span></span>
-<span><span class="co">#&gt; 5 EM_EVENTPROBABILITY      8 decimal interval output</span></span>
-<span><span class="co">#&gt; 6      EM_PROBABILITY      8 decimal interval output</span></span>
-<span><span class="co">#&gt; 7   EM_CLASSIFICATION      1  string  nominal output</span></span>
-<span></span>
+<span><span class="co">#&gt; 5                 BAD      1  string  nominal output</span></span>
+<span><span class="co">#&gt; 6              P_BAD0      8 decimal interval output</span></span>
+<span><span class="co">#&gt; 7              P_BAD1      8 decimal interval output</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/write_fileMetadata_json.html">write_fileMetadata_json</a></span><span class="op">(</span>scoreCodeName <span class="op">=</span> <span class="st">"scoreCode.R"</span>,</span>
 <span>                        scoreResource <span class="op">=</span> <span class="va">modelrda</span>,</span>
@@ -466,7 +517,7 @@ specifically, should match the inputs from the model and outputs
 <span><span class="fu"><a href="https://rdrr.io/r/utils/zip.html" class="external-link">zip</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"Rmodel.zip"</span><span class="op">)</span>, </span>
 <span>    files <span class="op">=</span> <span class="va">files_to_zip</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we can upload the model to our SAS Viya server.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sess</span> <span class="op">&lt;-</span> <span class="fu">sasctl</span><span class="fu">::</span><span class="fu"><a href="../reference/session.html">session</a></span><span class="op">(</span><span class="st">"https://viya.server.com"</span>,</span>
 <span>                        username <span class="op">=</span> <span class="st">"username"</span>,</span>
 <span>                        password <span class="op">=</span> <span class="st">"s3cr3t!"</span><span class="op">)</span></span>
@@ -479,9 +530,10 @@ specifically, should match the inputs from the model and outputs
 <span>  project <span class="op">=</span> <span class="st">"R_sasctl"</span>,</span>
 <span>  force <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## deleting the files locally</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">path</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
   </div>
 
