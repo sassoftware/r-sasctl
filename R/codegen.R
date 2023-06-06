@@ -201,7 +201,7 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
   
       output_list <- list(EM_CLASSIFICATION = predictions[[".pred"]], 
                           EM_EVENTPROBABILITY = predictions[[".pred_<<referenceLevel>>"]],
-                          EM_PROBABILITY = subset(predictions, select = -c(.pred))[boolClass],
+                          EM_PROBABILITY = apply(subset(predictions, select = -c(.pred)), 1, max),
                           I_<<target>> = predictions[[".pred"]],
                           <<target>> = predictions[[".pred"]],
                           <<p_labels>>
@@ -237,9 +237,10 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
       if (!exists("sasctlRmodel"))
       {
         assign("sasctlRmodel", readRDS(file = paste(rdsPath, "<<rds>>", sep = "")), envir = .GlobalEnv)
-        <<target_labels_string>>
+        
       }
-      
+      <<target_labels_string>>
+    
       data <- data.frame(<<paste(predictors," = ", predictors, collapse = ",\n                         ")>>)
   
       predictions <- predict(sasctlRmodel, new_data = data, type = "<<response_type>>")

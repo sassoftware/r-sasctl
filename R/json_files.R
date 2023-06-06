@@ -37,10 +37,14 @@ write_in_out_json <- function(data, input = TRUE, path = './', noFile = FALSE){
                                 if (is.factor(x)) as.character(x) else x }))
   
   ### variable lengths, 8 is default for numeric
+  
+  
   size <- sapply(data,
                  FUN = function(x){
-                   if (is.character(x)) max(sapply(x, nchar)) else {8}}
+                   if (is.character(x)) max(sapply(x, nchar), na.rm = TRUE) else {8}}
   )
+  
+  size[sapply(size, function(x) is.na(x) | x == 0 )] <- 8
   
   df <- data.frame(name = names(vars),
                    length = size,

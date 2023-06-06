@@ -1,6 +1,6 @@
 Package: sasctl
 Title: The sasctl package enables easy communication between the SAS Viya platform APIs and the R runtime
-Version: 0.6.4.9000
+Version: 0.7.0
 Author: Eduardo Hellas
 Authors@R: c(
     person(given = "Eduardo",

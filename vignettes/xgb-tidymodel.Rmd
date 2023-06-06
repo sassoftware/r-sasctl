@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-R-sasctl has tools to help you create all the necessary files to upload an R model successfully to SAS Viya Model Manager and be able to take advantage of the many . 
+R-sasctl has tools to help you create all the necessary files to upload an R model successfully to SAS Viya Model Manager and be able to take advantage of its many features. 
 
 ## Simple data preparation
 
@@ -126,6 +126,8 @@ Scoring codes are required to run R and Python models in SAS Model Manager, `sas
 
 You will notice that the scoring code has many `EM_*` and `P_<<target>><<level>>` variables. They're not required, but it makes very consistent on how models made in SAS Viya UI are created. Making it easier to mix these models.
 
+
+## Generating the Score code
 ```{r vars, echo=FALSE, include=FALSE}
 used_vars <- paste0("`",colnames(xgb_fitted[["pre"]][["mold"]][["predictors"]]), "`", collapse = ", ")
 expected_vars <- paste0("`",colnames(hmeq)[-1], "`", collapse = ", ")
@@ -139,24 +141,52 @@ We can use the `inputs` to generate alternate input variables. In this case it i
 code <- codegen(xgb_fitted, 
                 path = paste0(path, "scoreCode.R"), 
                 inputs = colnames(hmeq)[-1],
+                referenceLevel = 1,
                 rds = modelrda)
 code
 ```
 
-Now we create some additional files which are required to configure SAS Model Manager when uploading the files. For the variables specifically, should match the inputs from the model and outputs (outputs may be needed to match what comes out the scoring code)
+### Testing the scoring code
+
+```{r test_code}
+
+## getting the .rda Path to be called in the function
+## this is simulating what Viya passes to R when calling it
+rdsPath <- path
+
+## Calling the generated code string as code to
+## create the function locally
+codeExpression <- str2expression(code)
+eval(codeExpression) 
+
+## this is a helper to create the variables
+## cat(paste0(colnames(hmeq)[-1], " = hmeq[, '", colnames(hmeq)[-1],"']", collapse = ",\n " ))
+
+scoreRes <- scoreFunction(LOAN = hmeq[, 'LOAN'],
+                          MORTDUE = hmeq[, 'MORTDUE'],
+                          VALUE = hmeq[, 'VALUE'],
+                          REASON = hmeq[, 'REASON'],
+                          JOB = hmeq[, 'JOB'],
+                          YOJ = hmeq[, 'YOJ'],
+                          DEROG = hmeq[, 'DEROG'],
+                          DELINQ = hmeq[, 'DELINQ'],
+                          CLAGE = hmeq[, 'CLAGE'],
+                          NINQ = hmeq[, 'NINQ'],
+                          CLNO = hmeq[, 'CLNO'],
+                          DEBTINC = hmeq[, 'DEBTINC'])
+
+scoreRes <- as.data.frame(scoreRes)
+head(scoreRes)
+```
+
+
+
+Now we create some additional files which are required to configure SAS Model Manager when uploading the files. For the variables specifically, should match the inputs from the model and outputs. We can use the result from the scoring code test from the previous chunck. Otherwise you can create a `data.frame` with the expected outputs and pass it.
 
 ```{r creating_files5}
-## note required to be correct values, just correct format
-scoreddf$I_BAD <- as.character(scoreddf$BAD)
-scoreddf$BAD <- as.character(scoreddf$BAD)
-scoreddf$EM_EVENTPROBABILITY <- 0.1
-scoreddf$EM_PROBABILITY <- 0.1
-scoreddf$EM_CLASSIFICATION <- as.character(scoreddf$BAD)
-
 
 write_in_out_json(hmeq[,-1], input = TRUE, path = path)
-write_in_out_json(scoreddf[-3], input = FALSE, path = path)
-
+write_in_out_json(scoreRes, input = FALSE, path = path)
 
 write_fileMetadata_json(scoreCodeName = "scoreCode.R",
                         scoreResource = modelrda,

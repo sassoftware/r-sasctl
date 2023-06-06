@@ -1,4 +1,4 @@
-# sasctl (development version)
+# sasctl 0.7.0
 
 * Fixed correct release retrieval when using `session` to connect to Viya 2020.x
 * Added `codegen` function in experimental state. Works for simple `lm`, `glm` models and [tidymodels](https://www.tidymodels.org/) `workflow` with regression or classification model mode`
