@@ -108,7 +108,7 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff =
     
     scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
     {
-      #output: EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, P_<<target>>1, P_<<target>>0
+      #output: EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY,<<target>>, I_<<target>>, P_<<target>>1, P_<<target>>0
       
       if (!exists("sasctlRmodel"))
       {
@@ -126,6 +126,7 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff =
       output_list <- list(EM_CLASSIFICATION = <<target>>, 
                           EM_EVENTPROBABILITY = P_<<target>>1,
                           EM_PROBABILITY = ifelse(P_<<target>>1 >= <<cutoff>>, P_<<target>>1, P_<<target>>0),
+                          <<target>> = <<target>>,
                           I_<<target>> = <<target>>,
                           P_<<target>>1 = P_<<target>>1,
                           P_<<target>>0 = P_<<target>>0)
