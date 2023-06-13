@@ -189,7 +189,6 @@ delete_masmodule(sess, "R_model_pmml")
 ### A native R model example
 
 ```{r example2, cache = TRUE}
-library("MASS")
 
 hmeq <- read.csv("https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv")
 
@@ -209,11 +208,6 @@ model1 <- glm(formula = BAD ~ .,
               data = hmeq[partition == 1,]
               )
 
-## stepwise
-model1 <-  MASS::stepAIC(model1, 
-                         trace = 0)
-
-
 ### model summary
 summary(model1)
 
@@ -224,37 +218,47 @@ path <- "myModel/"
 ## model saved
 saveRDS(model1, paste0(path, 'rlogistic.rda'), version = 2)
 
+
+## creating the score code 
+code <- codegen(model1, path = paste0(path, "scoreCode.R"), rds = "rlogistic.rda")
+
+## The following function to creates a sample if you don't want to use the generated code
+# create_scoreSample(path, openFile = FALSE)
+
 ## scoring the whole table
-P_BAD1 <- predict(model1, newdata = hmeq, type = 'response')
-P_BAD0 <- 1 - P_BAD1
 
-# factors starts as 1 when using as.numeric, 
-# we have to add -1 to move to 0,1 scale correctly
-# since diagnostics expects a numeric value
+## running the generated scoring code for testing
+codeExpression <- str2expression(code)
+eval(codeExpression)
 
-scoreddf <- data.frame(BAD = as.numeric(hmeq$BAD) - 1, 
-                       P_BAD1 = P_BAD1,
-                       P_BAD0 = P_BAD0,
-                       partition = partition)
+rdsPath <- path
+result <- scoreFunction(LOAN = hmeq[, 'LOAN'],
+                        MORTDUE = hmeq[, 'MORTDUE'],
+                        VALUE = hmeq[, 'VALUE'],
+                        REASON = hmeq[, 'REASON'],
+                        JOB = hmeq[, 'JOB'],
+                        YOJ = hmeq[, 'YOJ'],
+                        DEROG = hmeq[, 'DEROG'],
+                        DELINQ = hmeq[, 'DELINQ'],
+                        CLAGE = hmeq[, 'CLAGE'],
+                        NINQ = hmeq[, 'NINQ'],
+                        CLNO = hmeq[, 'CLNO'],
+                        DEBTINC = hmeq[, 'DEBTINC'])
 
-### diagnostics uses the first column as the "correct label" 
-### and the second column as the "prediction probability" or "predicted regression", 
-### all other columns will be ignored for the purpose of metrics
+scoreddf <- as.data.frame(result)
+scoreddf$Actual <- as.numeric(hmeq$BAD) - 1
+scoreddf$partition <- partition
+
+### diagnostics requires the true Target column name defined in "targetName"
+### and the predicted probability column name defined in "targetPredicted"
 
 diags <- diagnosticsJson(validadedf = scoreddf[scoreddf$partition == 3,],
                          traindf = scoreddf[scoreddf$partition == 1,],
                          testdf = scoreddf[scoreddf$partition == 2,],
                          targetEventValue = 1,
-                         targetName = "BAD",
+                         targetName = "Actual",
+                         targetPredicted = "EM_EVENTPROBABILITY",
                          path = path) ## safely ignore warning, knitr bug
-
-
-## since R sasctl can't automatically generate an score code (yet), you can use
-## this function to create a sample, which has to be edited manually to work properly
-
-create_scoreSample(path, 
-                   openFile = FALSE)
-
 
 ## writing other files
 write_in_out_json(hmeq[,-1], input = TRUE, path = path)
