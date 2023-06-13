@@ -246,8 +246,7 @@
 <h3 id="a-native-r-model-example">A native R model example<a class="anchor" aria-label="anchor" href="#a-native-r-model-example"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">"MASS"</a></span><span class="op">)</span></span>
-<span></span>
+<code class="sourceCode R"><span></span>
 <span><span class="va">hmeq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hmeq</span><span class="op">[</span><span class="va">hmeq</span> <span class="op">==</span> <span class="st">""</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
@@ -266,11 +265,6 @@
 <span>              data <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">1</span>,<span class="op">]</span></span>
 <span>              <span class="op">)</span></span>
 <span></span>
-<span><span class="co">## stepwise</span></span>
-<span><span class="va">model1</span> <span class="op">&lt;-</span>  <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html" class="external-link">stepAIC</a></span><span class="op">(</span><span class="va">model1</span>, </span>
-<span>                         trace <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span></span>
-<span></span>
 <span><span class="co">### model summary</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model1</span><span class="op">)</span></span>
 <span></span>
@@ -281,37 +275,47 @@
 <span><span class="co">## model saved</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">model1</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">'rlogistic.rda'</span><span class="op">)</span>, version <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
+<span></span>
+<span><span class="co">## creating the score code </span></span>
+<span><span class="va">code</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/codegen.html">codegen</a></span><span class="op">(</span><span class="va">model1</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"scoreCode.R"</span><span class="op">)</span>, rds <span class="op">=</span> <span class="st">"rlogistic.rda"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## The following function to creates a sample if you don't want to use the generated code</span></span>
+<span><span class="co"># create_scoreSample(path, openFile = FALSE)</span></span>
+<span></span>
 <span><span class="co">## scoring the whole table</span></span>
-<span><span class="va">P_BAD1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model1</span>, newdata <span class="op">=</span> <span class="va">hmeq</span>, type <span class="op">=</span> <span class="st">'response'</span><span class="op">)</span></span>
-<span><span class="va">P_BAD0</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">P_BAD1</span></span>
 <span></span>
-<span><span class="co"># factors starts as 1 when using as.numeric, </span></span>
-<span><span class="co"># we have to add -1 to move to 0,1 scale correctly</span></span>
-<span><span class="co"># since diagnostics expects a numeric value</span></span>
+<span><span class="co">## running the generated scoring code for testing</span></span>
+<span><span class="va">codeExpression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">str2expression</a></span><span class="op">(</span><span class="va">code</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">codeExpression</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">scoreddf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>BAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">hmeq</span><span class="op">$</span><span class="va">BAD</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>, </span>
-<span>                       P_BAD1 <span class="op">=</span> <span class="va">P_BAD1</span>,</span>
-<span>                       P_BAD0 <span class="op">=</span> <span class="va">P_BAD0</span>,</span>
-<span>                       partition <span class="op">=</span> <span class="va">partition</span><span class="op">)</span></span>
+<span><span class="va">rdsPath</span> <span class="op">&lt;-</span> <span class="va">path</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">scoreFunction</span><span class="op">(</span>LOAN <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'LOAN'</span><span class="op">]</span>,</span>
+<span>                        MORTDUE <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'MORTDUE'</span><span class="op">]</span>,</span>
+<span>                        VALUE <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'VALUE'</span><span class="op">]</span>,</span>
+<span>                        REASON <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'REASON'</span><span class="op">]</span>,</span>
+<span>                        JOB <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'JOB'</span><span class="op">]</span>,</span>
+<span>                        YOJ <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'YOJ'</span><span class="op">]</span>,</span>
+<span>                        DEROG <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'DEROG'</span><span class="op">]</span>,</span>
+<span>                        DELINQ <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'DELINQ'</span><span class="op">]</span>,</span>
+<span>                        CLAGE <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'CLAGE'</span><span class="op">]</span>,</span>
+<span>                        NINQ <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'NINQ'</span><span class="op">]</span>,</span>
+<span>                        CLNO <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'CLNO'</span><span class="op">]</span>,</span>
+<span>                        DEBTINC <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'DEBTINC'</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">### diagnostics uses the first column as the "correct label" </span></span>
-<span><span class="co">### and the second column as the "prediction probability" or "predicted regression", </span></span>
-<span><span class="co">### all other columns will be ignored for the purpose of metrics</span></span>
+<span><span class="va">scoreddf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="va">scoreddf</span><span class="op">$</span><span class="va">Actual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">hmeq</span><span class="op">$</span><span class="va">BAD</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
+<span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="va">partition</span></span>
+<span></span>
+<span><span class="co">### diagnostics requires the true Target column name defined in "targetName"</span></span>
+<span><span class="co">### and the predicted probability column name defined in "targetPredicted"</span></span>
 <span></span>
 <span><span class="va">diags</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/diagnosticsJson.html">diagnosticsJson</a></span><span class="op">(</span>validadedf <span class="op">=</span> <span class="va">scoreddf</span><span class="op">[</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">3</span>,<span class="op">]</span>,</span>
 <span>                         traindf <span class="op">=</span> <span class="va">scoreddf</span><span class="op">[</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">1</span>,<span class="op">]</span>,</span>
 <span>                         testdf <span class="op">=</span> <span class="va">scoreddf</span><span class="op">[</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">2</span>,<span class="op">]</span>,</span>
 <span>                         targetEventValue <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                         targetName <span class="op">=</span> <span class="st">"BAD"</span>,</span>
+<span>                         targetName <span class="op">=</span> <span class="st">"Actual"</span>,</span>
+<span>                         targetPredicted <span class="op">=</span> <span class="st">"EM_EVENTPROBABILITY"</span>,</span>
 <span>                         path <span class="op">=</span> <span class="va">path</span><span class="op">)</span> <span class="co">## safely ignore warning, knitr bug</span></span>
-<span></span>
-<span></span>
-<span><span class="co">## since R sasctl can't automatically generate an score code (yet), you can use</span></span>
-<span><span class="co">## this function to create a sample, which has to be edited manually to work properly</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/create_scoreSample.html">create_scoreSample</a></span><span class="op">(</span><span class="va">path</span>, </span>
-<span>                   openFile <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
 <span></span>
 <span><span class="co">## writing other files</span></span>
 <span><span class="fu"><a href="reference/write_in_out_json.html">write_in_out_json</a></span><span class="op">(</span><span class="va">hmeq</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, input <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
