@@ -6,11 +6,11 @@
 #' Registers a zip formatted model in SAS Model Manager.
 #' 
 #' @param session viya_connection object, obtained through `session` function
-#' @param file path to file
+#' @param file path to file to be uploaded
 #' @param name model name that will be used when registering
 #' @param project `MMproject` object, project ID or project name. If name, will try to find a single project with exact name match. See `exact` parameter 
 #' @param exact the filter query should use "contains" for partial match or "eq" for exact match
-#' @param type string, pmml, spk, zip, astore or CAS,
+#' @param type string, pmml, spk, zip or astore
 #' @param force Boolean, force the creation of project if unavailable
 #' @param version This parameter indicates to create a new project version, use the latest version, or use an existing version to import the model into. Valid values are 'NEW', 'LATEST', or a number.
 #' @param force_pmml_translation default is TRUE, set to false will upload pmml as is, but may not work properly. Only if `type = "pmml"`
@@ -137,22 +137,22 @@ register_model <- function(session, file, name, project, type,
   ### trying to define them while uploading with the model are just ignored
   ### automatically create project and model version
   
-  if (missing(file)) {
-    stop("A path to pmml file must be set")
+  if (missing(file) | !is.character(file)) {
+    stop("A valid filepath must be set")
   }
   
-  if (missing(name)) {
+  if (missing(name) | !is.character(name)) {
     stop("A name must be given to the model")
   }
   
-  if (missing(project)) {
-    stop("Automatic project creation not implemented")
+  if (missing(project) | !is.character(project)) {
+    stop("The project name must be a defined character string")
   }
   
-  if (missing(type)) {
-    stop("Type must be defined as SPK, ZIP, ASTORE, PMML or CAS")
+  if (missing(type) | !is.character(type) | !(tolower(type) %in% c("spk", "zip", "astore", "pmml")) ) {
+    # TBD: CAS model
+    stop("Type must be 'SPK', 'ZIP', 'ASTORE' or 'PMML'")
   }
-
 
   type <- tolower(type)
   
@@ -180,7 +180,7 @@ register_model <- function(session, file, name, project, type,
   if (type == "pmml") {
     
     if ( !(tools::file_ext(file) %in% c("pmml", "xml")) ) {
-      stop("For type = pmml, file must be .pmml, .xml")
+      stop("For type = pmml, file must be a valid .pmml or .xml")
     }
     
     if (force_pmml_translation) {
@@ -263,7 +263,7 @@ register_model <- function(session, file, name, project, type,
                                 additional_parameters = additional_project_parameters, 
                                 ...)
       
-      message(paste("The project with the name", project$name, "has been successfully created"))
+      message(paste0("The project ' ", project$name, " 'has been successfully created"))
       
       forced_created_project <- TRUE
     } else {

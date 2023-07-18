@@ -9,6 +9,9 @@
 #' Other models and frameworks will be added in due time. 
 #' Use [sasctl::create_scoreSample()] to get a structure sample
 #' 
+#' Disclaimer: The score code that is generated is designed to be a working template for an R model, 
+#' but is not guaranteed to work out of the box for scoring, publishing, or validating the model.
+#' 
 #' @param model model object (lm, glm ...)
 #' @param path file name and path to write
 #' @param libs vector of libraries to be added to the code. Some may be guessed from the type.

@@ -23,13 +23,13 @@ register_model(
 \arguments{
 \item{session}{viya_connection object, obtained through \code{session} function}
 
-\item{file}{path to file}
+\item{file}{path to file to be uploaded}
 
 \item{name}{model name that will be used when registering}
 
 \item{project}{\code{MMproject} object, project ID or project name. If name, will try to find a single project with exact name match. See \code{exact} parameter}
 
-\item{type}{string, pmml, spk, zip, astore or CAS,}
+\item{type}{string, pmml, spk, zip or astore}
 
 \item{force_pmml_translation}{default is TRUE, set to false will upload pmml as is, but may not work properly. Only if \code{type = "pmml"}}
 

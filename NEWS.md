@@ -1,3 +1,8 @@
+# sasctl 0.7.1
+
+* Fixed misleading error messages in `register_model()`
+* Small tweaks to the documentation
+
 # sasctl 0.7.0
 
 * Fixed correct release retrieval when using `session` to connect to Viya 2020.x

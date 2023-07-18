@@ -50,6 +50,9 @@ a code string
 Score code will only be generated successfully for supported models.
 Other models and frameworks will be added in due time.
 Use \code{\link[=create_scoreSample]{create_scoreSample()}} to get a structure sample
+
+Disclaimer: The score code that is generated is designed to be a working template for an R model,
+but is not guaranteed to work out of the box for scoring, publishing, or validating the model.
 }
 \section{Methods (by class)}{
 \itemize{
