@@ -1,3 +1,8 @@
+# sasctl 0.7.2
+
+* Fixed when registering models with variables missing label/measurement metadata
+* Improved documentation
+
 # sasctl 0.7.1
 
 * Fixed misleading error messages in `register_model()`
