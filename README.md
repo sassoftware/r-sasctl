@@ -246,7 +246,7 @@ diags <- diagnosticsJson(validadedf = scoreddf[scoreddf$partition == 3,],
 ## writing other files
 write_in_out_json(hmeq[,-1], input = TRUE, path = path)
 
-write_in_out_json(scoreddf[-4], input = FALSE, path = path)
+write_in_out_json(scoreddf[-c(4, 8, 9)], input = FALSE, path = path)
 
 write_fileMetadata_json(scoreCodeName = "scoreCode.R",
                         scoreResource = "rlogistic.rda",
@@ -303,7 +303,7 @@ payload for a MAS call, which doesn’t have a standard format.
 ### Payload for Viya MAS
 
  {"inputs": [
-             {"name": "<input1_name>", "value": decimal_value}, 
+             {"name": "<input1_name>", "value": 123}, 
              {"name": "<input2_name>", "value": "string_value"}, 
              {"name": "<input3_name>", "value": null} ## if value: NA
              ] 
@@ -314,7 +314,7 @@ payload for a MAS call, which doesn’t have a standard format.
   {
     "metadata": {
       "<metadata_1>": 1,
-      "<metadata_2>": 'any detail',
+      "<metadata_2>": "any metadata string",
       "<metadata_3>": 3
     },
     "data": {

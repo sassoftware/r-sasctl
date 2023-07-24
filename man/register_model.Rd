@@ -37,7 +37,7 @@ register_model(
 
 \item{force}{Boolean, force the creation of project if unavailable}
 
-\item{model_function}{\code{\link[=create_project]{create_project()}} parameter of model function of the created project if \code{force = TRUE}. Valid values: analytical, classification, cluster, forecasting, prediction, Text categorization, Text extraction, Text sentiment, Text topics, transformation}
+\item{model_function}{\code{\link[=create_project]{create_project()}} parameter of project model function of the created project if \code{force = TRUE}. Valid values: analytical, classification, cluster, forecasting, prediction, Text categorization, Text extraction, Text sentiment, Text topics, transformation}
 
 \item{additional_project_parameters}{list of additional parameters to be passed to  \code{\link[=create_project]{create_project()}} \code{additional_parameters} parameter}
 

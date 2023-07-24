@@ -90,7 +90,7 @@ delete_client <- function(session, client){
   del_client <- vDELETE(session,
                         paste0("SASLogon/oauth/clients/", client_id))
   
-  return(del_client)
+  invisible(del_client)
 }
 
 #' Get a client

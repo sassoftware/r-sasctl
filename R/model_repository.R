@@ -14,7 +14,7 @@
 #' @param force Boolean, force the creation of project if unavailable
 #' @param version This parameter indicates to create a new project version, use the latest version, or use an existing version to import the model into. Valid values are 'NEW', 'LATEST', or a number.
 #' @param force_pmml_translation default is TRUE, set to false will upload pmml as is, but may not work properly. Only if `type = "pmml"`
-#' @param model_function [sasctl::create_project()] parameter of model function of the created project if `force = TRUE`. Valid values: analytical, classification, cluster, forecasting, prediction, Text categorization, Text extraction, Text sentiment, Text topics, transformation
+#' @param model_function [sasctl::create_project()] parameter of project model function of the created project if `force = TRUE`. Valid values: analytical, classification, cluster, forecasting, prediction, Text categorization, Text extraction, Text sentiment, Text topics, transformation
 #' @param additional_project_parameters list of additional parameters to be passed to  [sasctl::create_project()] `additional_parameters` parameter
 #' @param project_description description string of additional parameters to be passed to [sasctl::create_project()] `description` parameter
 #' @param ... pass to `sasctl::vPOST()` function
@@ -263,7 +263,7 @@ register_model <- function(session, file, name, project, type,
                                 additional_parameters = additional_project_parameters, 
                                 ...)
       
-      message(paste0("The project ' ", project$name, " 'has been successfully created"))
+      message(paste0("The project '", project$name, "' has been successfully created"))
       
       forced_created_project <- TRUE
     } else {
@@ -299,16 +299,12 @@ register_model <- function(session, file, name, project, type,
                  ...
   )
   
-
-  model <- create_sasctl_obj(model$items, "MMmodel")
+  message(paste0("The model '", name, "' has been successfully imported"))
   
-  ### this will transform lists to DF, make similar to MMmodel
-  model$links <- model$links[[1]]
-  model$inputVariables <- model$inputVariables[[1]]
-  model$outputVariables <- model$outputVariables[[1]]
-  model$modelVersions <- model$modelVersions[[1]]
-  model$tags <- model$tags[[1]]
-  model$globalTags <- model$globalTags[[1]]
+  # it guarantees that transformations has the correct information
+  # if any translation happened
+  model <- create_sasctl_obj(model$items, "MMmodel")
+  model <- get_model(session, model)
   
   ### additional project updates
   
@@ -316,14 +312,22 @@ register_model <- function(session, file, name, project, type,
     
     variable_columns <- c("name", "length", "type", "level", "role")
     
+    in_vars <- model[["inputVariables"]]
+    out_vars <- model[["outputVariables"]]
+    
+    ## fix if 'level' is missing
+    out_vars[setdiff(variable_columns, names(out_vars))] <- ""
+    in_vars[setdiff(variable_columns, names(in_vars))] <- ""
+    
+    vars <- rbind(  
+      in_vars[,variable_columns],
+      out_vars[,variable_columns]
+    )
+    
     projectVars <- update_project_variables(session,
                                             project,
-                                            sasctl_vars = rbind(  
-                                              model$inputVariables[variable_columns],
-                                              model$outputVariables[variable_columns]
-                                            ),
-                                            ...
-    )
+                                            sasctl_vars = vars,
+                                            ...)
     
   }
   
@@ -465,7 +469,7 @@ list_models <-  function(session, start = 0, limit = 10, filters = list(), exact
 #' 
 #' @param session viya_connection object, obtained through `session` function
 #' @param name The name of the project
-#' @param model_function The model function of the project. Valid values: analytical, classification, cluster, forecasting, prediction, Text categorization, Text extraction, Text sentiment, Text topics, transformation
+#' @param model_function The project model function of the project. Valid values: analytical, classification, cluster, forecasting, prediction, Text categorization, Text extraction, Text sentiment, Text topics, transformation
 #' @param description The description of the project.
 #' @param input_vars `data.frame` with the input data sample to configure the project variables.
 #' @param output_vars `data.frame` with the output data sample to configure the project variables.
@@ -945,7 +949,7 @@ delete_project <- function(session, project, exact = TRUE){
   del_proj <- vDELETE(session,
                       paste0("modelRepository/projects/", project_id))
   
-  return(del_proj)
+  invisible(del_proj)
 }
 
 
@@ -975,7 +979,7 @@ delete_model <- function(session, model, exact = TRUE){
   del_model <- vDELETE(session,
                       paste0("modelRepository/models/", model_id))
   
-  return(del_model)
+  invisible(del_model)
 }
 
 #' Delete a model content
@@ -1021,7 +1025,7 @@ delete_model_contents <- function(session, model, content, exact = TRUE){
   
   }
   
-  return(del_content)
+  invisible(del_content)
   
 }
 

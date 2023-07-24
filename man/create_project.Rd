@@ -23,7 +23,7 @@ create_project(
 
 \item{description}{The description of the project.}
 
-\item{model_function}{The model function of the project. Valid values: analytical, classification, cluster, forecasting, prediction, Text categorization, Text extraction, Text sentiment, Text topics, transformation}
+\item{model_function}{The project model function of the project. Valid values: analytical, classification, cluster, forecasting, prediction, Text categorization, Text extraction, Text sentiment, Text topics, transformation}
 
 \item{input_vars}{\code{data.frame} with the input data sample to configure the project variables.}
 

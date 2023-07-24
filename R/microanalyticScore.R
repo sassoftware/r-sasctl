@@ -124,7 +124,7 @@ delete_masmodule <- function(session, module, exact = TRUE){
   del_module <- vDELETE(session,
                       paste0("microanalyticScore/modules/", module_id))
   
-  return(del_module)
+  invisible(del_module)
 }
 
 
