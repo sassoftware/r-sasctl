@@ -57,7 +57,7 @@ reference:
   - update_project_variables
   
 - title: Model Scoring and Publish
-  desc: Publish, score and manage models and destinations
+  desc: Publish, score and manage published modules/models and destinations
   contents:
   - delete_masmodule
   - get_destination

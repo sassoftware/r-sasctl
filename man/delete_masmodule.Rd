@@ -9,7 +9,7 @@ delete_masmodule(session, module, exact = TRUE)
 \arguments{
 \item{session}{viya_connection object, obtained through \code{session} function}
 
-\item{module}{\code{MASmodule} object, module name. If name, will try to find a single module with exact name match. See \code{exact} parameter}
+\item{module}{\code{MASmodule} object, module/model name. If name, will try to find a single module with exact name match. See \code{exact} parameter}
 
 \item{exact}{the filter query should use "contains" for partial match or "eq" for exact match}
 }
@@ -17,12 +17,12 @@ delete_masmodule(session, module, exact = TRUE)
 A \code{\link[httr:response]{httr::response}} object.
 }
 \description{
-Returns a list of projects from Model Manager
+Delete a module/model published on MAS.
 }
 \examples{
 
 \dontrun{
-deleted_module <- delete_mas_module(sess, module = "ModuleName")
+deleted_module <- delete_masmodule(sess, module = "ModuleName")
 deleted_module
 }
 

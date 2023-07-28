@@ -101,17 +101,17 @@ get_masmodule <- function(session, module, id = NULL, exact = TRUE, ...){
 
 #' Delete a module/model and steps
 #' 
-#' Returns a list of projects from Model Manager
+#' Delete a module/model published on MAS.
 #' 
 #' @param session viya_connection object, obtained through `session` function
-#' @param module `MASmodule` object, module name. If name, will try to find a single module with exact name match. See `exact` parameter
+#' @param module `MASmodule` object, module/model name. If name, will try to find a single module with exact name match. See `exact` parameter
 #' @param exact the filter query should use "contains" for partial match or "eq" for exact match
 #' @return A [`httr::response`] object.
 #' 
 #' @examples
 #' 
 #' \dontrun{
-#' deleted_module <- delete_mas_module(sess, module = "ModuleName")
+#' deleted_module <- delete_masmodule(sess, module = "ModuleName")
 #' deleted_module
 #' }
 #' 

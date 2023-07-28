@@ -1,6 +1,7 @@
 # sasctl 0.7.2
 
 * Fixed when registering models with variables missing label/measurement metadata
+* `delete_*` functions now return `invisible()`, to avoid polluting the terminal.
 * Improved documentation
 
 # sasctl 0.7.1
