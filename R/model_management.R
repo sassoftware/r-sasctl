@@ -32,15 +32,15 @@ publish_model <-  function(session, model, name,
                                ...) {
 
   if (!is_sasctl_class(model, "MMmodel")) {
-    model <- sasctl::get_model(session, model, ...)
+    model <- sasctl::get_model(session, model, exact = exact, ...)
   }  
   
   if (missing(name)) {
-    name = model$name 
+    name = model[["name"]] 
   }
   
   payload <- list(
-    name = model$name,
+    name = model[["name"]] ,
     notes = "Published from RSasclt", # model$description,
     modelContents = list(list(modelName = name,
                          sourceUri = model$links[model$links$rel == "self",]$uri,
