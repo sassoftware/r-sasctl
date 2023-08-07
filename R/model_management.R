@@ -43,7 +43,7 @@ publish_model <-  function(session, model, name,
     name = model[["name"]] ,
     notes = "Published from RSasclt", # model$description,
     modelContents = list(list(modelName = name,
-                         sourceUri = model$links[model$links$rel == "self",]$uri,
+                         sourceUri = model$links[model$links$rel == "self",][["uri"]],
                          publishLevel = "model")),
     destinationName = destination
   )
@@ -63,7 +63,7 @@ publish_model <-  function(session, model, name,
     
     Sys.sleep(1)
 
-    publish <- vGET(session, publish$links[publish$links$rel == "self",]$uri, 
+    publish <- vGET(session, publish$links[publish$links$rel == "self",][["uri"]], 
                     ...)
     
   } 
@@ -76,7 +76,10 @@ publish_model <-  function(session, model, name,
   }
   
   if (publish$state == "failed") {
-    stop("The model publication failed")
+    logmsg <- vGET(session, publish$links[publish$links$rel == 
+                                  "publishingLog", ][["uri"]])[["log"]]
+    
+    stop(paste("The model publication failed with log:", logmsg))
   }
 
   

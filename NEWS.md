@@ -1,3 +1,8 @@
+# sasctl 0.7.3
+
+* Fixed `publish_model` exact argument
+* Added SAS log to error message when `publish_model` fails.
+
 # sasctl 0.7.2
 
 * Fixed when registering models with variables missing label/measurement metadata
