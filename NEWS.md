@@ -1,3 +1,7 @@
+# sasctl (development version)
+
+* Added verify_ssl argument to `session` to be used in all api calls.
+
 # sasctl 0.7.3
 
 * Fixed `publish_model` exact argument
