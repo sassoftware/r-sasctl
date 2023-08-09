@@ -15,6 +15,7 @@
 #' @param authinfo A `character` string that specifies an alternative path to a `.authinfo` file that is used for authentication. By default, `~/.authinfo` is used on Linux and `%HOMEDRIVE%` or `\%HOMEPATH%\_authinfo` is used on Windows.
 #' @param verbose logical, return print API call information
 #' @param cacert ca certificate list
+#' @param verify_ssl boolean, verify SSL (Use it with caution)
 #' @param platform logical, make a get call to get platform information (release, OS, siteName)
 #' 
 #' @return `viya_connection` class object
@@ -36,11 +37,16 @@ session <- function(hostname, username = NULL, password = NULL,
                          client_id = NULL, client_secret = NULL,
                          oauth_token = NULL, authinfo = NULL,
                          auth_code = FALSE, verbose = FALSE, 
-                         cacert = NULL, platform = TRUE) {
+                         verify_ssl = TRUE, cacert = NULL,
+                         platform = TRUE) {
   
-  if (!is.null(cacert)) {
-    httr::set_config(httr::config(cainfo = cacert))
+  
+  if (!verify_ssl) {
+    warning("SSL ceritificate validation is disabled, use with caution",
+            call. = FALSE)
   }
+  
+  cfg <- httr::config(cainfo = cacert, ssl_verifypeer = verify_ssl)
   
   # hostname info
   hostname <- httr::parse_url(hostname)
@@ -153,7 +159,7 @@ session <- function(hostname, username = NULL, password = NULL,
     
     httr::content_type("application/x-www-form-urlencoded"),
     heads,
-    
+    cfg,
     body = payload,
     encode = "form",
     if (verbose) httr::verbose()
@@ -168,6 +174,7 @@ session <- function(hostname, username = NULL, password = NULL,
   
   authorization$hostname <- hostname
   authorization$username <- username
+  authorization$cfg <- cfg
   
   authorization <- structure(authorization,
                     class = "viya_connection",
@@ -435,6 +442,7 @@ vGET <- function(session,
     httr::add_headers(
       "authorization" = paste("Bearer", session$access_token)
     ),
+    session[["cfg"]],
     
     ...,
     
@@ -566,13 +574,10 @@ vPOST <- function(session,
       httr::add_headers(
         "Authorization" = paste("Bearer", session$access_token)
       ),
-      
       body = payload,
-      
       encode = encode,
-      
+      session[["cfg"]],
       ...,
-      
       if (verbose) httr::verbose()
     )
     
@@ -689,6 +694,7 @@ vPUT <- function(session,
       "Authorization" = paste("Bearer", session$access_token)),
     encode = encode,
     body = payload,
+    session[["cfg"]],
     ...,
     
     if (verbose) httr::verbose()
@@ -775,7 +781,7 @@ vDELETE <- function(session,
     httr::add_headers(
       "authorization" = paste("Bearer", session$access_token)
     ),
-    
+    session[["cfg"]],
     ...,
     
     if (verbose) httr::verbose()
@@ -863,6 +869,7 @@ vHEAD <- function(session,
       "Authorization" = paste("Bearer", session$access_token)
     ),
     encode = "json",
+    session[["cfg"]],
     ...,
     
     if (verbose) httr::verbose()
