@@ -14,6 +14,7 @@ session(
   authinfo = NULL,
   auth_code = FALSE,
   verbose = FALSE,
+  verify_ssl = TRUE,
   cacert = NULL,
   platform = TRUE
 )
@@ -36,6 +37,8 @@ session(
 \item{auth_code}{logical, if TRUE will open a browser with the user and request the authentication code to continue the authentication process. Viya 2022+ only.}
 
 \item{verbose}{logical, return print API call information}
+
+\item{verify_ssl}{boolean, verify SSL (Use it with caution)}
 
 \item{cacert}{ca certificate list}
 
