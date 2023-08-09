@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9000</span>
       </span>
     </div>
 
@@ -74,6 +74,7 @@
 <span>  authinfo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  auth_code <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verify_ssl <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cacert <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  platform <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -115,6 +116,10 @@
 
 <dt>verbose</dt>
 <dd><p>logical, return print API call information</p></dd>
+
+
+<dt>verify_ssl</dt>
+<dd><p>boolean, verify SSL (Use it with caution)</p></dd>
 
 
 <dt>cacert</dt>
