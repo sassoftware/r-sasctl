@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.4</span>
       </span>
     </div>
 
@@ -153,12 +153,12 @@ xgboost.</p>
 <span><span class="co">#&gt; predictor: 12</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Training information</span></span>
-<span><span class="co">#&gt; Training data contained 4767 data points and 2093 incomplete rows.</span></span>
+<span><span class="co">#&gt; Training data contained 4767 data points and 2065 incomplete rows.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Operations</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mode imputation for: <span style="color: #0000BB;">REASON</span>, <span style="color: #0000BB;">JOB</span> | <span style="font-style: italic;">Trained</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Dummy variables from: <span style="color: #0000BB;">REASON</span>, <span style="color: #0000BB;">JOB</span> | <span style="font-style: italic;">Trained</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mean imputation for: <span style="color: #0000BB;">LOAN</span>, <span style="color: #0000BB;">MORTDUE</span>, <span style="color: #0000BB;">VALUE</span>, <span style="color: #0000BB;">YOJ</span>, <span style="color: #0000BB;">DEROG</span>, <span style="color: #0000BB;">DELINQ</span>, ... | <span style="font-style: italic;">Trained</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mode imputation for: <span style="color: #0000BB;">REASON</span> and <span style="color: #0000BB;">JOB</span> | <span style="font-style: italic;">Trained</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Dummy variables from: <span style="color: #0000BB;">REASON</span> and <span style="color: #0000BB;">JOB</span> | <span style="font-style: italic;">Trained</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mean imputation for: <span style="color: #0000BB;">LOAN</span>, <span style="color: #0000BB;">MORTDUE</span>, <span style="color: #0000BB;">VALUE</span>, <span style="color: #0000BB;">YOJ</span>, <span style="color: #0000BB;">DEROG</span>, ... | <span style="font-style: italic;">Trained</span></span></span></code></pre></div>
 <p>Now we will combine the model and pre-processing in a workflow. It is
 recommend to use a workflow because it allows you to add all the steps
 required to transform the data to the required model format. Even if you
@@ -189,7 +189,7 @@ generates scoring code for workflow in the current version.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Model ───────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; ##### xgb.Booster</span></span>
-<span><span class="co">#&gt; raw: 52.7 Kb </span></span>
+<span><span class="co">#&gt; raw: 50.5 Kb </span></span>
 <span><span class="co">#&gt; call:</span></span>
 <span><span class="co">#&gt;   xgboost::xgb.train(params = list(eta = 0.3, max_depth = 6, gamma = 0, </span></span>
 <span><span class="co">#&gt;     colsample_bytree = 1, colsample_bynode = 1, min_child_weight = 1, </span></span>
@@ -206,11 +206,11 @@ generates scoring code for workflow in the current version.</p>
 <span><span class="co">#&gt; nfeatures : 16 </span></span>
 <span><span class="co">#&gt; evaluation_log:</span></span>
 <span><span class="co">#&gt;     iter training_logloss</span></span>
-<span><span class="co">#&gt;        1        0.5191480</span></span>
-<span><span class="co">#&gt;        2        0.4225733</span></span>
+<span><span class="co">#&gt;        1        0.5199864</span></span>
+<span><span class="co">#&gt;        2        0.4236839</span></span>
 <span><span class="co">#&gt; ---                      </span></span>
-<span><span class="co">#&gt;       14        0.1760202</span></span>
-<span><span class="co">#&gt;       15        0.1681219</span></span></code></pre></div>
+<span><span class="co">#&gt;       14        0.1808745</span></span>
+<span><span class="co">#&gt;       15        0.1772515</span></span></code></pre></div>
 <p>Now we will start creating all the files required to successfully
 upload the model to SAS Model Manager.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -232,12 +232,12 @@ to execute its routines such as comparing models.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
 <span><span class="co">#&gt;   .pred_0 .pred_1</span></span>
 <span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0.102   0.898</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.131   0.869</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.154   0.846</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.231   0.769</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.786   0.214</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.372   0.628</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  0.234    0.766</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  0.086<span style="text-decoration: underline;">1</span>   0.914</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  0.169    0.831</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  0.405    0.595</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  0.675    0.325</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  0.240    0.760</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span><span class="va">scoreddf</span><span class="op">[</span><span class="va">hmeq_split</span><span class="op">$</span><span class="va">in_id</span>,<span class="op">]</span><span class="op">[</span><span class="st">"partition"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -249,12 +249,12 @@ to execute its routines such as comparing models.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
 <span><span class="co">#&gt;   P_BAD0 P_BAD1 partition   BAD</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  0.102  0.898         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  0.131  0.869         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  0.154  0.846         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  0.231  0.769         2     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  0.786  0.214         1     0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  0.372  0.628         2     1</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.234   0.766         2     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 0.086<span style="text-decoration: underline;">1</span>  0.914         1     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 0.169   0.831         2     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 0.405   0.595         1     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 0.675   0.325         2     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 0.240   0.760         1     1</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">diags</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/diagnosticsJson.html">diagnosticsJson</a></span><span class="op">(</span>traindf <span class="op">=</span> <span class="va">scoreddf</span><span class="op">[</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">1</span>,<span class="op">]</span>,</span>
 <span>                         testdf <span class="op">=</span> <span class="va">scoreddf</span><span class="op">[</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">2</span>,<span class="op">]</span>,</span>
@@ -426,20 +426,20 @@ course).</li>
 <span></span>
 <span><span class="va">scoreRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">scoreRes</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">scoreRes</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   EM_CLASSIFICATION EM_EVENTPROBABILITY EM_PROBABILITY I_BAD BAD    P_BAD0</span></span>
-<span><span class="co">#&gt; 1                 1           0.8977151      0.8977151     1   1 0.1022849</span></span>
-<span><span class="co">#&gt; 2                 1           0.8689297      0.8689297     1   1 0.1310703</span></span>
-<span><span class="co">#&gt; 3                 1           0.8458321      0.8458321     1   1 0.1541679</span></span>
-<span><span class="co">#&gt; 4                 1           0.7685993      0.7685993     1   1 0.2314007</span></span>
-<span><span class="co">#&gt; 5                 0           0.2141299      0.7858701     0   0 0.7858701</span></span>
-<span><span class="co">#&gt; 6                 1           0.6281761      0.6281761     1   1 0.3718239</span></span>
+<span><span class="co">#&gt;   EM_CLASSIFICATION EM_EVENTPROBABILITY EM_PROBABILITY I_BAD BAD     P_BAD0</span></span>
+<span><span class="co">#&gt; 1                 1           0.7662370      0.7662370     1   1 0.23376301</span></span>
+<span><span class="co">#&gt; 2                 1           0.9139008      0.9139008     1   1 0.08609921</span></span>
+<span><span class="co">#&gt; 3                 1           0.8305950      0.8305950     1   1 0.16940501</span></span>
+<span><span class="co">#&gt; 4                 1           0.5946817      0.5946817     1   1 0.40531835</span></span>
+<span><span class="co">#&gt; 5                 0           0.3253277      0.6746723     0   0 0.67467231</span></span>
+<span><span class="co">#&gt; 6                 1           0.7604938      0.7604938     1   1 0.23950616</span></span>
 <span><span class="co">#&gt;      P_BAD1</span></span>
-<span><span class="co">#&gt; 1 0.8977151</span></span>
-<span><span class="co">#&gt; 2 0.8689297</span></span>
-<span><span class="co">#&gt; 3 0.8458321</span></span>
-<span><span class="co">#&gt; 4 0.7685993</span></span>
-<span><span class="co">#&gt; 5 0.2141299</span></span>
-<span><span class="co">#&gt; 6 0.6281761</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 0.7662370</span></span>
+<span><span class="co">#&gt; 2 0.9139008</span></span>
+<span><span class="co">#&gt; 3 0.8305950</span></span>
+<span><span class="co">#&gt; 4 0.5946817</span></span>
+<span><span class="co">#&gt; 5 0.3253277</span></span>
+<span><span class="co">#&gt; 6 0.7604938</span></span></code></pre></div>
 <p>Now we create some additional files which are required to configure
 SAS Model Manager when uploading the files. For the variables
 specifically, should match the inputs from the model and outputs. We can
@@ -509,7 +509,7 @@ outputs and pass it.</p>
 <span><span class="co">#&gt; eventProbVar           P_BAD1</span></span>
 <span><span class="co">#&gt; modeler            sasctl man</span></span>
 <span><span class="co">#&gt; tool                        R</span></span>
-<span><span class="co">#&gt; toolVersion             4.3.1</span></span>
+<span><span class="co">#&gt; toolVersion             4.3.2</span></span>
 <span></span>
 <span><span class="va">files_to_zip</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"*.json|*.R|*.rda"</span>, full.names <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
