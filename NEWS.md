@@ -1,4 +1,4 @@
-# sasctl (development version)
+# sasctl 0.7.4
 
 * Added `verify_ssl` argument to `session` to be used in all api calls.
 * Added `openBrowser` argument to `session` to open the browser automatically when `auth_code = TRUE`.
