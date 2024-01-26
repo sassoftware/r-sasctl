@@ -16,6 +16,7 @@ session(
   verbose = FALSE,
   verify_ssl = TRUE,
   cacert = NULL,
+  openBrowser = TRUE,
   platform = TRUE
 )
 }
@@ -41,6 +42,8 @@ session(
 \item{verify_ssl}{boolean, verify SSL (Use it with caution)}
 
 \item{cacert}{ca certificate list}
+
+\item{openBrowser}{boolean, if \code{TRUE} the browser be opened automatically when \code{auth_code = TRUE}}
 
 \item{platform}{logical, make a get call to get platform information (release, OS, siteName)}
 }

@@ -16,6 +16,7 @@
 #' @param verbose logical, return print API call information
 #' @param cacert ca certificate list
 #' @param verify_ssl boolean, verify SSL (Use it with caution)
+#' @param openBrowser boolean, if `TRUE` the browser be opened automatically when `auth_code = TRUE`
 #' @param platform logical, make a get call to get platform information (release, OS, siteName)
 #' 
 #' @return `viya_connection` class object
@@ -38,7 +39,7 @@ session <- function(hostname, username = NULL, password = NULL,
                          oauth_token = NULL, authinfo = NULL,
                          auth_code = FALSE, verbose = FALSE, 
                          verify_ssl = TRUE, cacert = NULL,
-                         platform = TRUE) {
+                         openBrowser = TRUE, platform = TRUE) {
   
   
   if (!verify_ssl) {
@@ -108,18 +109,18 @@ session <- function(hostname, username = NULL, password = NULL,
   if (auth_code) {
 
     
-      url <- paste0(hostname$hostname, "/SASLogon/oauth/authorize?client_id=", client_id,"&response_type=code")
+      url <- paste0(hostname$scheme, "://", hostname$hostname, "/SASLogon/oauth/authorize?client_id=", client_id,"&response_type=code")
     
       message(paste0("If a browser don't open automatically, use the following url: ", url))
-    
-      code <- readline("Authorization code from browser:")
-  
-      if (interactive()) {
+
+      if (interactive() && openBrowser()) {
         utils::browseURL(url)
       } else {
         warning("Authentication code method shouldn't be used outside an interactive session.")
       }
-      
+
+      code <- readline("Authorization code from browser:")
+
   grant_type <- "authorization_code"
   
   } else {
