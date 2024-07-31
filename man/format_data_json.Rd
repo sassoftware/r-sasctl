@@ -4,17 +4,19 @@
 \alias{format_data_json}
 \title{Format Data.Frame rows to json format}
 \usage{
-format_data_json(df, scr = FALSE, metadata_columns = NULL)
+format_data_json(df, scr = FALSE, scr_batch = FALSE, metadata_columns = NULL)
 }
 \arguments{
 \item{df}{data frame to be transformed in JSON format rows}
 
 \item{scr}{boolean, if \code{TRUE} will write the new json format with metadata}
 
+\item{scr_batch}{boolean, if \code{TRUE} will write the batch format JSON for SCR, metadata is ignored}
+
 \item{metadata_columns}{columns names to be used as metadata. If scr is set to \code{FALSE}, metatada_columns is ignored}
 }
 \value{
-a vector of JSON strings
+a vector of JSON strings or a single json string when \code{scr_batch} is set to \code{TRUE}
 }
 \description{
 Viya MAS requires a very specific json format which is the goal of this function
@@ -24,5 +26,11 @@ to create
 
 json_output <- format_data_json(mtcars)
 json_output
+
+json_output <- format_data_json(mtcars, scr = TRUE)
+json_output
+
+json_output <- format_data_json(mtcars, scr_batch = TRUE)
+jsonlite::prettify(json_output)
 
 }
