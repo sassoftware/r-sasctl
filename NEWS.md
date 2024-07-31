@@ -1,3 +1,7 @@
+# sasctl (development version)
+
+* Added `scr_batch` argument to `format_data_json`, allowing to have all data in a single json payload for Viya 2024.7 SCR batch scoring feature.
+
 # sasctl 0.7.4
 
 * Added `verify_ssl` argument to `session` to be used in all api calls.

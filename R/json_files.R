@@ -279,20 +279,29 @@ write_fileMetadata_json <- function(scoreCodeName = "scoreCode.R",
 #' 
 #' @param df data frame to be transformed in JSON format rows
 #' @param scr boolean, if `TRUE` will write the new json format with metadata 
+#' @param scr_batch boolean, if `TRUE` will write the batch format JSON for SCR, metadata is ignored
 #' @param metadata_columns columns names to be used as metadata. If scr is set to `FALSE`, metatada_columns is ignored 
-#' @return a vector of JSON strings
+#' @return a vector of JSON strings or a single json string when `scr_batch` is set to `TRUE`
 #' @examples 
 #' 
 #' json_output <- format_data_json(mtcars)
 #' json_output
 #' 
+#' json_output <- format_data_json(mtcars, scr = TRUE)
+#' json_output
+#' 
+#' json_output <- format_data_json(mtcars, scr_batch = TRUE)
+#' jsonlite::prettify(json_output)
+#' 
 #' @export
 #' 
 
 
-format_data_json <- function(df, scr = FALSE, metadata_columns = NULL){
+format_data_json <- function(df, scr = FALSE, scr_batch = FALSE, metadata_columns = NULL){
   
-  
+  if (scr_batch & scr) {
+    stop("Only one of'scr' and 'scr_batch' can be set to TRUE")
+  }
   ## check is any is factor, otherwise print in write_json_row 
   ## will write factor as numeric string
 
@@ -312,6 +321,8 @@ format_data_json <- function(df, scr = FALSE, metadata_columns = NULL){
     outs <- by(df, list(seq_len(nrow(df))), write_json_row_scr, 
                metadata_columns = metadata_columns)  
     
+  } else if (scr_batch) {
+    outs <- write_json_batch_scr(df)
   } else {
     
     outs <- by(df, list(seq_len(nrow(df))), write_json_row)
@@ -338,7 +349,6 @@ format_data_json <- function(df, scr = FALSE, metadata_columns = NULL){
 #' 
 #' @noRd
 
-
 write_json_row <- function(row) {
   
   ### goal is to create a son in the following format
@@ -353,10 +363,10 @@ write_json_row <- function(row) {
   var_vect <- paste0('{"name": "', colnames(row), '"', 
                      ifelse(sapply(row, is.na), paste0(', "value": null'),
                             ifelse(sapply(row, is.character), paste0(', "value": ', '"', row, '"'),   
-                                   ## the "error" string output may give a silent error
+                                   ## the "\"CONVERSION_ERROR\"" string output may give a silent error
                                    ## it is here for placeholder because if I add stop() it
-                                   ## will halt the function, even though it is never returning "error"
-                                   ifelse(sapply(row, is.numeric), paste0(', "value": ', row), "error"))), ' }')
+                                   ## will halt the function, even though it is never returning "\"CONVERSION_ERROR\""
+                                   ifelse(sapply(row, is.numeric), paste0(', "value": ', row), "\"CONVERSION_ERROR\""))), ' }')
   
   out <- paste0('{"inputs": [ ', paste0(var_vect, collapse = ", "), '] }')
   
@@ -378,7 +388,7 @@ write_json_row <- function(row) {
 #' @examples 
 #'
 #' json_output <- write_json(mtcars[1,])
-#' json_output
+#' jsonlite::prettify(json_output)
 #' 
 #' @noRd
 #' 
@@ -415,10 +425,10 @@ write_json_row_scr <- function(row, metadata_columns = NULL) {
     meta_vect <- paste0('"', colnames(row_meta), '": ', 
                         ifelse(sapply(row_meta, is.na), paste0('null'),
                                ifelse(sapply(row_meta, is.character), paste0('"', row_meta, '"'),   
-                                      ## the "error" string output may give a silent error
+                                      ## the "\"CONVERSION_ERROR\"" string output may give a silent error
                                       ## it is here for placeholder because if I add stop() it
-                                      ## will halt the function, even though it is never returning "error"
-                                      ifelse(sapply(row_meta, is.numeric), paste0(row_meta), "error"))), '')
+                                      ## will halt the function, even though it is never returning "\"CONVERSION_ERROR\""
+                                      ifelse(sapply(row_meta, is.numeric), paste0(row_meta), "\"CONVERSION_ERROR\""))), '')
   } else {
     meta_vect <- list()
   }
@@ -426,15 +436,89 @@ write_json_row_scr <- function(row, metadata_columns = NULL) {
   var_vect <- paste0('"', colnames(row), '": ', 
                      ifelse(sapply(row, is.na), paste0('null'),
                             ifelse(sapply(row, is.character), paste0('"', row, '"'),   
-                                   ## the "error" string output may give a silent error
+                                   ## the "\"CONVERSION_ERROR\"" string output may give a silent error
                                    ## it is here for placeholder because if I add stop() it
-                                   ## will halt the function, even though it is never returning "error"
-                                   ifelse(sapply(row, is.numeric), paste0(row), "error"))), ' ')
+                                   ## will halt the function, even though it is never returning "\"CONVERSION_ERROR\""
+                                   ifelse(sapply(row, is.numeric), paste0(row), "\"CONVERSION_ERROR\""))), ' ')
   
   out <- paste0('{"metadata": {', paste0(meta_vect, collapse = ", "), "}, " ,
                 
                 '"data": {', paste0(var_vect, collapse = ", "), '} }')
+
+  return(out)
+
+}
+
+#' Helper to create SCR batch json
+#' 
+#' Helper to be used on `write_json_batch_scr`
+#' 
+#' @param row single row data.frame 
+#' @param row_number row number
+#' @return pseudo JSON string
+#' 
+#' @noRd
+
+create_batch_vector <- function(row, row_number) {
+  var_vect <- paste0("\"", colnames(row), "\": ", ifelse(sapply(row, 
+                                                                is.na), paste0("null"), ifelse(sapply(row, is.character), 
+                                                                                               paste0("\"", row, "\""), ifelse(sapply(row, is.numeric),
+                                                                                                                               paste0(row), "\"CONVERSION_ERROR\""))), " ")
+  return(paste0("[",row_number,", {", paste0(var_vect, collapse = ", "), " } ]"))
   
+}
+
+#' Format row to SCR Batch json
+#' 
+#' will create a single Json for a data.frame in a newer supported format (Viya 2024.7 or above)
+#' This is a vectorized version, without data manipulation
+#' Convert all factors columns to string otherwise `ifelse()` will coerce to integer
+#' 
+#' @param df data.frame
+#' @return a JSON string
+#' @examples 
+#'
+#' json_output <- write_json_batch_scr(mtcars)
+#' jsonlite::prettify(json_output)
+#' 
+#' @noRd
+#' 
+
+write_json_batch_scr <- function(df) {
+  
+  ### goal is to create a json in the following format
+  ### SCR now has a special batch format
+  ### This is the new format since viya 2024.7
+  # {
+  #   "data": [
+  #     [
+  #       1,
+  #       {
+  #         "varnumeric1": 5.1,
+  #         "varnumeric2": 0.2,
+  #         "varcharacter": "setosa"
+  #       }
+  #     ],
+  #     [
+  #       2,
+  #       {
+  #         "varnumeric1": 5.1,
+  #         "varnumeric2": 0.2,
+  #         "varcharacter": "setosa"
+  #       }
+  #     ]
+  #   ]
+  # }
+  
+  if (any(lapply(df, class) == "factor")) {
+    stop("data.frame with factor class is not supported.") 
+  }
+
+  data <- split(df, seq(nrow(df)))
+  
+  vect <- mapply(FUN = create_batch_vector, row = data, row_number = 1:length(data))
+  
+  out <- paste0("{ \"data\": [", paste0(vect, collapse = ", "),"] }")
   return(out)
   
 }

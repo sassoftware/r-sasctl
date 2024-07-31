@@ -323,6 +323,29 @@ payload for a MAS call, which doesn’t have a standard format.
       "<input3_name>": "string_value"
     }
   }
+  
+### Payload for SCR batch mode on Viya 2024.7 or higher
+
+  {
+    "data": [
+      [
+        1,
+        {
+          "varnumeric1": 5.1,
+          "varnumeric2": 0.2,
+          "varcharacter": "string_value"
+        }
+      ],
+      [
+        2,
+        {
+          "varnumeric1": 5.1,
+          "varnumeric2": 0.2,
+          "varcharacter": "string_value"
+        }
+      ]
+    ]
+  }
 ```
 
 There is a helper function that transform all the rows in a vector of
@@ -332,7 +355,9 @@ for batch scoring.
 ``` r
 hmeq <- read.csv("https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv")
 
-hmeq_json <- format_data_json(head(hmeq)) ## use argument scr = TRUE for newer format
+## Use argument scr = TRUE for SCR format
+## Use scr_batch = TRUE for single JSON for SCR batch
+hmeq_json <- format_data_json(head(hmeq)) 
 
 jsonlite::prettify(hmeq_json[1])
 ```
