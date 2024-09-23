@@ -1,9 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   xgb-tidymodel: xgb-tidymodel.html
-last_built: 2024-07-31T20:55Z
+last_built: 2024-09-23T20:51Z
 urls:
   reference: https://sassoftware.github.io/r-sasctl/reference
   article: https://sassoftware.github.io/r-sasctl/articles
