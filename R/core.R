@@ -113,7 +113,7 @@ session <- function(hostname, username = NULL, password = NULL,
     
       message(paste0("If a browser don't open automatically, use the following url: ", url))
 
-      if (interactive() && openBrowser()) {
+      if (interactive() && openBrowser) {
         utils::browseURL(url)
       } else {
         warning("Authentication code method shouldn't be used outside an interactive session.")

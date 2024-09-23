@@ -194,12 +194,22 @@ register_model <- function(session, file, name, project, type,
         sasctl::convert_to_pmml42(file_in = file,
                                   file_out = new_file_path)
         
-        sfile <- httr::upload_file(new_file_path)
+        file = new_file_path
         
       }
-    } else {
-      sfile <- httr::upload_file(file)
     }
+    
+    ## not sure which version this change was introduced
+    if (session$platform$major >= 2024 & session$platform$minor >= 3 ) {
+      
+      sfile <- list(`_charset_` = "UTF-8", `file-data` = "", files = httr::upload_file(new_file_path))
+      
+    } else {
+      
+      sfile <- httr::upload_file(file)
+      
+    }
+  
   }
   
   ### ZIP file treatment 
@@ -254,13 +264,14 @@ register_model <- function(session, file, name, project, type,
       if (uuid::UUIDvalidate(project)) {
         stop("Project with current uuid doesn't exist. uuid string is not a valid name for a new project")  
       } 
-      
+
+      ## TODO add check of input_cars and output_vars
       
       project <- create_project(session, 
                                 name = project, 
                                 description = project_description, 
                                 model_function = model_function,
-                                additional_parameters = additional_project_parameters, 
+                                additional_parameters = additional_project_parameters,
                                 ...)
       
       message(paste0("The project '", project$name, "' has been successfully created"))

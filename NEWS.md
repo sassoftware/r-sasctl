@@ -1,6 +1,8 @@
 # sasctl (development version)
 
 * Added `scr_batch` argument to `format_data_json`, allowing to have all data in a single json payload for Viya 2024.7 SCR batch scoring feature.
+* Fixed some issues related to the PMML payload when uploading models to SAS Model Manager
+* Fixed `openBrowser` using a function instead of the argument.
 
 # sasctl 0.7.4
 
