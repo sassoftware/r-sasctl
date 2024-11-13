@@ -45,7 +45,7 @@ codegen(model, path, rds, libs, inputs, ...)
 a code string
 }
 \description{
-\strong{EXPERIMENTAL STATE - MAY NO WORK AS INTENDED}
+\strong{EXPERIMENTAL STATE - MAY NOT WORK AS INTENDED}
 
 Score code will only be generated successfully for supported models.
 Other models and frameworks will be added in due time.

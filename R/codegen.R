@@ -3,7 +3,7 @@
 #' 
 #' @description
 #' 
-#' \strong{EXPERIMENTAL STATE - MAY NO WORK AS INTENDED}
+#' \strong{EXPERIMENTAL STATE - MAY NOT WORK AS INTENDED}
 #' 
 #' Score code will only be generated successfully for supported models. 
 #' Other models and frameworks will be added in due time. 
@@ -154,15 +154,18 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff =
 
 codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds", inputs = NULL,
                              libs = c(), referenceLevel = NULL) {
-  
-    predictors <- colnames(tm_workflow[["pre"]][["mold"]][["predictors"]])
-  
+    
   if (!is.null(inputs)) {
     
     if (!is.vector(names(hmeqTrain))) stop("inputs must be a vector names")
     
     predictors <- inputs
     
+  } else {
+    
+    predictorsTable <- tm_workflow[['pre']][['actions']][['recipe']][['recipe']][['var_info']] 
+    predictors <- predictorsTable[predictorsTable$role == "predictor",][["variable"]]
+  
   }
   
   target <- colnames(tm_workflow[["pre"]][["mold"]][["outcomes"]])
