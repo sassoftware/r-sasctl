@@ -157,7 +157,7 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
     
   if (!is.null(inputs)) {
     
-    if (!is.vector(names(hmeqTrain))) stop("inputs must be a vector names")
+    if (!is.vector(inputs)) stop("inputs must be a vector names")
     
     predictors <- inputs
     
