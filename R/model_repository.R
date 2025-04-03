@@ -202,7 +202,9 @@ register_model <- function(session, file, name, project, type,
     ## not sure which version this change was introduced
     if (session$platform$major >= 2024 & session$platform$minor >= 3 ) {
       
-      sfile <- list(`_charset_` = "UTF-8", `file-data` = "", files = httr::upload_file(new_file_path))
+      sfile <- list(`_charset_` = "UTF-8", 
+                    `file-data` = "", 
+                    files = httr::upload_file(new_file_path)) # name changes from file to files 
       
     } else {
       
@@ -223,15 +225,23 @@ register_model <- function(session, file, name, project, type,
       stop("The file is not .zip")
     }
     
-    if (session$platform$release == "V03" | is.null(session$platform$minor)) {
-      sfile <- list(file = httr::upload_file(file))
+    
+    if (session$platform$release == "V04" ) {
+      
+      sfile <- list(`_charset_` = "UTF-8", 
+                    `file-data` = "", 
+                    files = httr::upload_file(file)) ## name changes from file to files
+      
     }
     
+    else if (session$platform$release == "V03") {
+      sfile <- list(file = httr::upload_file(file))
+    }
+
     else if (session$platform$major >= 2023 & 
              session$platform$minor >= 3 ) {
-
+      
       sfile <- httr::upload_file(file)} 
-    
     else {
       ### releases older than 2023.3 (and 3.5) requires this format
       sfile <- list(file = httr::upload_file(file))

@@ -1,3 +1,7 @@
+# sasctl (development version)
+
+* Fixed `register_model` wrongly identifying which version of Viya it is interacting with, which lead to use wrong upload format.
+
 # sasctl 0.7.5
 
 * Added `scr_batch` argument to `format_data_json`, allowing to have all data in a single json payload for Viya 2024.7 SCR batch scoring feature.
