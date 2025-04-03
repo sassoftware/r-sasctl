@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.5.9000</span>
       </span>
     </div>
 
@@ -423,7 +423,7 @@
 <span><span class="co">## Use scr_batch = TRUE for single JSON for SCR batch</span></span>
 <span><span class="va">hmeq_json</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/format_data_json.html">format_data_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hmeq</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/prettify.html" class="external-link">prettify</a></span><span class="op">(</span><span class="va">hmeq_json</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/prettify.html" class="external-link">prettify</a></span><span class="op">(</span><span class="va">hmeq_json</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p>Then you can make a call to a Model.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu">sasctl</span><span class="fu">::</span><span class="fu"><a href="reference/vPOST.html">vPOST</a></span><span class="op">(</span><span class="va">sess</span>, </span>

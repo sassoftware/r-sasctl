@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.5.9000</span>
       </span>
     </div>
 
@@ -216,7 +216,7 @@
 <span class="r-in"><span><span class="va">astore_path</span> <span class="op">&lt;-</span> <span class="st">"./rf_model.astore"</span></span></span>
 <span class="r-in"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">astore_path</span>, <span class="st">"wb"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">### file is downloaded as base64 encoded</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/readBin.html" class="external-link">writeBin</a></span><span class="op">(</span>object <span class="op">=</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/base64.html" class="external-link">base64_dec</a></span><span class="op">(</span><span class="va">astore_blob</span><span class="op">$</span><span class="va">blob</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/readBin.html" class="external-link">writeBin</a></span><span class="op">(</span>object <span class="op">=</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/base64.html" class="external-link">base64_dec</a></span><span class="op">(</span><span class="va">astore_blob</span><span class="op">$</span><span class="va">blob</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>, </span></span>
 <span class="r-in"><span>         con <span class="op">=</span> <span class="va">con</span>, useBytes <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-in"><span>         </span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span></span>
