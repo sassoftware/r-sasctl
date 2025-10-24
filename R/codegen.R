@@ -12,7 +12,7 @@
 #' Disclaimer: The score code that is generated is designed to be a working template for an R model, 
 #' but is not guaranteed to work out of the box for scoring, publishing, or validating the model.
 #' 
-#' @param model model object (lm, glm ...)
+#' @param model model object (lm, glm, tidymodels workflow, ...)
 #' @param path file name and path to write
 #' @param libs vector of libraries to be added to the code. Some may be guessed from the type.
 #' @param rds .rds file name to be called
@@ -41,10 +41,10 @@ codegen <- function(model, path, rds, libs, inputs, ...) {
 #' @describeIn codegen Code generator for `lm` class models
 #' @export 
 
-codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c()) {
+codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs = NULL, ...) {
   
-  inputs <- attr(terms(model), "term.labels")
-  target <- terms(model)[[2]]
+  inputs <- attr(stats::terms(model), "term.labels")
+  target <- stats::terms(model)[[2]]
   
   libs <- unique(c("stats", libs))
   
@@ -83,13 +83,14 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(
   invisible(scorecode)
 }
 
+#' @param cutoff classification probability cutoff
 #' @describeIn codegen generator for `glm` class models, specifically logistic regression
 #' @export 
 
-codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff = 0.5, libs = c()) {
+codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs =NULL, cutoff = 0.5, ...) {
   
-  inputs <- attr(terms(model), "term.labels")
-  target <- terms(model)[[2]]
+  inputs <- attr(stats::terms(model), "term.labels")
+  target <- stats::terms(model)[[2]]
   
   libs <- unique(c("stats", libs))
   
@@ -148,12 +149,12 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", cutoff =
   invisible(scorecode)
 }
 
-
-#' @describeIn codegen generator for [tidymodels] `workflow` class models
+#' @param referenceLevel reference level for a factor target value
+#' @describeIn codegen generator for \link[tidymodels]{tidymodels} `workflow` class models
 #' @export 
 
-codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds", inputs = NULL,
-                             libs = c(), referenceLevel = NULL) {
+codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
+                             libs = c(), inputs = NULL, referenceLevel = NULL, ...) {
     
   if (!is.null(inputs)) {
     
@@ -163,14 +164,14 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
     
   } else {
     
-    predictorsTable <- tm_workflow[['pre']][['actions']][['recipe']][['recipe']][['var_info']] 
+    predictorsTable <- model[['pre']][['actions']][['recipe']][['recipe']][['var_info']] 
     predictors <- predictorsTable[predictorsTable$role == "predictor",][["variable"]]
   
   }
   
-  target <- colnames(tm_workflow[["pre"]][["mold"]][["outcomes"]])
-  mode <- tm_workflow[["fit"]][["fit"]][["spec"]][["mode"]]
-  mlibs <- tm_workflow[["fit"]][["fit"]][["spec"]][["method"]][["libs"]]
+  target <- colnames(model[["pre"]][["mold"]][["outcomes"]])
+  mode <- model[["fit"]][["fit"]][["spec"]][["mode"]]
+  mlibs <- model[["fit"]][["fit"]][["spec"]][["method"]][["libs"]]
   
   libs <- unique(c("tidymodels", mlibs, libs))
   
@@ -179,7 +180,7 @@ codegen.workflow <- function(tm_workflow, path = "scoreCode.R", rds = "model.rds
   if (mode == "classification") {
   
     ## TODO alternate code for reponse_type = "response"
-    target_labels <- levels(tm_workflow[["pre"]][["mold"]][["outcomes"]][[1]])
+    target_labels <- levels(model[["pre"]][["mold"]][["outcomes"]][[1]])
     response_type <- "prob"
     p_labels <- glue::glue_collapse(glue::glue('P_<<target>><<target_labels>> = predictions[[".pred_<<target_labels>>"]]', .open = "<<", .close = ">>"), sep = ",\n                    ")
     target_labels_string <- paste0('target_labels <- c(',paste0("'",target_labels, "'", collapse = ", "), ')')

@@ -9,27 +9,37 @@
 \usage{
 codegen(model, path, rds, libs, inputs, ...)
 
-\method{codegen}{lm}(model, path = "scoreCode.R", rds = "model.rds", libs = c())
+\method{codegen}{lm}(
+  model,
+  path = "scoreCode.R",
+  rds = "model.rds",
+  libs = c(),
+  inputs = NULL,
+  ...
+)
 
 \method{codegen}{glm}(
   model,
   path = "scoreCode.R",
   rds = "model.rds",
+  libs = c(),
+  inputs = NULL,
   cutoff = 0.5,
-  libs = c()
+  ...
 )
 
 \method{codegen}{workflow}(
-  tm_workflow,
+  model,
   path = "scoreCode.R",
   rds = "model.rds",
-  inputs = NULL,
   libs = c(),
-  referenceLevel = NULL
+  inputs = NULL,
+  referenceLevel = NULL,
+  ...
 )
 }
 \arguments{
-\item{model}{model object (lm, glm ...)}
+\item{model}{model object (lm, glm, tidymodels workflow, ...)}
 
 \item{path}{file name and path to write}
 
@@ -40,6 +50,10 @@ codegen(model, path, rds, libs, inputs, ...)
 \item{inputs}{define inputs as the passed vector instead of guessed}
 
 \item{...}{to be passes to individual code generators}
+
+\item{cutoff}{classification probability cutoff}
+
+\item{referenceLevel}{reference level for a factor target value}
 }
 \value{
 a code string
@@ -60,7 +74,7 @@ but is not guaranteed to work out of the box for scoring, publishing, or validat
 
 \item \code{codegen(glm)}: generator for \code{glm} class models, specifically logistic regression
 
-\item \code{codegen(workflow)}: generator for \link{tidymodels} \code{workflow} class models
+\item \code{codegen(workflow)}: generator for \link[tidymodels]{tidymodels} \code{workflow} class models
 
 }}
 \examples{
