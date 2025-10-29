@@ -1,11 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/version)](https://sassoftware.r-universe.dev/sasctl)
-[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/checks)](https://sassoftware.r-universe.dev/sasctl)
-
 # R sasctl
 
 <!-- badges: start -->
+[![r-universe status](https://sassoftware.r-universe.dev/badges/:name)](https://sassoftware.r-universe.dev)
+[![r-universe status](https://sassoftware.r-universe.dev/badges/:packages)](https://sassoftware.r-universe.dev)
+[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/version)](https://sassoftware.r-universe.dev)
+[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/checks)](https://sassoftware.r-universe.dev)
 <!-- badges: end -->
 
 ## Table of Contents
