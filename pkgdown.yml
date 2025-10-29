@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   xgb-tidymodel: xgb-tidymodel.html
-last_built: 2025-10-29T16:55Z
+last_built: 2025-10-29T17:02Z
 urls:
   reference: https://sassoftware.github.io/r-sasctl/reference
   article: https://sassoftware.github.io/r-sasctl/articles
