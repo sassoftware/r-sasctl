@@ -1,5 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/version)](https://pinduzera.r-universe.dev/genlogis)
+[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/checks)](https://pinduzera.r-universe.dev/genlogis)
 
 # R sasctl
 
@@ -29,6 +31,10 @@ easier.
 ### Install from R
 
 ``` r
+
+## sassoftware R-universe repository
+install.packages('sasctl', repos = c('https://sassoftware.r-universe.dev', 'https://cloud.r-project.org'))
+
 ## dev version
 remotes::install_git("https://github.com/sassoftware/r-sasctl")
 
@@ -45,7 +51,7 @@ library("sasctl")
 
 ### Install from terminal
 
-The SWAT package for R is available from SAS as a tar.gz file. You can
+The SASCTL package for R is available from SAS as a tar.gz file. You can
 download releases from
 <https://github.com/sassoftware/r-sasctl/releases>.
 
