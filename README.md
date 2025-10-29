@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/version)](https://pinduzera.r-universe.dev/genlogis)
-[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/checks)](https://pinduzera.r-universe.dev/genlogis)
+[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/version)](https://sassoftware.r-universe.dev/sasctl)
+[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/checks)](https://sassoftware.r-universe.dev/sasctl)
 
 # R sasctl
 
