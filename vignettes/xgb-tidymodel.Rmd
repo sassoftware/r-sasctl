@@ -7,12 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+
 
 R-sasctl has tools to help you create all the necessary files to upload an R model successfully to SAS Viya Model Manager and be able to take advantage of its many features. 
 
@@ -20,7 +15,8 @@ R-sasctl has tools to help you create all the necessary files to upload an R mod
 
 We will be using the well known home equity data set. We will be transforming some empty character columns to the proper `NA` format, and split the data
 
-```{r setup, warning=FALSE, message=FALSE}
+
+``` r
 library("sasctl")
 library("tidymodels")
 
@@ -43,7 +39,8 @@ We will be using the tidymodels framework, which helps greatly simplifing the mo
 
 This first model will be using a simple [XGBoost](https://github.com/dmlc/xgboost) model for classification. It requires you to have the `xgboost` package installed, but you don't have to deal if its specific features or calling the library directly.
 
-```{r specification}
+
+``` r
 ## set model specification
 xgb_spec <- boost_tree() %>%
   set_engine("xgboost") %>%
@@ -52,7 +49,8 @@ xgb_spec <- boost_tree() %>%
 
 We will also create a "recipe", which are data pre-processing steps. In this case, whenever you score the model, it will automatically impute if any data is missing and create dummies, which is a requirement for xgboost.
 
-```{r preprocessing}
+
+``` r
 ## recipe for data transformation
 rec <- recipe(BAD ~ . , data = hmeqTrain)
 
@@ -63,10 +61,26 @@ impute_rec <- rec %>%
 
 imp <- prep(impute_rec)
 imp
+#> 
+#> ── Recipe ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> 
+#> ── Inputs
+#> Number of variables by role
+#> outcome:    1
+#> predictor: 12
+#> 
+#> ── Training information
+#> Training data contained 4767 data points and 2082 incomplete rows.
+#> 
+#> ── Operations
+#> • Mode imputation for: REASON JOB | Trained
+#> • Dummy variables from: REASON JOB | Trained
+#> • Mean imputation for: LOAN, MORTDUE, VALUE, YOJ, DEROG, DELINQ, CLAGE, NINQ, CLNO, DEBTINC, REASON_HomeImp, JOB_Office, JOB_Other, JOB_ProfExe, JOB_Sales, JOB_Self | Trained
 ```
 Now  we will combine the model and pre-processing in a workflow. It is recommend to use a workflow because it allows you to add all the steps required to transform the data to the required model format. Even if you are not using and pre-processing, it you should add the model to a workflow as a good practice, and the `sasctl::codegen()` only generates scoring code for workflow in the current version. 
 
-```{r modeling}
+
+``` r
 ## creating the workflow
 glm_wf <- workflow() %>%
   add_model(xgb_spec) %>%
@@ -77,30 +91,73 @@ xgb_fitted <- glm_wf %>%
   fit(data = hmeqTrain) 
 
 xgb_fitted
+#> ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+#> Preprocessor: Recipe
+#> Model: boost_tree()
+#> 
+#> ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> 3 Recipe Steps
+#> 
+#> • step_impute_mode()
+#> • step_dummy()
+#> • step_impute_mean()
+#> 
+#> ── Model ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ##### xgb.Booster
+#> call:
+#>   xgboost::xgb.train(params = list(eta = 0.3, max_depth = 6, gamma = 0, 
+#>     colsample_bytree = 1, colsample_bynode = 1, min_child_weight = 1, 
+#>     subsample = 1, nthread = 1, objective = "binary:logistic"), 
+#>     data = x$data, nrounds = 15, evals = x$watchlist, verbose = 0)
+#> # of features: 16 
+#> # of rounds:  15 
+#> callbacks:
+#>    evaluation_log 
+#> evaluation_log:
+#>   iter training_logloss
+#>  <num>            <num>
+#>      1        0.3835292
+#>      2        0.3323457
+#>    ---              ---
+#>     14        0.1739502
+#>     15        0.1692364
 ```
 
 Now we will start creating all the files required to successfully upload the model to SAS Model Manager.
 
-```{r creating_directory}
+
+``` r
 path <- "xgbModel/"
 modelrda <- "Rxgb.rda"
 
 dir.create(path)
+#> Warning in dir.create(path): 'xgbModel' already exists
 
-saveRDS(xgb_fitted, paste0(path, modelrda), version = 2)
+saveRDS(xgb_fitted, paste0(path, modelrda))
 ```
 
 
 We will score the whole dataset, add the partitions so we can create the Diagnostics json files. In parallel you can make any other file or processes, but SAS model manager expects these specific files to be able to execute its routines such as comparing models.
 
-```{r creating_files1}
+
+``` r
 scoreddf <- predict(xgb_fitted, new_data = hmeq, type = "prob")
 
 head(scoreddf)
+#> # A tibble: 6 × 2
+#>   .pred_0 .pred_1
+#>     <dbl>   <dbl>
+#> 1  0.0745   0.925
+#> 2  0.166    0.834
+#> 3  0.0709   0.929
+#> 4  0.428    0.572
+#> 5  0.755    0.245
+#> 6  0.300    0.700
 ```
 
 
-```{r creating_files2}
+
+``` r
 scoreddf$partition <- NA
 scoreddf[hmeq_split$in_id,]["partition"] <- 1
 scoreddf[-hmeq_split$in_id,]["partition"] <- 2
@@ -108,19 +165,50 @@ scoreddf[-hmeq_split$in_id,]["partition"] <- 2
 scoreddf$BAD <- as.numeric(hmeq$BAD) - 1
 colnames(scoreddf) <- c("P_BAD0", "P_BAD1", "partition", "BAD")
 head(scoreddf)
+#> # A tibble: 6 × 4
+#>   P_BAD0 P_BAD1 partition   BAD
+#>    <dbl>  <dbl>     <dbl> <dbl>
+#> 1 0.0745  0.925         1     1
+#> 2 0.166   0.834         1     1
+#> 3 0.0709  0.929         1     1
+#> 4 0.428   0.572         1     1
+#> 5 0.755   0.245         1     0
+#> 6 0.300   0.700         1     1
 ```
 
 
-```{r creating_files3}
+
+``` r
 diags <- diagnosticsJson(traindf = scoreddf[scoreddf$partition == 1,],
                          testdf = scoreddf[scoreddf$partition == 2,],
                          targetEventValue = 1,
                          targetName = "BAD",
                          targetPredicted = "P_BAD1",
                          path = path)
+#> [1] "File written to xgbModel/dmcas_lift.json"
+#> [1] "File written to xgbModel/dmcas_roc.json"
+#> [1] "File written to xgbModel/dmcas_fitstat.json"
 
 ## This is not very legible, but gives an idea of all the data created
 do.call(rbind, lapply(diags$fitStat$parameterMap, as.data.frame))
+#>                                 parameter type                      label length order               values preformatted
+#> _RASE_                             _RASE_  num Root Average Squared Error      8     7               _RASE_        FALSE
+#> _NObs_                             _NObs_  num         Sum of Frequencies      8     4               _NObs_        FALSE
+#> _GINI_                             _GINI_  num           Gini Coefficient      8    12               _GINI_        FALSE
+#> _GAMMA_                           _GAMMA_  num                      Gamma      8    13              _GAMMA_        FALSE
+#> _formattedPartition_ _formattedPartition_ char        Formatted Partition     12     3 _formattedPartition_        FALSE
+#> _DataRole_                     _DataRole_ char                  Data Role     10     1           _DataRole_        FALSE
+#> _MCE_                               _MCE_  num     Misclassification Rate      8     8                _MCE_        FALSE
+#> _ASE_                               _ASE_  num      Average Squared Error      8     5                _ASE_        FALSE
+#> _MCLL_                             _MCLL_  num       Multi-Class Log Loss      8     9               _MCLL_        FALSE
+#> _KS_                                 _KS_  num                KS (Youden)      8    10                 _KS_        FALSE
+#> _KSPostCutoff_             _KSPostCutoff_  num             ROC Separation      8    16       _KSPostCutoff_        FALSE
+#> _DIV_                               _DIV_  num            Divisor for ASE      8     6                _DIV_        FALSE
+#> _TAU_                               _TAU_  num                        Tau      8    14                _TAU_        FALSE
+#> _KSCut_                           _KSCut_  num                  KS Cutoff      8    15              _KSCut_        FALSE
+#> _C_                                   _C_  num             Area Under ROC      8    11                  _C_        FALSE
+#> _PartInd_                       _PartInd_  num        Partition Indicator      8     2            _PartInd_        FALSE
+#> _TargetName_                 _TargetName_ char                Target Name     10     1         _TargetName_        FALSE
 ```
 Scoring codes are required to run R and Python models in SAS Model Manager, `sasctl::codegen()` helps you create a code that follows the [expected format](https://go.documentation.sas.com/doc/en/mdlmgrcdc/v_025/mdlmgrug/n04i7s6bdu7ilgn1e350am3byuxx.htm#p0m6jg3tgih1agn1cgdcexpwgp0g) for tidymodels workflows. Other models and frameworks may be added in the future.
 
@@ -128,27 +216,70 @@ You will notice that the scoring code has many `EM_*` and `P_<<target>><<level>>
 
 
 ## Generating the Score code
-```{r vars, echo=FALSE, include=FALSE}
-used_vars <- paste0("`",colnames(xgb_fitted[["pre"]][["mold"]][["predictors"]]), "`", collapse = ", ")
-expected_vars <- paste0("`",colnames(hmeq)[-1], "`", collapse = ", ")
-```
+
 We can use the `inputs` to generate alternate input variables. In this case it is useful because we used the pre-process step `recipes::step_dummy()` which created additional dummy variables which arend expected when scoring the model nor we want to pollute our Model Manager with dummy variables:
 
-- Model Variables: `r used_vars`
-- Input Variables: `r expected_vars` (removing the `BAD` variable, of course).
+- Model Variables: `LOAN`, `MORTDUE`, `VALUE`, `YOJ`, `DEROG`, `DELINQ`, `CLAGE`, `NINQ`, `CLNO`, `DEBTINC`, `REASON_HomeImp`, `JOB_Office`, `JOB_Other`, `JOB_ProfExe`, `JOB_Sales`, `JOB_Self`
+- Input Variables: `LOAN`, `MORTDUE`, `VALUE`, `REASON`, `JOB`, `YOJ`, `DEROG`, `DELINQ`, `CLAGE`, `NINQ`, `CLNO`, `DEBTINC` (removing the `BAD` variable, of course).
 
-```{r creating_files4}
+
+``` r
 code <- codegen(xgb_fitted, 
                 path = paste0(path, "scoreCode.R"), 
                 inputs = colnames(hmeq)[-1],
                 referenceLevel = 1,
                 rds = modelrda)
+#> File written to: xgbModel/scoreCode.R
 code
+#> library("tidymodels")
+#> library("xgboost")
+#> 
+#> scoreFunction <- function(LOAN, MORTDUE, VALUE, REASON, JOB, YOJ, DEROG, DELINQ, CLAGE, NINQ, CLNO, DEBTINC)
+#> {
+#>   #output: EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_BAD, BAD, P_BAD0, P_BAD1
+#>   
+#>   if (!exists("sasctlRmodel"))
+#>   {
+#>     assign("sasctlRmodel", readRDS(file = file.path(rdsPath, "Rxgb.rda")), envir = .GlobalEnv)
+#>     
+#>   }
+#>   target_labels <- c('0', '1')
+#> 
+#>   data <- data.frame(LOAN  =  LOAN,
+#>                      MORTDUE  =  MORTDUE,
+#>                      VALUE  =  VALUE,
+#>                      REASON  =  REASON,
+#>                      JOB  =  JOB,
+#>                      YOJ  =  YOJ,
+#>                      DEROG  =  DEROG,
+#>                      DELINQ  =  DELINQ,
+#>                      CLAGE  =  CLAGE,
+#>                      NINQ  =  NINQ,
+#>                      CLNO  =  CLNO,
+#>                      DEBTINC  =  DEBTINC)
+#>   
+#>   predictions <- predict(sasctlRmodel, new_data = data, type = "prob")
+#> 
+#>   boolClass <- (predictions == do.call(pmax, predictions))
+#> predictions[".pred"] <- apply(boolClass, 1 , function(x) target_labels[x])
+#>   
+#> output <- data.frame(EM_CLASSIFICATION = predictions[[".pred"]], 
+#>                     EM_EVENTPROBABILITY = predictions[[".pred_1"]],
+#>                     EM_PROBABILITY = apply(subset(predictions, select = -c(.pred)), 1, max),
+#>                     I_BAD = predictions[[".pred"]],
+#>                     BAD = predictions[[".pred"]],
+#>                     P_BAD0 = predictions[[".pred_0"]],
+#>                     P_BAD1 = predictions[[".pred_1"]]
+#>                     )
+#> 
+#>   return(output)
+#> }
 ```
 
 ### Testing the scoring code
 
-```{r test_code}
+
+``` r
 
 ## getting the .rda Path to be called in the function
 ## this is simulating what Viya passes to R when calling it
@@ -175,22 +306,58 @@ scoreRes <- scoreFunction(LOAN = hmeq[, 'LOAN'],
                           CLNO = hmeq[, 'CLNO'],
                           DEBTINC = hmeq[, 'DEBTINC'])
 
-scoreRes <- as.data.frame(scoreRes)
 head(scoreRes)
+#>   EM_CLASSIFICATION EM_EVENTPROBABILITY EM_PROBABILITY I_BAD BAD    P_BAD0    P_BAD1
+#> 1                 1           0.7870557      0.7870557     1   1 0.2129443 0.7870557
+#> 2                 1           0.9022777      0.9022777     1   1 0.0977223 0.9022777
+#> 3                 1           0.8713700      0.8713700     1   1 0.1286300 0.8713700
+#> 4                 1           0.6844163      0.6844163     1   1 0.3155837 0.6844163
+#> 5                 0           0.4320397      0.5679603     0   0 0.5679603 0.4320397
+#> 6                 1           0.6344647      0.6344647     1   1 0.3655353 0.6344647
 ```
 
 
 
 Now we create some additional files which are required to configure SAS Model Manager when uploading the files. For the variables specifically, should match the inputs from the model and outputs. We can use the result from the scoring code test from the previous chunck. Otherwise you can create a `data.frame` with the expected outputs and pass it.
 
-```{r creating_files5}
+
+``` r
 
 write_in_out_json(hmeq[,-1], input = TRUE, path = path)
+#> [1] "File written to xgbModel/inputVar.json"
+#>       name length    type    level  role
+#> 1     LOAN      8 decimal interval input
+#> 2  MORTDUE      8 decimal interval input
+#> 3    VALUE      8 decimal interval input
+#> 4   REASON      7  string  nominal input
+#> 5      JOB      7  string  nominal input
+#> 6      YOJ      8 decimal interval input
+#> 7    DEROG      8 decimal interval input
+#> 8   DELINQ      8 decimal interval input
+#> 9    CLAGE      8 decimal interval input
+#> 10    NINQ      8 decimal interval input
+#> 11    CLNO      8 decimal interval input
+#> 12 DEBTINC      8 decimal interval input
 write_in_out_json(scoreRes, input = FALSE, path = path)
+#> [1] "File written to xgbModel/outputVar.json"
+#>                  name length    type    level   role
+#> 1   EM_CLASSIFICATION      1  string  nominal output
+#> 2 EM_EVENTPROBABILITY      8 decimal interval output
+#> 3      EM_PROBABILITY      8 decimal interval output
+#> 4               I_BAD      1  string  nominal output
+#> 5                 BAD      1  string  nominal output
+#> 6              P_BAD0      8 decimal interval output
+#> 7              P_BAD1      8 decimal interval output
 
 write_fileMetadata_json(scoreCodeName = "scoreCode.R",
                         scoreResource = modelrda,
                         path = path)
+#> [1] "File written to xgbModel/fileMetadata.json"
+#>              role           name
+#> 1  inputVariables  inputVar.json
+#> 2 outputVariables outputVar.json
+#> 3           score    scoreCode.R
+#> 4   scoreResource       Rxgb.rda
 
 write_ModelProperties_json(modelName = "Rxgb",
                            modelFunction = "Classification",
@@ -202,6 +369,22 @@ write_ModelProperties_json(modelName = "Rxgb",
                            eventProbVar = "P_BAD1",
                            modeler = "sasctl man",
                            path = path)
+#> [1] "File written to xgbModel/ModelProperties.json"
+#>                         value
+#> name                     Rxgb
+#> description           R model
+#> function       Classification
+#> scoreCodeType               R
+#> trainTable               hmeq
+#> trainCodeType               R
+#> algorithm             XGBoost
+#> targetVariable            BAD
+#> targetEvent                 1
+#> targetLevel            Binary
+#> eventProbVar           P_BAD1
+#> modeler            sasctl man
+#> tool                        R
+#> toolVersion             4.3.3
 
 files_to_zip <- list.files(path, "*.json|*.R|*.rda", full.names = T)
 
@@ -212,7 +395,8 @@ zip(paste0(path, "Rmodel.zip"),
 
 Finally, we can upload the model to our SAS Viya server.
 
-```{r model_upload, eval=FALSE}
+
+``` r
 sess <- sasctl::session("https://viya.server.com",
                         username = "username",
                         password = "s3cr3t!")
@@ -229,7 +413,8 @@ mod <- register_model(
 ```
 
 
-```{r cleanup, eval=FALSE}
+
+``` r
 ## deleting the files locally
 unlink(path, recursive = TRUE)
 ```
