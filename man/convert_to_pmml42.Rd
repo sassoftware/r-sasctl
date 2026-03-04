@@ -4,7 +4,7 @@
 \alias{convert_to_pmml42}
 \title{Convert pmml 4.x to 4.2}
 \usage{
-convert_to_pmml42(file_in, file_out)
+convert_to_pmml42(file_in, file_out, silent = FALSE)
 }
 \arguments{
 \item{file_in}{path to a .pmml file}
@@ -15,7 +15,10 @@ convert_to_pmml42(file_in, file_out)
 nothing
 }
 \description{
-Converts a pmml header text file from 4.x version to 4.2
+Converts a pmml header text file from 4.x version to 4.2.
+}
+\details{
+NOTE: As of SAS Viya 2025.9, it is no longer required to convert PMML 4.x to 4.2
 }
 \examples{
  

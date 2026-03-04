@@ -10,7 +10,7 @@ register_model(
   name,
   project,
   type,
-  force_pmml_translation = TRUE,
+  force_pmml_translation = FALSE,
   exact = TRUE,
   force = FALSE,
   model_function = NULL,
@@ -31,7 +31,7 @@ register_model(
 
 \item{type}{string, pmml, spk, zip or astore}
 
-\item{force_pmml_translation}{default is TRUE, set to false will upload pmml as is, but may not work properly. Only if \code{type = "pmml"}}
+\item{force_pmml_translation}{default is FALSE, set to false will upload pmml as is, but may not work properly. Only if \code{type = "pmml"}}
 
 \item{exact}{the filter query should use "contains" for partial match or "eq" for exact match}
 
