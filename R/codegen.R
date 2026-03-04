@@ -17,6 +17,8 @@
 #' @param libs vector of libraries to be added to the code. Some may be guessed from the type.
 #' @param rds .rds file name to be called
 #' @param inputs define inputs as the passed vector instead of guessed
+#' @param output_as_df logical; when `TRUE` (default) the score function returns a `data.frame`, otherwise a list
+#' @param add_target_name logical; when `TRUE` (default) includes `<<target>> = <<target>>` in the code output
 #' @param ... to be passes to individual code generators
 #' 
 #' @return a code string
@@ -34,19 +36,21 @@
 #' 
 #' @export
 
-codegen <- function(model, path, rds, libs, inputs, ...) {
+codegen <- function(model, path, rds, libs, inputs, output_as_df = TRUE, add_target_name = TRUE, ...) {
   UseMethod("codegen")
 }
 
 #' @describeIn codegen Code generator for `lm` class models
 #' @export 
 
-codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs = NULL, ...) {
+codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs = NULL, output_as_df = TRUE, add_target_name = TRUE, ...) {
   
   inputs <- attr(stats::terms(model), "term.labels")
   target <- stats::terms(model)[[2]]
   
   libs <- unique(c("stats", libs))
+  
+  output_constructor <- if (output_as_df) "data.frame" else "list"
   
   libsCode <- paste0('library("',libs, '")', collapse = "\n")
   
@@ -61,16 +65,16 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(
       
       if (!exists("sasctlRmodel"))
       {
-        assign("sasctlRmodel", readRDS(file = paste(rdsPath, "<<rds>>", sep = "")), envir = .GlobalEnv)
+        assign("sasctlRmodel", readRDS(file = file.path(rdsPath, "<<rds>>")), envir = .GlobalEnv)
       }
       
       data <- data.frame(<<paste(inputs," = ", inputs, collapse = ",\n                         ")>>)
   
       pred <- predict(sasctlRmodel, newdata = data, type = "response")
     
-      output_list <- list(EM_PREDICTION = pred, P_<<target>> = pred)
+      output <- <<output_constructor>>(EM_PREDICTION = pred, P_<<target>> = pred)
     
-      return(output_list)
+      return(output)
     }
     '
   },
@@ -87,12 +91,15 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(
 #' @describeIn codegen generator for `glm` class models, specifically logistic regression
 #' @export 
 
-codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs =NULL, cutoff = 0.5, ...) {
+codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs =NULL, cutoff = 0.5, output_as_df = TRUE, add_target_name = TRUE, ...) {
   
   inputs <- attr(stats::terms(model), "term.labels")
   target <- stats::terms(model)[[2]]
   
   libs <- unique(c("stats", libs))
+  
+  output_constructor <- if (output_as_df) "data.frame" else "list"
+  target_name_entry <- if (add_target_name) glue::glue("<<target>> = <<target>>", .open = "<<", .close = ">>") else ""
   
   libsCode <- paste0('library("',libs, '")', collapse = "\n")
   
@@ -116,7 +123,7 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c
       
       if (!exists("sasctlRmodel"))
       {
-        assign("sasctlRmodel", readRDS(file = paste(rdsPath, "<<rds>>", sep = "")), envir = .GlobalEnv)
+        assign("sasctlRmodel", readRDS(file = file.path(rdsPath, "<<rds>>")), envir = .GlobalEnv)
       }
       
       data <- data.frame(<<paste(inputs," = ", inputs, collapse = ",\n                         ")>>)
@@ -127,15 +134,15 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c
       P_<<target>>0 <- 1 - P_<<target>>1
       <<target>> <- ifelse(P_<<target>>1 >= <<cutoff>>, 1, 0)
     
-      output_list <- list(EM_CLASSIFICATION = <<target>>, 
+      output <- <<output_constructor>>(EM_CLASSIFICATION = <<target>>, 
                           EM_EVENTPROBABILITY = P_<<target>>1,
                           EM_PROBABILITY = ifelse(P_<<target>>1 >= <<cutoff>>, P_<<target>>1, P_<<target>>0),
-                          <<target>> = <<target>>,
+                          <<target_name_entry>>,
                           I_<<target>> = <<target>>,
                           P_<<target>>1 = P_<<target>>1,
                           P_<<target>>0 = P_<<target>>0)
     
-      return(output_list)
+      return(output)
     }
     '
   },
@@ -154,7 +161,7 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c
 #' @export 
 
 codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
-                             libs = c(), inputs = NULL, referenceLevel = NULL, ...) {
+                             libs = c(), inputs = NULL, referenceLevel = NULL, output_as_df = TRUE, add_target_name = TRUE, ...) {
     
   if (!is.null(inputs)) {
     
@@ -174,6 +181,8 @@ codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
   mlibs <- model[["fit"]][["fit"]][["spec"]][["method"]][["libs"]]
   
   libs <- unique(c("tidymodels", mlibs, libs))
+  
+  output_constructor <- if (output_as_df) "data.frame" else "list"
   
   libsCode <- paste0('library("',libs, '")', collapse = "\n")
 
@@ -203,15 +212,17 @@ codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
     outputSpec <- glue::glue("EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, <<target>>, <<paste0('P_',target, target_labels, collapse = ', ')>>",
                             .open = "<<",
                             .close = ">>")
+    
+    target_name_entry <- if (add_target_name) glue::glue('<<target>> = predictions[[".pred"]]', .open = "<<", .close = ">>") else ""
         
     pred_format <- glue::glue('boolClass <- (predictions == do.call(pmax, predictions))
       predictions[".pred"] <- apply(boolClass, 1 , function(x) target_labels[x])
   
-      output_list <- list(EM_CLASSIFICATION = predictions[[".pred"]], 
+      output <- <<output_constructor>>(EM_CLASSIFICATION = predictions[[".pred"]], 
                           EM_EVENTPROBABILITY = predictions[[".pred_<<referenceLevel>>"]],
                           EM_PROBABILITY = apply(subset(predictions, select = -c(.pred)), 1, max),
                           I_<<target>> = predictions[[".pred"]],
-                          <<target>> = predictions[[".pred"]],
+                          <<target_name_entry>>,
                           <<p_labels>>
                           )', 
       .open = "<<",
@@ -223,7 +234,7 @@ codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
     response_type <- "numeric"
     target_labels_string <- ""
     
-    pred_format <- glue::glue("output_list <- list(EM_PREDICTION = predictions[['.pred']], P_<<target>> = predictions[['.pred']])", 
+    pred_format <- glue::glue("output <- <<output_constructor>>(EM_PREDICTION = predictions[['.pred']], P_<<target>> = predictions[['.pred']])", 
                               .open = "<<",
                               .close = ">>")
   } else {
@@ -244,7 +255,7 @@ codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
       
       if (!exists("sasctlRmodel"))
       {
-        assign("sasctlRmodel", readRDS(file = paste(rdsPath, "<<rds>>", sep = "")), envir = .GlobalEnv)
+        assign("sasctlRmodel", readRDS(file = file.path(rdsPath, "<<rds>>")), envir = .GlobalEnv)
         
       }
       <<target_labels_string>>
@@ -255,7 +266,7 @@ codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
     
       <<pred_format>>
     
-      return(output_list)
+      return(output)
     }
     '
   },

@@ -7,7 +7,16 @@
 \alias{codegen.workflow}
 \title{SAS standard score code generation Generic Function \strong{(EXPERIMENTAL)}}
 \usage{
-codegen(model, path, rds, libs, inputs, ...)
+codegen(
+  model,
+  path,
+  rds,
+  libs,
+  inputs,
+  output_as_df = TRUE,
+  add_target_name = TRUE,
+  ...
+)
 
 \method{codegen}{lm}(
   model,
@@ -15,6 +24,8 @@ codegen(model, path, rds, libs, inputs, ...)
   rds = "model.rds",
   libs = c(),
   inputs = NULL,
+  output_as_df = TRUE,
+  add_target_name = TRUE,
   ...
 )
 
@@ -25,6 +36,8 @@ codegen(model, path, rds, libs, inputs, ...)
   libs = c(),
   inputs = NULL,
   cutoff = 0.5,
+  output_as_df = TRUE,
+  add_target_name = TRUE,
   ...
 )
 
@@ -35,6 +48,8 @@ codegen(model, path, rds, libs, inputs, ...)
   libs = c(),
   inputs = NULL,
   referenceLevel = NULL,
+  output_as_df = TRUE,
+  add_target_name = TRUE,
   ...
 )
 }
@@ -48,6 +63,10 @@ codegen(model, path, rds, libs, inputs, ...)
 \item{libs}{vector of libraries to be added to the code. Some may be guessed from the type.}
 
 \item{inputs}{define inputs as the passed vector instead of guessed}
+
+\item{output_as_df}{logical; when \code{TRUE} (default) the score function returns a \code{data.frame}, otherwise a list}
+
+\item{add_target_name}{logical; when \code{TRUE} (default) includes \verb{<<target>> = <<target>>} in the code output}
 
 \item{...}{to be passes to individual code generators}
 
