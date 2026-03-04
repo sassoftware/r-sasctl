@@ -18,7 +18,10 @@ knitr::opts_chunk$set(
 # R sasctl
 
 <!-- badges: start -->
-
+[![r-universe status](https://sassoftware.r-universe.dev/badges/:name)](https://sassoftware.r-universe.dev)
+[![r-universe status](https://sassoftware.r-universe.dev/badges/:packages)](https://sassoftware.r-universe.dev)
+[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/version)](https://sassoftware.r-universe.dev)
+[![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/checks)](https://sassoftware.r-universe.dev)
 <!-- badges: end -->
 
 ## Table of Contents
@@ -26,8 +29,8 @@ knitr::opts_chunk$set(
 2. [Installation](#installation)  
 3. [Session](#session)  
 4. [Examples](#examples)  
-    * [PMML to SAS Example](#pmml-to-sas-example)  
     * [A native R model example](#a-native-r-model-example)  
+    * [PMML to SAS Example](#pmml-to-sas-example)  
     * [vPOST and vGET convenient functions](#vpost-and-vget-convenient-functions)  
 
 5. [Model Management helpers](#model-management-helpers)
@@ -35,6 +38,8 @@ knitr::opts_chunk$set(
 ## Overview
 
 The goal of sasctl is to provide tools for easy access of SAS Viya APIs from an R perspective. It has useful tools to make model management easier.
+
+Web documentation: https://sassoftware.github.io/r-sasctl/
 
 ## Installation
 
@@ -137,55 +142,6 @@ sess2 <- session(hostname = "https://myserver.sas.com",
 
 The following examples offer different options of the model management life cycle. First, the model is created. Then the model is registered and published. Finally, the model is scored. The code samples include expected responses inline as well.
 
-### PMML to SAS Example
-
-```{r full_example_part1, cache = TRUE}
-hmeq <- read.csv("https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv")
-
-## removing missing data
-hmeq[hmeq == ""] <- NA # empty strings to NA
-hmeq <- na.omit(hmeq)
-hmeq$BAD <- as.factor(hmeq$BAD)
-hmeq$REASON <- as.factor(hmeq$REASON)
-hmeq$JOB <- as.factor(hmeq$JOB)
-
-## creating logistic regression
-model1 <- glm(BAD ~ ., hmeq, family = binomial("logit"))
-summary(model1)
-## saving model as pmml
-XML::saveXML(pmml::pmml(model1, model.name = "General_Regression_Model",
-             app.name = "Rattle/PMML",
-             description = "Logistic Regression Model"),
-             "my_model.pmml")
-
-
-## registering the model
-mod <- register_model(
-  session = sess,
-  file = "my_model.pmml",
-  name = "R_model_pmml",
-  type = "pmml",
-  project = "rsasctl_auto",
-  force = TRUE
-  )
-
-module <- publish_model(sess, mod, "R_model_pmml") ## defaults to maslocal
-
-## 10 rows
-## see documentation for parallel request
-
-scored <- masScore(sess, module, hmeq[1:10,-1])
-
-scored
-
-## deleteing a project delete all associated models
-delete_project(sess, "rsasctl_auto")
-
-## delete the published model
-delete_masmodule(sess, "R_model_pmml")
-
-```
-
 ### A native R model example
 
 ```{r example2, cache = TRUE}
@@ -232,7 +188,7 @@ codeExpression <- str2expression(code)
 eval(codeExpression)
 
 rdsPath <- path
-result <- scoreFunction(LOAN = hmeq[, 'LOAN'],
+scoreddf <- scoreFunction(LOAN = hmeq[, 'LOAN'],
                         MORTDUE = hmeq[, 'MORTDUE'],
                         VALUE = hmeq[, 'VALUE'],
                         REASON = hmeq[, 'REASON'],
@@ -245,7 +201,6 @@ result <- scoreFunction(LOAN = hmeq[, 'LOAN'],
                         CLNO = hmeq[, 'CLNO'],
                         DEBTINC = hmeq[, 'DEBTINC'])
 
-scoreddf <- as.data.frame(result)
 scoreddf$Actual <- as.numeric(hmeq$BAD) - 1
 scoreddf$partition <- partition
 
@@ -298,6 +253,56 @@ mod <- register_model(
 
 ## deleteing a project delete all associated models
 delete_project(sess, "R_sasctl")
+
+```
+
+### PMML to SAS Example
+
+```{r full_example_part1, cache = TRUE}
+hmeq <- read.csv("https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv")
+
+## removing missing data
+hmeq[hmeq == ""] <- NA # empty strings to NA
+hmeq <- na.omit(hmeq)
+hmeq$BAD <- as.factor(hmeq$BAD)
+hmeq$REASON <- as.factor(hmeq$REASON)
+hmeq$JOB <- as.factor(hmeq$JOB)
+
+## creating logistic regression
+model1 <- glm(BAD ~ ., hmeq, family = binomial("logit"))
+summary(model1)
+
+## saving model as pmml
+## Note: pmml package has been archived from CRAN, user should install at its own descrition or an alternative package. 
+XML::saveXML(pmml::pmml(model1, model.name = "General_Regression_Model",
+             app.name = "Rattle/PMML",
+             description = "Logistic Regression Model"),
+             "my_model.pmml")
+
+## registering the model
+mod <- register_model(
+  session = sess,
+  file = "my_model.pmml",
+  name = "R_model_pmml",
+  type = "pmml",
+  project = "rsasctl_auto",
+  force = TRUE
+  )
+
+module <- publish_model(sess, mod, "R_model_pmml") ## defaults to maslocal
+
+## 10 rows
+## see documentation for parallel request
+
+scored <- masScore(sess, module, hmeq[1:10,-1])
+
+scored
+
+## deleteing a project delete all associated models
+delete_project(sess, "rsasctl_auto")
+
+## delete the published model
+delete_masmodule(sess, "R_model_pmml")
 
 ```
 
@@ -424,3 +429,14 @@ unlink(c('inputVar.json', 'outputVar.json', "ModelProperties.json", "fileMetadat
          "my_model.pmml", "my_model_converted42.pmml", 
          "myModel"), recursive = TRUE)
 ```
+
+## Contributing
+
+We welcome contributions! 
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) 
+for details on how to submit contributions to this project.
+
+## License
+
+See the [LICENSE](LICENSE) file for details.
