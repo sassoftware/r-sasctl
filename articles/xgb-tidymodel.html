@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.5.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -144,7 +144,7 @@ xgboost.</p>
 <span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu">prep</span><span class="op">(</span><span class="va">impute_rec</span><span class="op">)</span></span>
 <span><span class="va">imp</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Recipe</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; ── Recipe ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Inputs</span></span>
 <span><span class="co">#&gt; Number of variables by role</span></span>
@@ -152,12 +152,12 @@ xgboost.</p>
 <span><span class="co">#&gt; predictor: 12</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Training information</span></span>
-<span><span class="co">#&gt; Training data contained 4767 data points and 2069 incomplete rows.</span></span>
+<span><span class="co">#&gt; Training data contained 4767 data points and 2082 incomplete rows.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Operations</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mode imputation for: <span style="color: #0000BB;">REASON</span> <span style="color: #0000BB;">JOB</span> | <span style="font-style: italic;">Trained</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Dummy variables from: <span style="color: #0000BB;">REASON</span> <span style="color: #0000BB;">JOB</span> | <span style="font-style: italic;">Trained</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mean imputation for: <span style="color: #0000BB;">LOAN</span>, <span style="color: #0000BB;">MORTDUE</span>, <span style="color: #0000BB;">VALUE</span>, <span style="color: #0000BB;">YOJ</span>, <span style="color: #0000BB;">DEROG</span>, ... | <span style="font-style: italic;">Trained</span></span></span></code></pre></div>
+<span><span class="co">#&gt; • Mode imputation for: REASON JOB | Trained</span></span>
+<span><span class="co">#&gt; • Dummy variables from: REASON JOB | Trained</span></span>
+<span><span class="co">#&gt; • Mean imputation for: LOAN, MORTDUE, VALUE, YOJ, DEROG, DELINQ, CLAGE, NINQ, CLNO, DEBTINC, REASON_HomeImp, JOB_Office, JOB_Other, JOB_ProfExe, JOB_Sales, JOB_Self | Trained</span></span></code></pre></div>
 <p>Now we will combine the model and pre-processing in a workflow. It is
 recommend to use a workflow because it allows you to add all the steps
 required to transform the data to the required model format. Even if you
@@ -175,42 +175,36 @@ generates scoring code for workflow in the current version.</p>
 <span>  <span class="fu">fit</span><span class="op">(</span>data <span class="op">=</span> <span class="va">hmeqTrain</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">xgb_fitted</span></span>
-<span><span class="co">#&gt; ══ Workflow [trained] ══════════════════════════════════════════════════════════</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Preprocessor:</span> Recipe</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Model:</span> boost_tree()</span></span>
+<span><span class="co">#&gt; ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; Preprocessor: Recipe</span></span>
+<span><span class="co">#&gt; Model: boost_tree()</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Preprocessor ────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; 3 Recipe Steps</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; • step_impute_mode()</span></span>
 <span><span class="co">#&gt; • step_dummy()</span></span>
 <span><span class="co">#&gt; • step_impute_mean()</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Model ───────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── Model ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; ##### xgb.Booster</span></span>
-<span><span class="co">#&gt; raw: 50.7 Kb </span></span>
 <span><span class="co">#&gt; call:</span></span>
 <span><span class="co">#&gt;   xgboost::xgb.train(params = list(eta = 0.3, max_depth = 6, gamma = 0, </span></span>
 <span><span class="co">#&gt;     colsample_bytree = 1, colsample_bynode = 1, min_child_weight = 1, </span></span>
-<span><span class="co">#&gt;     subsample = 1), data = x$data, nrounds = 15, watchlist = x$watchlist, </span></span>
-<span><span class="co">#&gt;     verbose = 0, nthread = 1, objective = "binary:logistic")</span></span>
-<span><span class="co">#&gt; params (as set within xgb.train):</span></span>
-<span><span class="co">#&gt;   eta = "0.3", max_depth = "6", gamma = "0", colsample_bytree = "1", colsample_bynode = "1", min_child_weight = "1", subsample = "1", nthread = "1", objective = "binary:logistic", validate_parameters = "TRUE"</span></span>
-<span><span class="co">#&gt; xgb.attributes:</span></span>
-<span><span class="co">#&gt;   niter</span></span>
-<span><span class="co">#&gt; callbacks:</span></span>
-<span><span class="co">#&gt;   cb.evaluation.log()</span></span>
+<span><span class="co">#&gt;     subsample = 1, nthread = 1, objective = "binary:logistic"), </span></span>
+<span><span class="co">#&gt;     data = x$data, nrounds = 15, evals = x$watchlist, verbose = 0)</span></span>
 <span><span class="co">#&gt; # of features: 16 </span></span>
-<span><span class="co">#&gt; niter: 15</span></span>
-<span><span class="co">#&gt; nfeatures : 16 </span></span>
+<span><span class="co">#&gt; # of rounds:  15 </span></span>
+<span><span class="co">#&gt; callbacks:</span></span>
+<span><span class="co">#&gt;    evaluation_log </span></span>
 <span><span class="co">#&gt; evaluation_log:</span></span>
 <span><span class="co">#&gt;   iter training_logloss</span></span>
 <span><span class="co">#&gt;  &lt;num&gt;            &lt;num&gt;</span></span>
-<span><span class="co">#&gt;      1        0.5217583</span></span>
-<span><span class="co">#&gt;      2        0.4239761</span></span>
+<span><span class="co">#&gt;      1        0.3835292</span></span>
+<span><span class="co">#&gt;      2        0.3323457</span></span>
 <span><span class="co">#&gt;    ---              ---</span></span>
-<span><span class="co">#&gt;     14        0.1772215</span></span>
-<span><span class="co">#&gt;     15        0.1721500</span></span></code></pre></div>
+<span><span class="co">#&gt;     14        0.1739502</span></span>
+<span><span class="co">#&gt;     15        0.1692364</span></span></code></pre></div>
 <p>Now we will start creating all the files required to successfully
 upload the model to SAS Model Manager.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -218,8 +212,9 @@ upload the model to SAS Model Manager.</p>
 <span><span class="va">modelrda</span> <span class="op">&lt;-</span> <span class="st">"Rxgb.rda"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in dir.create(path): 'xgbModel' already exists</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">xgb_fitted</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="va">modelrda</span><span class="op">)</span>, version <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">xgb_fitted</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="va">modelrda</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We will score the whole dataset, add the partitions so we can create
 the Diagnostics json files. In parallel you can make any other file or
 processes, but SAS model manager expects these specific files to be able
@@ -228,15 +223,15 @@ to execute its routines such as comparing models.</p>
 <code class="sourceCode R"><span><span class="va">scoreddf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">xgb_fitted</span>, new_data <span class="op">=</span> <span class="va">hmeq</span>, type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">scoreddf</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 2</span></span>
 <span><span class="co">#&gt;   .pred_0 .pred_1</span></span>
-<span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  0.110    0.890</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  0.057<span style="text-decoration: underline;">1</span>   0.943</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  0.134    0.866</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  0.287    0.713</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  0.718    0.282</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  0.271    0.729</span></span></code></pre></div>
+<span><span class="co">#&gt;     &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1  0.0745   0.925</span></span>
+<span><span class="co">#&gt; 2  0.166    0.834</span></span>
+<span><span class="co">#&gt; 3  0.0709   0.929</span></span>
+<span><span class="co">#&gt; 4  0.428    0.572</span></span>
+<span><span class="co">#&gt; 5  0.755    0.245</span></span>
+<span><span class="co">#&gt; 6  0.300    0.700</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span><span class="va">scoreddf</span><span class="op">[</span><span class="va">hmeq_split</span><span class="op">$</span><span class="va">in_id</span>,<span class="op">]</span><span class="op">[</span><span class="st">"partition"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -245,15 +240,15 @@ to execute its routines such as comparing models.</p>
 <span><span class="va">scoreddf</span><span class="op">$</span><span class="va">BAD</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">hmeq</span><span class="op">$</span><span class="va">BAD</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">scoreddf</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P_BAD0"</span>, <span class="st">"P_BAD1"</span>, <span class="st">"partition"</span>, <span class="st">"BAD"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">scoreddf</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 4</span></span>
 <span><span class="co">#&gt;   P_BAD0 P_BAD1 partition   BAD</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.110   0.890         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 0.057<span style="text-decoration: underline;">1</span>  0.943         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 0.134   0.866         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 0.287   0.713         1     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 0.718   0.282         1     0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 0.271   0.729         1     1</span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 0.0745  0.925         1     1</span></span>
+<span><span class="co">#&gt; 2 0.166   0.834         1     1</span></span>
+<span><span class="co">#&gt; 3 0.0709  0.929         1     1</span></span>
+<span><span class="co">#&gt; 4 0.428   0.572         1     1</span></span>
+<span><span class="co">#&gt; 5 0.755   0.245         1     0</span></span>
+<span><span class="co">#&gt; 6 0.300   0.700         1     1</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">diags</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/diagnosticsJson.html">diagnosticsJson</a></span><span class="op">(</span>traindf <span class="op">=</span> <span class="va">scoreddf</span><span class="op">[</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">1</span>,<span class="op">]</span>,</span>
 <span>                         testdf <span class="op">=</span> <span class="va">scoreddf</span><span class="op">[</span><span class="va">scoreddf</span><span class="op">$</span><span class="va">partition</span> <span class="op">==</span> <span class="fl">2</span>,<span class="op">]</span>,</span>
@@ -267,42 +262,24 @@ to execute its routines such as comparing models.</p>
 <span></span>
 <span><span class="co">## This is not very legible, but gives an idea of all the data created</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">diags</span><span class="op">$</span><span class="va">fitStat</span><span class="op">$</span><span class="va">parameterMap</span>, <span class="va">as.data.frame</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                                 parameter type                      label</span></span>
-<span><span class="co">#&gt; _RASE_                             _RASE_  num Root Average Squared Error</span></span>
-<span><span class="co">#&gt; _NObs_                             _NObs_  num         Sum of Frequencies</span></span>
-<span><span class="co">#&gt; _GINI_                             _GINI_  num           Gini Coefficient</span></span>
-<span><span class="co">#&gt; _GAMMA_                           _GAMMA_  num                      Gamma</span></span>
-<span><span class="co">#&gt; _formattedPartition_ _formattedPartition_ char        Formatted Partition</span></span>
-<span><span class="co">#&gt; _DataRole_                     _DataRole_ char                  Data Role</span></span>
-<span><span class="co">#&gt; _MCE_                               _MCE_  num     Misclassification Rate</span></span>
-<span><span class="co">#&gt; _ASE_                               _ASE_  num      Average Squared Error</span></span>
-<span><span class="co">#&gt; _MCLL_                             _MCLL_  num       Multi-Class Log Loss</span></span>
-<span><span class="co">#&gt; _KS_                                 _KS_  num                KS (Youden)</span></span>
-<span><span class="co">#&gt; _KSPostCutoff_             _KSPostCutoff_  num             ROC Separation</span></span>
-<span><span class="co">#&gt; _DIV_                               _DIV_  num            Divisor for ASE</span></span>
-<span><span class="co">#&gt; _TAU_                               _TAU_  num                        Tau</span></span>
-<span><span class="co">#&gt; _KSCut_                           _KSCut_  num                  KS Cutoff</span></span>
-<span><span class="co">#&gt; _C_                                   _C_  num             Area Under ROC</span></span>
-<span><span class="co">#&gt; _PartInd_                       _PartInd_  num        Partition Indicator</span></span>
-<span><span class="co">#&gt; _TargetName_                 _TargetName_ char                Target Name</span></span>
-<span><span class="co">#&gt;                      length order               values preformatted</span></span>
-<span><span class="co">#&gt; _RASE_                    8     7               _RASE_        FALSE</span></span>
-<span><span class="co">#&gt; _NObs_                    8     4               _NObs_        FALSE</span></span>
-<span><span class="co">#&gt; _GINI_                    8    12               _GINI_        FALSE</span></span>
-<span><span class="co">#&gt; _GAMMA_                   8    13              _GAMMA_        FALSE</span></span>
-<span><span class="co">#&gt; _formattedPartition_     12     3 _formattedPartition_        FALSE</span></span>
-<span><span class="co">#&gt; _DataRole_               10     1           _DataRole_        FALSE</span></span>
-<span><span class="co">#&gt; _MCE_                     8     8                _MCE_        FALSE</span></span>
-<span><span class="co">#&gt; _ASE_                     8     5                _ASE_        FALSE</span></span>
-<span><span class="co">#&gt; _MCLL_                    8     9               _MCLL_        FALSE</span></span>
-<span><span class="co">#&gt; _KS_                      8    10                 _KS_        FALSE</span></span>
-<span><span class="co">#&gt; _KSPostCutoff_            8    16       _KSPostCutoff_        FALSE</span></span>
-<span><span class="co">#&gt; _DIV_                     8     6                _DIV_        FALSE</span></span>
-<span><span class="co">#&gt; _TAU_                     8    14                _TAU_        FALSE</span></span>
-<span><span class="co">#&gt; _KSCut_                   8    15              _KSCut_        FALSE</span></span>
-<span><span class="co">#&gt; _C_                       8    11                  _C_        FALSE</span></span>
-<span><span class="co">#&gt; _PartInd_                 8     2            _PartInd_        FALSE</span></span>
-<span><span class="co">#&gt; _TargetName_             10     1         _TargetName_        FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt;                                 parameter type                      label length order               values preformatted</span></span>
+<span><span class="co">#&gt; _RASE_                             _RASE_  num Root Average Squared Error      8     7               _RASE_        FALSE</span></span>
+<span><span class="co">#&gt; _NObs_                             _NObs_  num         Sum of Frequencies      8     4               _NObs_        FALSE</span></span>
+<span><span class="co">#&gt; _GINI_                             _GINI_  num           Gini Coefficient      8    12               _GINI_        FALSE</span></span>
+<span><span class="co">#&gt; _GAMMA_                           _GAMMA_  num                      Gamma      8    13              _GAMMA_        FALSE</span></span>
+<span><span class="co">#&gt; _formattedPartition_ _formattedPartition_ char        Formatted Partition     12     3 _formattedPartition_        FALSE</span></span>
+<span><span class="co">#&gt; _DataRole_                     _DataRole_ char                  Data Role     10     1           _DataRole_        FALSE</span></span>
+<span><span class="co">#&gt; _MCE_                               _MCE_  num     Misclassification Rate      8     8                _MCE_        FALSE</span></span>
+<span><span class="co">#&gt; _ASE_                               _ASE_  num      Average Squared Error      8     5                _ASE_        FALSE</span></span>
+<span><span class="co">#&gt; _MCLL_                             _MCLL_  num       Multi-Class Log Loss      8     9               _MCLL_        FALSE</span></span>
+<span><span class="co">#&gt; _KS_                                 _KS_  num                KS (Youden)      8    10                 _KS_        FALSE</span></span>
+<span><span class="co">#&gt; _KSPostCutoff_             _KSPostCutoff_  num             ROC Separation      8    16       _KSPostCutoff_        FALSE</span></span>
+<span><span class="co">#&gt; _DIV_                               _DIV_  num            Divisor for ASE      8     6                _DIV_        FALSE</span></span>
+<span><span class="co">#&gt; _TAU_                               _TAU_  num                        Tau      8    14                _TAU_        FALSE</span></span>
+<span><span class="co">#&gt; _KSCut_                           _KSCut_  num                  KS Cutoff      8    15              _KSCut_        FALSE</span></span>
+<span><span class="co">#&gt; _C_                                   _C_  num             Area Under ROC      8    11                  _C_        FALSE</span></span>
+<span><span class="co">#&gt; _PartInd_                       _PartInd_  num        Partition Indicator      8     2            _PartInd_        FALSE</span></span>
+<span><span class="co">#&gt; _TargetName_                 _TargetName_ char                Target Name     10     1         _TargetName_        FALSE</span></span></code></pre></div>
 <p>Scoring codes are required to run R and Python models in SAS Model
 Manager, <code><a href="../reference/codegen.html">sasctl::codegen()</a></code> helps you create a code that
 follows the <a href="https://go.documentation.sas.com/doc/en/mdlmgrcdc/v_025/mdlmgrug/n04i7s6bdu7ilgn1e350am3byuxx.htm#p0m6jg3tgih1agn1cgdcexpwgp0g" class="external-link">expected
@@ -354,7 +331,7 @@ course).</li>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt;   if (!exists("sasctlRmodel"))</span></span>
 <span><span class="co">#&gt;   {</span></span>
-<span><span class="co">#&gt;     assign("sasctlRmodel", readRDS(file = paste(rdsPath, "Rxgb.rda", sep = "")), envir = .GlobalEnv)</span></span>
+<span><span class="co">#&gt;     assign("sasctlRmodel", readRDS(file = file.path(rdsPath, "Rxgb.rda")), envir = .GlobalEnv)</span></span>
 <span><span class="co">#&gt;     </span></span>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt;   target_labels &lt;- c('0', '1')</span></span>
@@ -377,7 +354,7 @@ course).</li>
 <span><span class="co">#&gt;   boolClass &lt;- (predictions == do.call(pmax, predictions))</span></span>
 <span><span class="co">#&gt; predictions[".pred"] &lt;- apply(boolClass, 1 , function(x) target_labels[x])</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; output_list &lt;- list(EM_CLASSIFICATION = predictions[[".pred"]], </span></span>
+<span><span class="co">#&gt; output &lt;- data.frame(EM_CLASSIFICATION = predictions[[".pred"]], </span></span>
 <span><span class="co">#&gt;                     EM_EVENTPROBABILITY = predictions[[".pred_1"]],</span></span>
 <span><span class="co">#&gt;                     EM_PROBABILITY = apply(subset(predictions, select = -c(.pred)), 1, max),</span></span>
 <span><span class="co">#&gt;                     I_BAD = predictions[[".pred"]],</span></span>
@@ -386,7 +363,7 @@ course).</li>
 <span><span class="co">#&gt;                     P_BAD1 = predictions[[".pred_1"]]</span></span>
 <span><span class="co">#&gt;                     )</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   return(output_list)</span></span>
+<span><span class="co">#&gt;   return(output)</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="testing-the-scoring-code">Testing the scoring code<a class="anchor" aria-label="anchor" href="#testing-the-scoring-code"></a>
@@ -401,11 +378,6 @@ course).</li>
 <span><span class="co">## create the function locally</span></span>
 <span><span class="va">codeExpression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">str2expression</a></span><span class="op">(</span><span class="va">code</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">codeExpression</span><span class="op">)</span> </span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'xgboost'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:dplyr':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     slice</span></span>
 <span></span>
 <span><span class="co">## this is a helper to create the variables</span></span>
 <span><span class="co">## cat(paste0(colnames(hmeq)[-1], " = hmeq[, '", colnames(hmeq)[-1],"']", collapse = ",\n " ))</span></span>
@@ -423,22 +395,14 @@ course).</li>
 <span>                          CLNO <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'CLNO'</span><span class="op">]</span>,</span>
 <span>                          DEBTINC <span class="op">=</span> <span class="va">hmeq</span><span class="op">[</span>, <span class="st">'DEBTINC'</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">scoreRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">scoreRes</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">scoreRes</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   EM_CLASSIFICATION EM_EVENTPROBABILITY EM_PROBABILITY I_BAD BAD     P_BAD0</span></span>
-<span><span class="co">#&gt; 1                 1           0.8895068      0.8895068     1   1 0.11049323</span></span>
-<span><span class="co">#&gt; 2                 1           0.9429414      0.9429414     1   1 0.05705855</span></span>
-<span><span class="co">#&gt; 3                 1           0.8659107      0.8659107     1   1 0.13408931</span></span>
-<span><span class="co">#&gt; 4                 1           0.7131891      0.7131891     1   1 0.28681087</span></span>
-<span><span class="co">#&gt; 5                 0           0.2819615      0.7180385     0   0 0.71803850</span></span>
-<span><span class="co">#&gt; 6                 1           0.7294909      0.7294909     1   1 0.27050909</span></span>
-<span><span class="co">#&gt;      P_BAD1</span></span>
-<span><span class="co">#&gt; 1 0.8895068</span></span>
-<span><span class="co">#&gt; 2 0.9429414</span></span>
-<span><span class="co">#&gt; 3 0.8659107</span></span>
-<span><span class="co">#&gt; 4 0.7131891</span></span>
-<span><span class="co">#&gt; 5 0.2819615</span></span>
-<span><span class="co">#&gt; 6 0.7294909</span></span></code></pre></div>
+<span><span class="co">#&gt;   EM_CLASSIFICATION EM_EVENTPROBABILITY EM_PROBABILITY I_BAD BAD    P_BAD0    P_BAD1</span></span>
+<span><span class="co">#&gt; 1                 1           0.7870557      0.7870557     1   1 0.2129443 0.7870557</span></span>
+<span><span class="co">#&gt; 2                 1           0.9022777      0.9022777     1   1 0.0977223 0.9022777</span></span>
+<span><span class="co">#&gt; 3                 1           0.8713700      0.8713700     1   1 0.1286300 0.8713700</span></span>
+<span><span class="co">#&gt; 4                 1           0.6844163      0.6844163     1   1 0.3155837 0.6844163</span></span>
+<span><span class="co">#&gt; 5                 0           0.4320397      0.5679603     0   0 0.5679603 0.4320397</span></span>
+<span><span class="co">#&gt; 6                 1           0.6344647      0.6344647     1   1 0.3655353 0.6344647</span></span></code></pre></div>
 <p>Now we create some additional files which are required to configure
 SAS Model Manager when uploading the files. For the variables
 specifically, should match the inputs from the model and outputs. We can
@@ -508,7 +472,7 @@ outputs and pass it.</p>
 <span><span class="co">#&gt; eventProbVar           P_BAD1</span></span>
 <span><span class="co">#&gt; modeler            sasctl man</span></span>
 <span><span class="co">#&gt; tool                        R</span></span>
-<span><span class="co">#&gt; toolVersion             4.5.1</span></span>
+<span><span class="co">#&gt; toolVersion             4.3.3</span></span>
 <span></span>
 <span><span class="va">files_to_zip</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"*.json|*.R|*.rda"</span>, full.names <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
@@ -551,7 +515,7 @@ outputs and pass it.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

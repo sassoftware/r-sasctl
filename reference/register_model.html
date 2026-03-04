@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.5.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
 <span>  <span class="va">name</span>,</span>
 <span>  <span class="va">project</span>,</span>
 <span>  <span class="va">type</span>,</span>
-<span>  force_pmml_translation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  force_pmml_translation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  exact <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  force <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  model_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -106,7 +106,7 @@
 
 
 <dt id="arg-force-pmml-translation">force_pmml_translation<a class="anchor" aria-label="anchor" href="#arg-force-pmml-translation"></a></dt>
-<dd><p>default is TRUE, set to false will upload pmml as is, but may not work properly. Only if <code>type = "pmml"</code></p></dd>
+<dd><p>default is FALSE, set to false will upload pmml as is, but may not work properly. Only if <code>type = "pmml"</code></p></dd>
 
 
 <dt id="arg-exact">exact<a class="anchor" aria-label="anchor" href="#arg-exact"></a></dt>
@@ -148,7 +148,7 @@
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co">### Building and registering a pmml model</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://open-source.softwareag.com/r-pmml/" class="external-link">"pmml"</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"pmml"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">hmeq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv"</span>,</span></span>
 <span class="r-in"><span>                 stringsAsFactors <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
@@ -158,7 +158,7 @@
 <span class="r-in"><span><span class="va">model1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">BAD</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">hmeq</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/XML/man/saveXML.html" class="external-link">saveXML</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/pmml/man/pmml.html" class="external-link">pmml</a></span><span class="op">(</span><span class="va">model1</span>, model.name<span class="op">=</span><span class="st">"General_Regression_Model"</span>,</span></span>
+<span class="r-in"><span><span class="fu">saveXML</span><span class="op">(</span><span class="fu">pmml</span><span class="op">(</span><span class="va">model1</span>, model.name<span class="op">=</span><span class="st">"General_Regression_Model"</span>,</span></span>
 <span class="r-in"><span>             app.name<span class="op">=</span><span class="st">"Rattle/PMML"</span>,</span></span>
 <span class="r-in"><span>             description<span class="op">=</span><span class="st">"Linear Regression Model"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>             <span class="st">"my_model.pmml"</span><span class="op">)</span></span></span>
@@ -257,7 +257,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>

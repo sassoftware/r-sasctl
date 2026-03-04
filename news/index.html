@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.5.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -59,8 +59,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="development version" id="sasctl-development-version">sasctl (development version)<a class="anchor" aria-label="anchor" href="#sasctl-development-version"></a></h2>
-<ul><li>Fixed <code>register_model</code> wrongly identifying which version of Viya it is interacting with, which lead to use wrong upload format.</li>
+<h2 class="page-header" data-toc-text="0.8.0" id="sasctl-080">sasctl 0.8.0<a class="anchor" aria-label="anchor" href="#sasctl-080"></a></h2>
+<ul><li>feat: codegen (breaking) now has the <code>output_as_df</code> argument, by default the generated scorecode it returns a <code>data.frame</code> instead of a <code>list</code>. Required for the MM gateway background.</li>
+<li>feat: codegen now has the <code>add_target_name</code>. By default a column with the name of the target will be returned with the predicted values.</li>
+<li>feat: added r-sasctl to <a href="https://sassoftware.r-universe.dev" class="external-link uri">https://sassoftware.r-universe.dev</a> repository for easier installation.</li>
+<li>fix: force_pmml_translation default changed to <code>FALSE</code>. As of Viya 2025.9, PMML 4.4 is not natively supported by Model Manager.</li>
+<li>fix: <code>register_model</code> wrongly identifying which version of Viya it is interacting with, which lead to use the wrong upload format.</li>
+<li>fix: codegen now uses <code>file.path</code> instead of <code>paste</code> in the generated code when referencing file paths.</li>
+<li>fix: Now the xgb-tidymodel Vignette is pre-rendered to avoid fails in the universe r-universe repository.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.5" id="sasctl-075">sasctl 0.7.5<a class="anchor" aria-label="anchor" href="#sasctl-075"></a></h2>
@@ -135,7 +141,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>
