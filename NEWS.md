@@ -1,6 +1,11 @@
-# sasctl (development version)
+# sasctl 0.8.0
 
-* Fixed `register_model` wrongly identifying which version of Viya it is interacting with, which lead to use wrong upload format.
+* feat: codegen (breaking) now has the `output_as_df` argument, by default the generated scorecode it returns a `data.frame` instead of a `list`. Required for the MM gateway background.
+* feat: codegen now has the `add_target_name`. By default a column with the name of the target will be returned with the predicted values.
+* feat: added r-sasctl to https://sassoftware.r-universe.dev repository for easier installation.
+* fix: `register_model` wrongly identifying which version of Viya it is interacting with, which lead to use the wrong upload format.
+* fix: codegen now uses `file.path` instead of `paste` in the generated code when referencing file paths.
+* fix: Now the xgb-tidymodel Vignette is pre-rendered to avoid fails in the universe r-universe repository.
 
 # sasctl 0.7.5
 
