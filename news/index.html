@@ -63,7 +63,7 @@
 <ul><li>feat: codegen (breaking) now has the <code>output_as_df</code> argument, by default the generated scorecode it returns a <code>data.frame</code> instead of a <code>list</code>. Required for the MM gateway background.</li>
 <li>feat: codegen now has the <code>add_target_name</code>. By default a column with the name of the target will be returned with the predicted values.</li>
 <li>feat: added r-sasctl to <a href="https://sassoftware.r-universe.dev" class="external-link uri">https://sassoftware.r-universe.dev</a> repository for easier installation.</li>
-<li>fix: force_pmml_translation default changed to <code>FALSE</code>. As of Viya 2025.9, PMML 4.4 is not natively supported by Model Manager.</li>
+<li>fix: force_pmml_translation default changed to <code>FALSE</code>. As of Viya 2025.6, PMML 4.4 is natively supported by Model Manager.</li>
 <li>fix: <code>register_model</code> wrongly identifying which version of Viya it is interacting with, which lead to use the wrong upload format.</li>
 <li>fix: codegen now uses <code>file.path</code> instead of <code>paste</code> in the generated code when referencing file paths.</li>
 <li>fix: Now the xgb-tidymodel Vignette is pre-rendered to avoid fails in the universe r-universe repository.</li>
