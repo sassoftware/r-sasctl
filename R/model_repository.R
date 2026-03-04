@@ -13,7 +13,7 @@
 #' @param type string, pmml, spk, zip or astore
 #' @param force Boolean, force the creation of project if unavailable
 #' @param version This parameter indicates to create a new project version, use the latest version, or use an existing version to import the model into. Valid values are 'NEW', 'LATEST', or a number.
-#' @param force_pmml_translation default is TRUE, set to false will upload pmml as is, but may not work properly. Only if `type = "pmml"`
+#' @param force_pmml_translation default is FALSE, set to false will upload pmml as is, but may not work properly. Only if `type = "pmml"`
 #' @param model_function [sasctl::create_project()] parameter of project model function of the created project if `force = TRUE`. Valid values: analytical, classification, cluster, forecasting, prediction, Text categorization, Text extraction, Text sentiment, Text topics, transformation
 #' @param additional_project_parameters list of additional parameters to be passed to  [sasctl::create_project()] `additional_parameters` parameter
 #' @param project_description description string of additional parameters to be passed to [sasctl::create_project()] `description` parameter
@@ -124,7 +124,7 @@
 #' @export
 
 register_model <- function(session, file, name, project, type,
-                           force_pmml_translation = TRUE, exact = TRUE, 
+                           force_pmml_translation = FALSE, exact = TRUE, 
                            force = FALSE, model_function = NULL,
                            additional_project_parameters = NULL,
                            version = 'latest',
@@ -1422,7 +1422,9 @@ create_scoreSample <- function(path = ".", openFile = TRUE){
 
 #' Convert pmml 4.x to 4.2 
 #' 
-#' Converts a pmml header text file from 4.x version to 4.2
+#' Converts a pmml header text file from 4.x version to 4.2. 
+#' 
+#' NOTE: As of SAS Viya 2025.9, it is no longer required to convert PMML 4.x to 4.2
 #' 
 #' @param file_in path to a .pmml file
 #' @param file_out path to write the converted .pmml file
@@ -1450,7 +1452,11 @@ create_scoreSample <- function(path = ".", openFile = TRUE){
 #' 
 #' @export
 
-convert_to_pmml42 <- function(file_in, file_out){
+convert_to_pmml42 <- function(file_in, file_out, silent = FALSE) {
+
+  if (!silent) { 
+    warning("As of SAS Viya 2025.9, support for PMML 4.4 has been added and conversion is no longer required")
+  }
   
   lines <- readLines(file_in)
   
