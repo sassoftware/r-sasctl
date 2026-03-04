@@ -4,7 +4,7 @@
 \alias{convert_to_pmml42}
 \title{Convert pmml 4.x to 4.2}
 \usage{
-convert_to_pmml42(file_in, file_out, silent = FALSE)
+convert_to_pmml42(file_in, file_out)
 }
 \arguments{
 \item{file_in}{path to a .pmml file}

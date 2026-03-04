@@ -1452,11 +1452,9 @@ create_scoreSample <- function(path = ".", openFile = TRUE){
 #' 
 #' @export
 
-convert_to_pmml42 <- function(file_in, file_out, silent = FALSE) {
+convert_to_pmml42 <- function(file_in, file_out) {
 
-  if (!silent) { 
-    warning("As of SAS Viya 2025.9, support for PMML 4.4 has been added and conversion is no longer required")
-  }
+  warning("As of SAS Viya 2025.9, support for PMML 4.4 has been added and conversion is no longer required")
   
   lines <- readLines(file_in)
   

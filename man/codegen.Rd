@@ -35,9 +35,9 @@ codegen(
   rds = "model.rds",
   libs = c(),
   inputs = NULL,
-  cutoff = 0.5,
   output_as_df = TRUE,
   add_target_name = TRUE,
+  cutoff = 0.5,
   ...
 )
 
@@ -47,9 +47,9 @@ codegen(
   rds = "model.rds",
   libs = c(),
   inputs = NULL,
-  referenceLevel = NULL,
   output_as_df = TRUE,
   add_target_name = TRUE,
+  referenceLevel = NULL,
   ...
 )
 }

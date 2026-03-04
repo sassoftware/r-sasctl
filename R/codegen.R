@@ -91,7 +91,7 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(
 #' @describeIn codegen generator for `glm` class models, specifically logistic regression
 #' @export 
 
-codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs =NULL, cutoff = 0.5, output_as_df = TRUE, add_target_name = TRUE, ...) {
+codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs = NULL, output_as_df = TRUE, add_target_name = TRUE, cutoff = 0.5, ...) {
   
   inputs <- attr(stats::terms(model), "term.labels")
   target <- stats::terms(model)[[2]]
@@ -161,7 +161,7 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c
 #' @export 
 
 codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
-                             libs = c(), inputs = NULL, referenceLevel = NULL, output_as_df = TRUE, add_target_name = TRUE, ...) {
+                             libs = c(), inputs = NULL, output_as_df = TRUE, add_target_name = TRUE, referenceLevel = NULL, ...) {
     
   if (!is.null(inputs)) {
     
