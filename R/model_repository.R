@@ -137,19 +137,19 @@ register_model <- function(session, file, name, project, type,
   ### trying to define them while uploading with the model are just ignored
   ### automatically create project and model version
   
-  if (missing(file) | !is.character(file)) {
+  if (missing(file) || !is.character(file)) {
     stop("A valid filepath must be set")
   }
   
-  if (missing(name) | !is.character(name)) {
+  if (missing(name) || !is.character(name)) {
     stop("A name must be given to the model")
   }
   
-  if (missing(project) | !is.character(project)) {
+  if (missing(project) || !is.character(project)) {
     stop("The project name must be a defined character string")
   }
   
-  if (missing(type) | !is.character(type) | !(tolower(type) %in% c("spk", "zip", "astore", "pmml")) ) {
+  if (missing(type) || !is.character(type) || !(tolower(type) %in% c("spk", "zip", "astore", "pmml")) ) {
     # TBD: CAS model
     stop("Type must be 'SPK', 'ZIP', 'ASTORE' or 'PMML'")
   }
