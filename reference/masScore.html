@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9000</span>
       </span>
     </div>
 
@@ -55,7 +55,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Predict MASmodule</h1>
-
+    <small class="dont-index">Source: <a href="https://github.com/sassoftware/r-sasctl/blob/main/R/microanalyticScore.R" class="external-link"><code>R/microanalyticScore.R</code></a></small>
     <div class="hidden name"><code>masScore.Rd</code></div>
     </div>
 
@@ -111,23 +111,28 @@
     <h2>Value</h2>
     <p><code>data.frame</code> with scored rows</p>
     </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>When the <code>furrr</code> package is installed, <code>masScore</code> uses <code><a href="https://furrr.futureverse.org/reference/future_map.html" class="external-link">furrr::future_map_dfr()</a></code>
+for scoring, which allows parallel execution via a <code>future</code> plan. Without <code>furrr</code>,
+scoring runs sequentially using base R. Install both <code>furrr</code> and <code>future</code> to
+enable parallel scoring.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># single row</span></span></span>
+<span class="r-in"><span><span class="co"># single row (sequential)</span></span></span>
 <span class="r-in"><span><span class="va">scored</span> <span class="op">&lt;-</span> <span class="fu">masScore</span><span class="op">(</span><span class="va">sess</span>, <span class="st">"module_name"</span>, <span class="va">data</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">scored</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The masScore is implemented with `furrr` for maximum performance</span></span></span>
-<span class="r-in"><span><span class="co"># if you want to parallelize use the following code. </span></span></span>
-<span class="r-in"><span><span class="co"># Not recommended when scoring single row because overhead will drop the performance</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/multisession.html" class="external-link">multisession</a></span>, workers <span class="op">=</span> <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Parallel scoring — requires the furrr and future packages</span></span></span>
+<span class="r-in"><span><span class="co"># Not recommended for single rows due to parallelisation overhead</span></span></span>
+<span class="r-in"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/multisession.html" class="external-link">multisession</a></span>, workers <span class="op">=</span> <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">scored</span> <span class="op">&lt;-</span> <span class="fu">masScore</span><span class="op">(</span><span class="va">sess</span>, <span class="st">"module_name"</span>, <span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># if you want to go back to single threaded scoring use</span></span></span>
+<span class="r-in"><span><span class="co"># Return to sequential execution</span></span></span>
 <span class="r-in"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/sequential.html" class="external-link">sequential</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
