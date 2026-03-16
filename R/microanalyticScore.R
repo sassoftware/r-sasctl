@@ -141,21 +141,25 @@ delete_masmodule <- function(session, module, exact = TRUE){
 #' @param ... additional parameters to be passed to `httr::GET` such as `httr::add_headers`
 #' @return `data.frame` with scored rows
 #' 
+#' @details
+#' When the `furrr` package is installed, `masScore` uses `furrr::future_map_dfr()`
+#' for scoring, which allows parallel execution via a `future` plan. Without `furrr`,
+#' scoring runs sequentially using base R. Install both `furrr` and `future` to
+#' enable parallel scoring.
+#' 
 #' @examples
 #' 
 #' \dontrun{
-#' # single row
+#' # single row (sequential)
 #' scored <- masScore(sess, "module_name", data[1,])
 #' scored
 #' 
-#' # The masScore is implemented with `furrr` for maximum performance
-#' # if you want to parallelize use the following code. 
-#' # Not recommended when scoring single row because overhead will drop the performance
-#' 
-#' future::plan(future::multisession, workers = future::availableCores() -1)
+#' # Parallel scoring — requires the furrr and future packages
+#' # Not recommended for single rows due to parallelisation overhead
+#' future::plan(future::multisession, workers = future::availableCores() - 1)
 #' scored <- masScore(sess, "module_name", data)
 #' 
-#' # if you want to go back to single threaded scoring use
+#' # Return to sequential execution
 #' future::plan(future::sequential)
 #' }
 #' 
@@ -181,16 +185,31 @@ masScore <- function(session, module, data, exact = TRUE, ScoreType = 'score', f
   
   path <- paste0("/microanalyticScore/modules/", module_id, "/steps/", ScoreType)
   
-  scored_data <- furrr::future_map_dfr(json_data, 
-                        function(x) { 
-    sasctl::vPOST(session, 
-                  path = path,
-                  payload = x, 
-                  httr::content_type("application/json"),
-                  ...
-                  )$outputs},
-     .id = "row"
-    )
+  if (requireNamespace("furrr", quietly = TRUE)) {
+    scored_data <- furrr::future_map_dfr(json_data,
+                          function(x) {
+      sasctl::vPOST(session,
+                    path = path,
+                    payload = x,
+                    httr::content_type("application/json"),
+                    ...
+                    )$outputs},
+       .id = "row"
+      )
+  } else {
+    row_ids <- if (!is.null(names(json_data))) names(json_data) else as.character(seq_along(json_data))
+    result_list <- lapply(seq_along(json_data), function(i) {
+      row_data <- sasctl::vPOST(session,
+                                path = path,
+                                payload = json_data[[i]],
+                                httr::content_type("application/json"),
+                                ...
+                                )$outputs
+      row_data$row <- row_ids[[i]]
+      row_data
+    })
+    scored_data <- do.call(rbind, result_list)
+  }
 
   
   scored_data <- reshape2::dcast(scored_data, row ~ name, value.var = "value")

@@ -35,21 +35,25 @@ masScore(
 \description{
 score a data.frame MASmodule/model
 }
+\details{
+When the \code{furrr} package is installed, \code{masScore} uses \code{furrr::future_map_dfr()}
+for scoring, which allows parallel execution via a \code{future} plan. Without \code{furrr},
+scoring runs sequentially using base R. Install both \code{furrr} and \code{future} to
+enable parallel scoring.
+}
 \examples{
 
 \dontrun{
-# single row
+# single row (sequential)
 scored <- masScore(sess, "module_name", data[1,])
 scored
 
-# The masScore is implemented with `furrr` for maximum performance
-# if you want to parallelize use the following code. 
-# Not recommended when scoring single row because overhead will drop the performance
-
-future::plan(future::multisession, workers = future::availableCores() -1)
+# Parallel scoring — requires the furrr and future packages
+# Not recommended for single rows due to parallelisation overhead
+future::plan(future::multisession, workers = future::availableCores() - 1)
 scored <- masScore(sess, "module_name", data)
 
-# if you want to go back to single threaded scoring use
+# Return to sequential execution
 future::plan(future::sequential)
 }
 

@@ -71,7 +71,7 @@ session <- function(hostname, username = NULL, password = NULL,
   
   if (!(auth_code && !is.null(client_id))) {
   # check if client_id and client_secret are defined  
-    if (is.null(client_id) && !is.null(client_secret) | 
+    if (is.null(client_id) && !is.null(client_secret) ||
         !is.null(client_id) && is.null(client_secret)) {
           stop("'client_id' and 'client_secret' must be defined.")
     }
