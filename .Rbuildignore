@@ -17,4 +17,4 @@
 ^TODO\.md$
 ^local_auth\.R$
 ^\.github$
-^\vignettes\xgbModel$
+^vignettes/xgbModel$
