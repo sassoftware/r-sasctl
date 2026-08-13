@@ -38,6 +38,9 @@ Web documentation: https://sassoftware.github.io/r-sasctl/
 ## dev version
 remotes::install_git("https://github.com/sassoftware/r-sasctl")
 
+## r-universe
+install.packages('sasctl', repos = c('https://sassoftware.r-universe.dev', 'https://cloud.r-project.org'))
+
 ## released version
 ## You first have to install the dependencies
 
