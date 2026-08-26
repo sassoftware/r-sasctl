@@ -1,4 +1,6 @@
-# sasctl (development version)
+# sasctl 0.8.1
+
+fix: r-universe build
 
 # sasctl 0.8.0
 
