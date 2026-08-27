@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">sasctl</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
       </span>
     </div>
 
@@ -122,28 +122,28 @@
 <h3 id="install-from-r">Install from R<a class="anchor" aria-label="anchor" href="#install-from-r"></a>
 </h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## dev version</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_git</span><span class="op">(</span><span class="st">"https://github.com/sassoftware/r-sasctl"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## r-universe</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="co">## r-universe (Preferred method)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'sasctl'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://sassoftware.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## released version</span></span>
-<span><span class="co">## You first have to install the dependencies</span></span>
+<span><span class="co">## development version</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"sassoftware/r-sasctl"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co">## github released version</span></span>
+<span><span class="co">## You first have to install the dependencies</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jsonlite"</span>, <span class="st">"httr"</span>, <span class="st">"uuid"</span>, <span class="st">"furrr"</span>, <span class="st">"ROCR"</span>, <span class="st">"reshape2"</span>, <span class="st">"base64enc"</span>, <span class="st">"dplyr"</span>, <span class="st">"glue"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## then the package</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"https://github.com/sassoftware/r-sasctl/releases/download/X.X.X/r-sasctl_X.X.X.tar.gz"</span>, type <span class="op">=</span> <span class="st">"source"</span>, repos <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="co">## then the package (replace X.X.X with the version you want to install)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"https://github.com/sassoftware/r-sasctl/archive/refs/tags/X.X.X.tar.gz"</span>, type <span class="op">=</span> <span class="st">"source"</span>, repos <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://sassoftware.github.io/r-sasctl/">"sasctl"</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="install-from-terminal">Install from terminal<a class="anchor" aria-label="anchor" href="#install-from-terminal"></a>
 </h3>
-<p>The SWAT package for R is available from SAS as a tar.gz file. You can download releases from <a href="https://github.com/sassoftware/r-sasctl/releases" class="external-link">https://github.com/sassoftware/r-sasctl/releases</a>.</p>
-<p>After you download the package, you can install the package with a command that is similar to the following:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">R</span> CMD INSTALL r-sasctl-X.X.X.tar.gz</span></code></pre></div>
+<p>The sasctl package for R is available from SAS as a tar.gz file. You can download releases from <a href="https://github.com/sassoftware/r-sasctl/releases" class="external-link uri">https://github.com/sassoftware/r-sasctl/releases</a>.</p>
+<p>After you download the package source, you can install the package with a command that is similar to the following:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">R</span> CMD INSTALL X.X.X.tar.gz</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -151,16 +151,16 @@
 </h2>
 <p>You have a few options on how to make a connections to the SAS Viya server. The first example uses password authentication.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sess</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/session.html">session</a></span><span class="op">(</span>hostname <span class="op">=</span> <span class="st">"http://myserver.sas.com"</span>,</span>
+<code class="sourceCode R"><span><span class="co"># NOTE: depending on your Viya version, this method may no longer be supported, use</span></span>
+<span><span class="co"># the token or authorization code methods instead</span></span>
+<span><span class="va">sess</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/session.html">session</a></span><span class="op">(</span>hostname <span class="op">=</span> <span class="st">"http://myserver.sas.com"</span>,</span>
 <span>                username <span class="op">=</span> <span class="st">"sasuser"</span>,</span>
 <span>                password <span class="op">=</span> <span class="st">"s3cr3t"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sess</span></span></code></pre></div>
 <p>You may also use the .authinfo file.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## authinfo file (recommended)</span></span>
-<span></span>
-<span><span class="va">sess</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/session.html">session</a></span><span class="op">(</span>hostname <span class="op">=</span> <span class="st">"http://myserver.sas.com"</span>,</span>
+<code class="sourceCode R"><span><span class="va">sess</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/session.html">session</a></span><span class="op">(</span>hostname <span class="op">=</span> <span class="st">"http://myserver.sas.com"</span>,</span>
 <span>                authinfo <span class="op">=</span> <span class="st">"./_authinfo"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># authinfo file structure:</span></span>
