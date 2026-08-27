@@ -1,3 +1,7 @@
+# sasctl 0.8.2
+
+fix: default connection client
+
 # sasctl 0.8.1
 
 fix: r-universe build

@@ -47,29 +47,31 @@ Web documentation: https://sassoftware.github.io/r-sasctl/
 ### Install from R
 
 ```{r, eval=FALSE}
-## dev version
-remotes::install_git("https://github.com/sassoftware/r-sasctl")
 
-## released version
+## r-universe (Preferred method)
+install.packages('sasctl', repos = c('https://sassoftware.r-universe.dev', 'https://cloud.r-project.org'))
+
+## development version
+remotes::install_github("sassoftware/r-sasctl")
+
+## github released version
 ## You first have to install the dependencies
-
 install.packages(c("jsonlite", "httr", "uuid", "furrr", "ROCR", "reshape2", "base64enc", "dplyr", "glue"))
 
-## then the package
-install.packages("https://github.com/sassoftware/r-sasctl/releases/download/X.X.X/r-sasctl_X.X.X.tar.gz", type = "source", repos = NULL)
+## then the package (replace X.X.X with the version you want to install)
+install.packages("https://github.com/sassoftware/r-sasctl/archive/refs/tags/X.X.X.tar.gz", type = "source", repos = NULL)
 
 library("sasctl")
 ```
 
 ### Install from terminal
 
-The SWAT package for R is available from SAS as a tar.gz file. You can download releases from [https://github.com/sassoftware/r-sasctl/releases](https://github.com/sassoftware/r-sasctl/releases).
+The sasctl package for R is available from SAS as a tar.gz file. You can download releases from [https://github.com/sassoftware/r-sasctl/releases](https://github.com/sassoftware/r-sasctl/releases).
 
-After you download the package, you can install the package with a command that is similar to the following:
-
+After you download the package source, you can install the package with a command that is similar to the following:
 
 ```{bash}
-R CMD INSTALL r-sasctl-X.X.X.tar.gz
+R CMD INSTALL X.X.X.tar.gz
 ```
 
 ## Session
@@ -83,6 +85,8 @@ source("local_auth.R")
 ```
 
 ```{r reg_connection, eval=FALSE}
+# NOTE: depending on your Viya version, this method may no longer be supported, use
+# the token or authorization code methods instead
 sess <- session(hostname = "http://myserver.sas.com",
                 username = "sasuser",
                 password = "s3cr3t")
@@ -93,8 +97,6 @@ sess
 You may also use the .authinfo file.
 
 ```{r token_connection, eval=FALSE}
-## authinfo file (recommended)
-
 sess <- session(hostname = "http://myserver.sas.com",
                 authinfo = "./_authinfo")
 
@@ -136,7 +138,6 @@ sess2 <- session(hostname = "https://myserver.sas.com",
 
 
 ```
-
 
 ## Examples
 

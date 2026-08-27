@@ -92,7 +92,7 @@ session <- function(hostname, username = NULL, password = NULL,
   # use default client    
   if (is.null(client_id) && is.null(client_secret)) {
         
-    client_id <- "sas.ec"
+    client_id <- "sas.cli"
     client_secret <- ""
     
     grant_type <- "password"
