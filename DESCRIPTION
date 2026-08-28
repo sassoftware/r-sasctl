@@ -8,7 +8,6 @@ Authors@R: c(
            email = "ehellas@gmail.com"),
     person("SAS", role = c("cph", "fnd"))
     )
-Maintainer: Eduardo Hellas <ehellas@gmail.com>
 Description: The 'sasctl' (sas control) package enables easy communication between the "SAS Viya" platform APIs and the R runtime. It offers convenient wrappers to some most used endpoints.
 License: Apache License (>= 2)
 Encoding: UTF-8
