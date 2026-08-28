@@ -412,9 +412,9 @@ write_ModelProperties_json(modelName = "My R Model",
 
 We welcome contributions!
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to
+Please read `CONTRIBUTING.md` for details on how to
 submit contributions to this project.
 
 ## License
 
-See the [LICENSE](LICENSE) file for details.
+See the `LICENSE` file for details.

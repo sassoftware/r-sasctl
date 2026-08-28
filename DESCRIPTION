@@ -1,6 +1,6 @@
 Package: sasctl
-Title: The sasctl package enables easy communication between the SAS Viya platform APIs and the R runtime
-Version: 0.8.3
+Title: Easily Communicate Between the "SAS Viya" Platform and R
+Version: 0.8.4
 Authors@R: c(
     person(given = "Eduardo",
            family = "Hellas",
@@ -9,7 +9,7 @@ Authors@R: c(
     person("SAS", role = c("cph", "fnd"))
     )
 Maintainer: Eduardo Hellas <ehellas@gmail.com>
-Description: The sasctl package enables easy communication between the SAS Viya platform APIs and the R runtime.
+Description: The 'sasctl' (sas control) package enables easy communication between the "SAS Viya" platform APIs and the R runtime. It offers convenient wrappers to some most used endpoints.
 License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: false
