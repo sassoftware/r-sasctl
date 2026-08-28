@@ -62,10 +62,10 @@ deletedFolder <- vDELETE(session,
 \seealso{
 \code{\link[httr:GET]{httr::GET()}}, \code{\link[httr:POST]{httr::POST()}}, \code{\link[httr:PUT]{httr::PUT()}}, \code{\link[httr:DELETE]{httr::DELETE()}}, \code{\link[httr:response]{httr::response()}}
 
-Other core API requests: 
-\code{\link{vDELETE}()},
-\code{\link{vGET}()},
-\code{\link{vHEAD}()},
-\code{\link{vPOST}()}
+Other core API requests:
+\code{\link[=vDELETE]{vDELETE()}},
+\code{\link[=vGET]{vGET()}},
+\code{\link[=vHEAD]{vHEAD()}},
+\code{\link[=vPOST]{vPOST()}}
 }
 \concept{core API requests}

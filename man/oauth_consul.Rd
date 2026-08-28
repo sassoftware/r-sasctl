@@ -29,8 +29,8 @@ token <- oauth_consul("http://myserver.com",
 
 }
 \seealso{
-Other authentication: 
-\code{\link{refresh_session}()},
-\code{\link{session}()}
+Other authentication:
+\code{\link[=refresh_session]{refresh_session()}},
+\code{\link[=session]{session()}}
 }
 \concept{authentication}

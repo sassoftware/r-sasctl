@@ -1,3 +1,7 @@
+# sasctl 0.8.3
+
+chore: prepare for CRAN release
+
 # sasctl 0.8.2
 
 fix: default connection client

@@ -22,8 +22,8 @@ sess <- refresh_session(sess)
 
 }
 \seealso{
-Other authentication: 
-\code{\link{oauth_consul}()},
-\code{\link{session}()}
+Other authentication:
+\code{\link[=oauth_consul]{oauth_consul()}},
+\code{\link[=session]{session()}}
 }
 \concept{authentication}

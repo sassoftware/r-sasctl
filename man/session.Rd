@@ -63,8 +63,8 @@ sess <- session(hostname = "http://myserver.com",
 
 }
 \seealso{
-Other authentication: 
-\code{\link{oauth_consul}()},
-\code{\link{refresh_session}()}
+Other authentication:
+\code{\link[=oauth_consul]{oauth_consul()}},
+\code{\link[=refresh_session]{refresh_session()}}
 }
 \concept{authentication}
