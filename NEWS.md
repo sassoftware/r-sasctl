@@ -1,3 +1,25 @@
+# sasctl 0.9.0
+
+To comply with CRAN policies some breaking changes were required:
+
+Breaking:
+- Functions that write files no longer default to the current working directory.
+  The `path` argument now defaults to `NULL` and must be supplied explicitly
+  when file output is requested. Affected functions are:
+  `write_in_out_json`, `write_ModelProperties_json`,
+  `write_fileMetadata_json`, `calculateFitStat`, `calculateROCStat`,
+  `calculateLiftStat`, `diagnosticsJson`, and `create_scoreSample`.
+  This may cause errors if a path is not explicitly assigned. These functions
+  now also return explicitly instead of invisibly.
+- Codegen `add_target_name` default changed to `FALSE` (comment: it was confusing and unecessary most of the time)
+
+Changes:
+  - fix: json functions no longer return values invisibly.
+  - fix: Functions that writes to path requires it defined explictly now
+  - fix: codegen has been updated with some fixes and quality of life. (The user should still verify the generated code and files)
+  - fix: The R scoring code sample and generated codes no loger uses `.GlobalEnv`, it relies on R context inheritance to load models. (comment: it was required to add `sasctl` to CRAN, it can still be used if the user wants.)
+  - fix: Updated docs and readme to use `file.path` instead of `paste0(...)` when referencing system files.
+
 # sasctl 0.8.3
 
 chore: prepare for CRAN release
