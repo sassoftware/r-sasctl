@@ -36,14 +36,14 @@
 #' 
 #' @export
 
-codegen <- function(model, path, rds, libs, inputs, output_as_df = TRUE, add_target_name = TRUE, ...) {
+codegen <- function(model, path, rds, libs, inputs, output_as_df = TRUE, add_target_name = FALSE, ...) {
   UseMethod("codegen")
 }
 
 #' @describeIn codegen Code generator for `lm` class models
 #' @export 
 
-codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs = NULL, output_as_df = TRUE, add_target_name = TRUE, ...) {
+codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs = NULL, output_as_df = TRUE, add_target_name = FALSE, ...) {
   
   inputs <- attr(stats::terms(model), "term.labels")
   target <- stats::terms(model)[[2]]
@@ -59,14 +59,11 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(
     '
     <<libsCode>>
     
+    sasctlRmodel <- readRDS(file = file.path(rdsPath, "<<rds>>"))
+
     scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
     {
       #output: EM_PREDICTION, P_<<target>>
-      
-      if (!exists("sasctlRmodel"))
-      {
-        assign("sasctlRmodel", readRDS(file = file.path(rdsPath, "<<rds>>")), envir = .GlobalEnv)
-      }
       
       data <- data.frame(<<paste(inputs," = ", inputs, collapse = ",\n                         ")>>)
   
@@ -91,7 +88,7 @@ codegen.lm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(
 #' @describeIn codegen generator for `glm` class models, specifically logistic regression
 #' @export 
 
-codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs = NULL, output_as_df = TRUE, add_target_name = TRUE, cutoff = 0.5, ...) {
+codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c(), inputs = NULL, output_as_df = TRUE, add_target_name = FALSE, cutoff = 0.5, ...) {
   
   inputs <- attr(stats::terms(model), "term.labels")
   target <- stats::terms(model)[[2]]
@@ -99,7 +96,18 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c
   libs <- unique(c("stats", libs))
   
   output_constructor <- if (output_as_df) "data.frame" else "list"
-  target_name_entry <- if (add_target_name) glue::glue("<<target>> = <<target>>", .open = "<<", .close = ">>") else ""
+  target_name_entry <- if (add_target_name) glue::glue("<<target>> = <<target>>,", .open = "<<", .close = ">>") else ""
+  output_spec <- if (add_target_name) {
+    glue::glue(
+      "EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, <<target>>, I_<<target>>, P_<<target>>1, P_<<target>>0",
+      .open = "<<", .close = ">>"
+    )
+  } else {
+    glue::glue(
+      "EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, P_<<target>>1, P_<<target>>0",
+      .open = "<<", .close = ">>"
+    )
+  }
   
   libsCode <- paste0('library("',libs, '")', collapse = "\n")
   
@@ -117,18 +125,13 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c
     '
     <<libsCode>>
     
+    sasctlRmodel <- readRDS(file = file.path(rdsPath, "<<rds>>"))
+
     scoreFunction <- function(<<paste(inputs, collapse = ", ")>>)
     {
-      #output: EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, <<target>>, I_<<target>>, P_<<target>>1, P_<<target>>0
-      
-      if (!exists("sasctlRmodel"))
-      {
-        assign("sasctlRmodel", readRDS(file = file.path(rdsPath, "<<rds>>")), envir = .GlobalEnv)
-      }
+      #output: <<output_spec>>
       
       data <- data.frame(<<paste(inputs," = ", inputs, collapse = ",\n                         ")>>)
-  
-      predictions <- predict(sasctlRmodel, newdata = data, type = "response")
     
       P_<<target>>1 <- predict(sasctlRmodel, newdata = data, type = "response")
       P_<<target>>0 <- 1 - P_<<target>>1
@@ -137,7 +140,7 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c
       output <- <<output_constructor>>(EM_CLASSIFICATION = <<target>>, 
                           EM_EVENTPROBABILITY = P_<<target>>1,
                           EM_PROBABILITY = ifelse(P_<<target>>1 >= <<cutoff>>, P_<<target>>1, P_<<target>>0),
-                          <<target_name_entry>>,
+                          <<target_name_entry>>
                           I_<<target>> = <<target>>,
                           P_<<target>>1 = P_<<target>>1,
                           P_<<target>>0 = P_<<target>>0)
@@ -161,7 +164,7 @@ codegen.glm <- function(model, path = "scoreCode.R", rds = "model.rds", libs = c
 #' @export 
 
 codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
-                             libs = c(), inputs = NULL, output_as_df = TRUE, add_target_name = TRUE, referenceLevel = NULL, ...) {
+                             libs = c(), inputs = NULL, output_as_df = TRUE, add_target_name = FALSE, referenceLevel = NULL, ...) {
     
   if (!is.null(inputs)) {
     
@@ -209,11 +212,19 @@ codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
     }
         
     p_labels <- glue::glue_collapse(glue::glue('P_<<target>><<target_labels>> = predictions[[".pred_<<target_labels>>"]]', .open = "<<", .close = ">>"), sep = ",\n                    ")
-    outputSpec <- glue::glue("EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, <<target>>, <<paste0('P_',target, target_labels, collapse = ', ')>>",
-                            .open = "<<",
-                            .close = ">>")
+    outputSpec <- if (add_target_name) {
+      glue::glue(
+        "EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, <<target>>, <<paste0('P_', target, target_labels, collapse = ', ')>>",
+        .open = "<<", .close = ">>"
+      )
+    } else {
+      glue::glue(
+        "EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_<<target>>, <<paste0('P_', target, target_labels, collapse = ', ')>>",
+        .open = "<<", .close = ">>"
+      )
+    }
     
-    target_name_entry <- if (add_target_name) glue::glue('<<target>> = predictions[[".pred"]]', .open = "<<", .close = ">>") else ""
+    target_name_entry <- if (add_target_name) glue::glue('<<target>> = predictions[[".pred"]],', .open = "<<", .close = ">>") else ""
         
     pred_format <- glue::glue('boolClass <- (predictions == do.call(pmax, predictions))
       predictions[".pred"] <- apply(boolClass, 1 , function(x) target_labels[x])
@@ -222,7 +233,7 @@ codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
                           EM_EVENTPROBABILITY = predictions[[".pred_<<referenceLevel>>"]],
                           EM_PROBABILITY = apply(subset(predictions, select = -c(.pred)), 1, max),
                           I_<<target>> = predictions[[".pred"]],
-                          <<target_name_entry>>,
+                          <<target_name_entry>>
                           <<p_labels>>
                           )', 
       .open = "<<",
@@ -249,15 +260,12 @@ codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
     '
     <<libsCode>>
     
+    sasctlRmodel <- readRDS(file = file.path(rdsPath, "<<rds>>"))
+
     scoreFunction <- function(<<paste(predictors, collapse = ", ")>>)
     {
       #output: <<outputSpec>>
       
-      if (!exists("sasctlRmodel"))
-      {
-        assign("sasctlRmodel", readRDS(file = file.path(rdsPath, "<<rds>>")), envir = .GlobalEnv)
-        
-      }
       <<target_labels_string>>
     
       data <- data.frame(<<paste(predictors," = ", predictors, collapse = ",\n                         ")>>)
@@ -279,4 +287,3 @@ codegen.workflow <- function(model, path = "scoreCode.R", rds = "model.rds",
   
   invisible(scorecode)
 }
-

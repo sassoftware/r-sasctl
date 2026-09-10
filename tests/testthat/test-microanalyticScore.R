@@ -22,17 +22,17 @@ test_that("list_modules: returns empty list when no items", {
 })
 
 test_that("list_modules: passes filter and limit in query", {
-  captured_query <- NULL
+  captured_query <- new.env(parent = emptyenv())
   local_mocked_bindings(
     vGET = function(session, path, query, ...) {
-      captured_query <<- query
+      captured_query$value <- query
       list(items = list())
     },
     .package = "sasctl"
   )
   list_modules(sess, filters = list(name = "test"), limit = 5)
-  expect_true(grepl("test", captured_query$filter))
-  expect_equal(captured_query$limit, 5)
+  expect_true(grepl("test", captured_query$value$filter))
+  expect_equal(captured_query$value$limit, 5)
 })
 
 # ── get_masmodule ─────────────────────────────────────────────────────────────
@@ -76,17 +76,17 @@ test_that("get_masmodule: returns MASmodule with steps and ScoreType (UUID)", {
 # ── delete_masmodule ──────────────────────────────────────────────────────────
 
 test_that("delete_masmodule: calls vDELETE with correct path", {
-  captured_path <- NULL
+  captured_path <- new.env(parent = emptyenv())
   local_mocked_bindings(
     vDELETE = function(session, path, ...) {
-      captured_path <<- path
+      captured_path$value <- path
       fake_delete_response()
     },
     .package = "sasctl"
   )
   delete_masmodule(sess, masmod)
-  expect_true(grepl("microanalyticScore/modules", captured_path))
-  expect_true(grepl(masmod$id, captured_path))
+  expect_true(grepl("microanalyticScore/modules", captured_path$value))
+  expect_true(grepl(masmod$id, captured_path$value))
 })
 
 # ── masScore input validation ─────────────────────────────────────────────────
@@ -122,11 +122,11 @@ test_that("masScore: returns a data.frame with scored rows", {
 
 test_that("masScore: execute ScoreType appends trailing underscore to columns", {
   exec_mod <- fake_masmodule(ScoreType = "execute")
-  captured_json <- NULL
+  captured_json <- new.env(parent = emptyenv())
 
   local_mocked_bindings(
     vPOST = function(session, path, payload, ...) {
-      captured_json <<- payload
+      captured_json$value <- payload
       list(outputs = data.frame(name = "out_", value = "1",
                                 stringsAsFactors = FALSE))
     },
@@ -135,7 +135,7 @@ test_that("masScore: execute ScoreType appends trailing underscore to columns", 
   input_df <- data.frame(feat = 5.0)
   masScore(sess, exec_mod, input_df, forceTrail = TRUE)
   # The JSON payload should contain the trailing-underscore column name
-  expect_true(grepl("feat_", captured_json))
+  expect_true(grepl("feat_", captured_json$value))
 })
 
 # ── list_destinations & get_destination ───────────────────────────────────────

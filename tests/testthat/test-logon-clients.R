@@ -32,17 +32,17 @@ test_that("register_client: errors when additional_parameters is not a list", {
 })
 
 test_that("register_client: passes additional_parameters into payload", {
-  captured <- NULL
+  captured <- new.env(parent = emptyenv())
   local_mocked_bindings(
     vPOST = function(session, path, payload, ...) {
-      captured <<- payload
+      captured$payload <- payload
       fake_client_payload
     },
     .package = "sasctl"
   )
   register_client(sess, "c", "s",
                   additional_parameters = list(extra_param = "val"))
-  expect_equal(captured$extra_param, "val")
+  expect_equal(captured$payload$extra_param, "val")
 })
 
 # ── delete_client ─────────────────────────────────────────────────────────────
@@ -57,10 +57,10 @@ test_that("delete_client: accepts a plain character client_id", {
 })
 
 test_that("delete_client: extracts client_id from a sasClient object", {
-  captured_path <- NULL
+  captured_path <- new.env(parent = emptyenv())
   local_mocked_bindings(
     vDELETE = function(session, path, ...) {
-      captured_path <<- path
+      captured_path$value <- path
       fake_delete_response()
     },
     .package = "sasctl"
@@ -71,16 +71,16 @@ test_that("delete_client: extracts client_id from a sasClient object", {
     package = "sasctl"
   )
   delete_client(sess, client_obj)
-  expect_true(grepl("extracted_id", captured_path))
+  expect_true(grepl("extracted_id", captured_path$value))
 })
 
 # ── get_client ────────────────────────────────────────────────────────────────
 
 test_that("get_client: uses client_id from a sasClient object", {
-  captured_path <- NULL
+  captured_path <- new.env(parent = emptyenv())
   local_mocked_bindings(
     vGET = function(session, path, ...) {
-      captured_path <<- path
+      captured_path$value <- path
       fake_client_payload
     },
     .package = "sasctl"
@@ -91,35 +91,35 @@ test_that("get_client: uses client_id from a sasClient object", {
     package = "sasctl"
   )
   get_client(sess, client_obj)
-  expect_true(grepl("obj_client", captured_path))
+  expect_true(grepl("obj_client", captured_path$value))
 })
 
 # ── list_clients ──────────────────────────────────────────────────────────────
 
 test_that("list_clients: builds exact filter query when exact=TRUE", {
-  captured_query <- NULL
+  captured_query <- new.env(parent = emptyenv())
   local_mocked_bindings(
     vGET = function(session, path, query, ...) {
-      captured_query <<- query
+      captured_query$value <- query
       list(Resources = list(), startIndex = 1,
            itemsPerPage = 100, totalResults = 0)
     },
     .package = "sasctl"
   )
   list_clients(sess, filter = "myclient", exact = TRUE)
-  expect_true(grepl("eq", captured_query$filter))
+  expect_true(grepl("eq", captured_query$value$filter))
 })
 
 test_that("list_clients: builds contains filter query when exact=FALSE", {
-  captured_query <- NULL
+  captured_query <- new.env(parent = emptyenv())
   local_mocked_bindings(
     vGET = function(session, path, query, ...) {
-      captured_query <<- query
+      captured_query$value <- query
       list(Resources = list(), startIndex = 1,
            itemsPerPage = 100, totalResults = 0)
     },
     .package = "sasctl"
   )
   list_clients(sess, filter = "partial", exact = FALSE)
-  expect_true(grepl("co", captured_query$filter))
+  expect_true(grepl("co", captured_query$value$filter))
 })

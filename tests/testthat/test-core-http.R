@@ -131,18 +131,19 @@ test_that("vGET: warns and propagates on 400 status", {
   )
   # vGET issues two consecutive warnings before stop_for_status throws;
   # capture them all to avoid leaked warnings in the test report.
-  warnings_seen <- character(0)
+  warnings_seen <- new.env(parent = emptyenv())
+  warnings_seen$values <- character(0)
   expect_error(
     withCallingHandlers(
       vGET(sess, "bad/path"),
       warning = function(w) {
-        warnings_seen <<- c(warnings_seen, conditionMessage(w))
+        warnings_seen$values <- c(warnings_seen$values, conditionMessage(w))
         invokeRestart("muffleWarning")
       }
     )
   )
-  expect_true(any(grepl("Bad Request",  warnings_seen)))
-  expect_true(any(grepl("invalid param", warnings_seen)))
+  expect_true(any(grepl("Bad Request",  warnings_seen$values)))
+  expect_true(any(grepl("invalid param", warnings_seen$values)))
 })
 
 # ── vPOST happy paths ─────────────────────────────────────────────────────────

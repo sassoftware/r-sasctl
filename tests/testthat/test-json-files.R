@@ -15,6 +15,13 @@ test_that("write_in_out_json: errors when data is not a data.frame", {
   expect_error(write_in_out_json(list(a = 1)), "data must be a data.frame")
 })
 
+test_that("write_in_out_json: requires an explicit directory to write", {
+  expect_error(
+    write_in_out_json(iris[, 1:4], noFile = FALSE),
+    "path must be an existing directory"
+  )
+})
+
 test_that("write_in_out_json: returns a data.frame with correct columns (noFile)", {
   result <- write_in_out_json(iris[, 1:4], input = TRUE, noFile = TRUE)
   expect_s3_class(result, "data.frame")
@@ -83,6 +90,22 @@ test_that("write_ModelProperties_json: returns a data.frame", {
   )
   expect_s3_class(result, "data.frame")
   expect_true("value" %in% names(result))
+})
+
+test_that("write_ModelProperties_json: requires an explicit directory to write", {
+  expect_error(
+    write_ModelProperties_json(
+      modelName = "TestModel",
+      modelFunction = "Classification",
+      algorithm = "GLM",
+      numTargetCategories = 2,
+      targetEvent = "1",
+      targetVariable = "BAD",
+      eventProbVar = "P_BAD1",
+      noFile = FALSE
+    ),
+    "path must be an existing directory"
+  )
 })
 
 test_that("write_ModelProperties_json: numTargetCategories > 2 gives Nominal", {

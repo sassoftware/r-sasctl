@@ -188,31 +188,31 @@ test_that("create_project: errors when input_vars is not a data.frame", {
 # ── delete_project ────────────────────────────────────────────────────────────
 
 test_that("delete_project: calls vDELETE with correct path", {
-  captured_path <- NULL
+  captured_path <- new.env(parent = emptyenv())
   local_mocked_bindings(
     vDELETE = function(session, path, ...) {
-      captured_path <<- path
+      captured_path$value <- path
       fake_delete_response()
     },
     .package = "sasctl"
   )
   delete_project(sess, proj$id)
-  expect_true(grepl(proj$id, captured_path))
+  expect_true(grepl(proj$id, captured_path$value))
 })
 
 # ── delete_model ──────────────────────────────────────────────────────────────
 
 test_that("delete_model: calls vDELETE with correct path", {
-  captured_path <- NULL
+  captured_path <- new.env(parent = emptyenv())
   local_mocked_bindings(
     vDELETE = function(session, path, ...) {
-      captured_path <<- path
+      captured_path$value <- path
       fake_delete_response()
     },
     .package = "sasctl"
   )
   delete_model(sess, mod$id)
-  expect_true(grepl(mod$id, captured_path))
+  expect_true(grepl(mod$id, captured_path$value))
 })
 
 # ── list_model_contents ───────────────────────────────────────────────────────
