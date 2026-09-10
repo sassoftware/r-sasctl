@@ -127,13 +127,13 @@ Now we will start creating all the files required to successfully upload the mod
 
 
 ``` r
-path <- "xgbModel/"
+path <- file.path(tempdir(), "xgbModel");
+
 modelrda <- "Rxgb.rda"
 
-dir.create(path)
-#> Warning in dir.create(path): 'xgbModel' already exists
+dir.create(path, recursive = TRUE)
 
-saveRDS(xgb_fitted, paste0(path, modelrda))
+saveRDS(xgb_fitted, file.path(path, modelrda))
 ```
 
 
@@ -224,8 +224,8 @@ We can use the `inputs` to generate alternate input variables. In this case it i
 
 
 ``` r
-code <- codegen(xgb_fitted, 
-                path = paste0(path, "scoreCode.R"), 
+code <- codegen(xgb_fitted,
+                path = file.path(path, "scoreCode.R"),
                 inputs = colnames(hmeq)[-1],
                 referenceLevel = 1,
                 rds = modelrda)
@@ -234,15 +234,13 @@ code
 #> library("tidymodels")
 #> library("xgboost")
 #> 
+#> sasctlRmodel <- readRDS(file = paste(rdsPath, "Rxgb.rda"))
+#> 
 #> scoreFunction <- function(LOAN, MORTDUE, VALUE, REASON, JOB, YOJ, DEROG, DELINQ, CLAGE, NINQ, CLNO, DEBTINC)
 #> {
 #>   #output: EM_CLASSIFICATION, EM_EVENTPROBABILITY, EM_PROBABILITY, I_BAD, BAD, P_BAD0, P_BAD1
 #>   
-#>   if (!exists("sasctlRmodel"))
-#>   {
-#>     assign("sasctlRmodel", readRDS(file = file.path(rdsPath, "Rxgb.rda")), envir = .GlobalEnv)
-#>     
-#>   }
+#>
 #>   target_labels <- c('0', '1')
 #> 
 #>   data <- data.frame(LOAN  =  LOAN,
@@ -389,8 +387,7 @@ write_ModelProperties_json(modelName = "Rxgb",
 files_to_zip <- list.files(path, "*.json|*.R|*.rda", full.names = T)
 
 ### grouping all the files to a single zip
-zip(paste0(path, "Rmodel.zip"), 
-    files = files_to_zip)
+zip(file.path(path, "Rmodel.zip"), files = files_to_zip)
 ```
 
 Finally, we can upload the model to our SAS Viya server.
@@ -403,7 +400,7 @@ sess <- sasctl::session("https://viya.server.com",
 
 mod <- register_model(
   session = sess,
-  file = paste0(path, "Rmodel.zip"),
+  file = file.path(path, "Rmodel.zip"),
   name = "Rxgb",
   type = "zip",
   project = "R_sasctl",

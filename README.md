@@ -138,9 +138,10 @@ expected responses inline as well.
 ### A native R model example
 
 ``` r
+library("sasctl")
 
 hmeq <- read.csv("https://support.sas.com/documentation/onlinedoc/viya/exampledatasets/hmeq.csv")
-
+head(hmeq$BAD)
 hmeq[hmeq == ""] <- NA
 hmeq <- na.omit(hmeq) ### probably you don't want to do that, by for sake of simplicity
 hmeq$BAD <- as.factor(hmeq$BAD)
@@ -161,15 +162,15 @@ model1 <- glm(formula = BAD ~ .,
 summary(model1)
 
 dir.create("myModel")
-path <- "myModel/"
+path <- "myModel"
 
 
 ## model saved
-saveRDS(model1, paste0(path, 'rlogistic.rda'), version = 2)
+saveRDS(model1, file.path(path, 'rlogistic.rda'), version = 2)
 
 
 ## creating the score code 
-code <- codegen(model1, path = paste0(path, "scoreCode.R"), rds = "rlogistic.rda")
+code <- codegen(model1, path = file.path(path, "scoreCode.R"), rds = "rlogistic.rda")
 
 ## The following function to creates a sample if you don't want to use the generated code
 # create_scoreSample(path, openFile = FALSE)
@@ -177,10 +178,10 @@ code <- codegen(model1, path = paste0(path, "scoreCode.R"), rds = "rlogistic.rda
 ## scoring the whole table
 
 ## running the generated scoring code for testing
+rdsPath <- path ## this is implitly called by the score code function.
 codeExpression <- str2expression(code)
 eval(codeExpression)
 
-rdsPath <- path
 scoreddf <- scoreFunction(LOAN = hmeq[, 'LOAN'],
                         MORTDUE = hmeq[, 'MORTDUE'],
                         VALUE = hmeq[, 'VALUE'],
@@ -194,7 +195,8 @@ scoreddf <- scoreFunction(LOAN = hmeq[, 'LOAN'],
                         CLNO = hmeq[, 'CLNO'],
                         DEBTINC = hmeq[, 'DEBTINC'])
 
-scoreddf$Actual <- as.numeric(hmeq$BAD) - 1
+## because we used as.factor earlier, must fix here so the values are correct
+scoreddf$Actuals <- as.numeric(hmeq$BAD) - 1 
 scoreddf$partition <- partition
 
 ### diagnostics requires the true Target column name defined in "targetName"
@@ -204,14 +206,16 @@ diags <- diagnosticsJson(validadedf = scoreddf[scoreddf$partition == 3,],
                          traindf = scoreddf[scoreddf$partition == 1,],
                          testdf = scoreddf[scoreddf$partition == 2,],
                          targetEventValue = 1,
-                         targetName = "Actual",
+                         targetName = "Actuals",
                          targetPredicted = "EM_EVENTPROBABILITY",
                          path = path) ## safely ignore warning, knitr bug
 
-## writing other files
-write_in_out_json(hmeq[,-1], input = TRUE, path = path)
 
-write_in_out_json(scoreddf[-c(4, 8, 9)], input = FALSE, path = path)
+## writing other files
+write_in_out_json(subset(hmeq, select = -BAD), input = TRUE, path = path)
+
+write_in_out_json(subset(scoreddf, select = c("EM_CLASSIFICATION", "EM_EVENTPROBABILITY", "EM_PROBABILITY", "I_BAD", "P_BAD1", "P_BAD0")),
+                  input = FALSE, path = path)
 
 write_fileMetadata_json(scoreCodeName = "scoreCode.R",
                         scoreResource = "rlogistic.rda",
@@ -229,23 +233,8 @@ write_ModelProperties_json(modelName = "Rlogistic",
                            path = path)
 
 files_to_zip <- list.files(path, "*.json|*.R|*.rda", full.names = T)
-zip(paste0(path, "Rmodel.zip"), 
+zip(file.path(path, "Rmodel.zip"), 
     files = files_to_zip)
-
-
-mod <- register_model(
-  session = sess,
-  file = "myModel/Rmodel.zip",
-  name = "RzipModel",
-  type = "zip",
-  project = "R_sasctl",
-  force = TRUE
-  )
-
-
-
-## deleteing a project delete all associated models
-delete_project(sess, "R_sasctl")
 ```
 
 ### PMML to SAS Example
