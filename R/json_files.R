@@ -1,6 +1,16 @@
 # Copyright © 2022, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+# Validate an explicitly supplied output directory before writing a file.
+check_path <- function(path) {
+  if (is.null(path) || !is.character(path) || length(path) != 1L ||
+      is.na(path) || !dir.exists(path)) {
+    stop("path must be an existing directory when noFile = FALSE",
+         call. = FALSE)
+  }
+  path
+}
+
 #' Write variable json
 #'
 #' Writes a variable descriptor JSON file for input or output variables, based
@@ -8,7 +18,8 @@
 #'
 #' @param data `data.frame` to map the correct variable types to Json
 #' @param input `TRUE` to write inputVar.json and `FALSE` to write `outputVar.json`
-#' @param path default to current work dir
+#' @param path directory where the JSON file is written; required when
+#'   `noFile = FALSE`
 #' @param noFile if you don't want to write to a file, only the output
 #' @return 
 #' - `list` of the mapped types and sizes.
@@ -21,7 +32,7 @@
 #' @export
 
 
-write_in_out_json <- function(data, input = TRUE, path = './', noFile = FALSE){
+write_in_out_json <- function(data, input = TRUE, path = NULL, noFile = FALSE){
   
   if (!is.data.frame(data)) {
     stop('data must be a data.frame, if you sliced a single column try data[,col_number, drop = FALSE] to keep as data.frame')
@@ -54,17 +65,15 @@ write_in_out_json <- function(data, input = TRUE, path = './', noFile = FALSE){
   df$type <- ifelse(df$type %in% c('numeric', 'integer'), 'decimal', 'string')
   df$level <- ifelse(df$type == 'decimal', 'interval', 'nominal')
   
-  path <- ifelse(grepl("\\/$", path), path, paste0(path, "/"))
-  out_file <- paste0(path, ifelse(input, 'inputVar.json', 'outputVar.json'))
-  
-  if (!noFile) {
-  jsonlite::write_json(df, out_file, pretty = T)
-  print(paste0('File written to ', out_file))
-  }
-  
   df$role <- ifelse(input, 'input', 'output')
   
   attr(df, 'sasctl.attr') <- "variable.frame"
+  if (!noFile) {
+    out_file <- file.path(check_path(path),
+                          ifelse(input, 'inputVar.json', 'outputVar.json'))
+    jsonlite::write_json(df, out_file, pretty = TRUE)
+    message(paste0('File written to ', out_file))
+  }
   return(df)
 }
 
@@ -87,7 +96,8 @@ write_in_out_json <- function(data, input = TRUE, path = './', noFile = FALSE){
 #' @param tool Name of the tool used to build the model
 #' @param toolVersion Version of the tool used to build the model
 #' @param noFile if you don't want to write to a file, only list the output
-#' @param path file path where to write the json (don't include the filename)
+#' @param path directory where the JSON file is written; required when
+#'   `noFile = FALSE`
 #' 
 #' 
 #' @return 
@@ -123,7 +133,7 @@ write_ModelProperties_json <- function(modelName,
                                        modeler = " ",
                                        tool = "R",
                                        toolVersion = "default",
-                                       path = './',
+                                       path = NULL,
                                        noFile = FALSE){
   
 
@@ -154,13 +164,10 @@ properties <- list(
     "toolVersion" = as.character(toolVersion)
   )
 
-path <- ifelse(grepl("\\/$", path), path, paste0(path, "/"))
-out_file <- paste0(path, "ModelProperties.json")
-
-
 if (!noFile) {
+  out_file <- file.path(check_path(path), "ModelProperties.json")
   jsonlite::write_json(properties, out_file, pretty = T, auto_unbox = T)
-  print(paste0('File written to ', out_file))
+  message(paste0('File written to ', out_file))
 }
 
 output_prop <- data.frame(value =  unlist(properties))
@@ -180,7 +187,8 @@ return(output_prop)
 #' @param additionalFilesNames additional files names.
 #' @param additionalFilesRoles additional files role names.
 #' @param noFile if you don't want to write to a file, only list the output
-#' @param path filepath where to write the json (don't include the filename)
+#' @param path directory where the JSON file is written; required when
+#'   `noFile = FALSE`
 #' 
 #' 
 #' @return 
@@ -207,7 +215,7 @@ write_fileMetadata_json <- function(scoreCodeName = "scoreCode.R",
                                     scoreResource = "model.rda",
                                     additionalFilesNames = c(),
                                     additionalFilesRoles = c(),
-                                    path = './',
+                                    path = NULL,
                                     noFile = FALSE){
   
   if (length(additionalFilesRoles) != length(additionalFilesNames)) {
@@ -252,16 +260,14 @@ write_fileMetadata_json <- function(scoreCodeName = "scoreCode.R",
   
     if (!noFile) {
       
-    path <- ifelse(grepl("\\/$", path), path, paste0(path, "/"))
-    out_file <- paste0(path, "fileMetadata.json")
-    
+    out_file <- file.path(check_path(path), "fileMetadata.json")
     
     jsonlite::write_json(metadata, 
                          out_file, 
                          pretty = T, 
                          auto_unbox = T)
     
-    print(paste0('File written to ', out_file))
+    message(paste0('File written to ', out_file))
     
     }
   
@@ -536,7 +542,8 @@ write_json_batch_scr <- function(df) {
 #' @param targetEventValue if `type = "binary"` target class name for fit stat reference, if model is nominal, all other class will be counted as "not target"
 #' @param type `"binary"` or `"interval"`
 #' @param cutoff cutoff to be used for calculation of miss classification for binary
-#' @param path default to current work dir
+#' @param path directory where the JSON file is written; required when
+#'   `noFile = FALSE`
 #' @param label.ordering The default ordering (cf.details) of the classes can be changed by supplying a vector containing the negative and the positive class label. See [ROCR::prediction()]
 #' @param noFile if you don't want to write to a file, only the output
 #' @return 
@@ -578,7 +585,7 @@ calculateFitStat <- function(targetName,
                              testdf = NULL,
                              type = "binary",
                              targetEventValue = 1,
-                             path = "./", 
+                             path = NULL,
                              label.ordering = c(0, 1),
                              cutoff = 0.5, 
                              noFile = FALSE) {
@@ -720,8 +727,7 @@ calculateFitStat <- function(targetName,
   
   if (!noFile) {
     
-    path <- ifelse(grepl("\\/$", path), path, paste0(path, "/"))
-    out_file <- paste0(path, "dmcas_fitstat.json")
+    out_file <- file.path(check_path(path), "dmcas_fitstat.json")
     
     
     jsonlite::write_json(outputJSON, 
@@ -729,10 +735,10 @@ calculateFitStat <- function(targetName,
                          pretty = TRUE, 
                          auto_unbox = TRUE)
     
-    print(paste0('File written to ', out_file))
+    message(paste0('File written to ', out_file))
   }
   
-  invisible(outputJSON)
+  return(outputJSON)
 }
 
 #' Write dmcas_roc Json
@@ -746,7 +752,8 @@ calculateFitStat <- function(targetName,
 #' @param targetName target variable column name (actuals)
 #' @param targetPredicted target variable predicted probability column name
 #' @param targetEventValue target class name for ROC reference, if model is nominal, all other class will be counted as "not target"
-#' @param path default to current work dir
+#' @param path directory where the JSON file is written; required when
+#'   `noFile = FALSE`
 #' @param label.ordering The default ordering (cf.details) of the classes can be changed by supplying a vector containing the negative and the positive class label. See [ROCR::prediction()]
 #' @param noFile if you don't want to write to a file, only the output
 #' @return 
@@ -777,7 +784,7 @@ calculateROCStat <- function(targetName,
                              testdf = NULL,
                              targetEventValue = 1,
                              label.ordering = c(0, 1),
-                             path = "./", 
+                             path = NULL,
                              noFile = FALSE) {
   
   
@@ -923,8 +930,7 @@ calculateROCStat <- function(targetName,
   
   if (!noFile) {
     
-    path <- ifelse(grepl("\\/$", path), path, paste0(path, "/"))
-    out_file <- paste0(path, "dmcas_roc.json")
+    out_file <- file.path(check_path(path), "dmcas_roc.json")
     
     
     jsonlite::write_json(outputJSON, 
@@ -932,10 +938,10 @@ calculateROCStat <- function(targetName,
                          pretty = TRUE, 
                          auto_unbox = TRUE)
     
-    print(paste0('File written to ', out_file))
+    message(paste0('File written to ', out_file))
   }
   
-  invisible(outputJSON) 
+  return(outputJSON) 
 }
 
 
@@ -950,7 +956,8 @@ calculateROCStat <- function(targetName,
 #' @param targetName target variable column name (actuals)
 #' @param targetPredicted target variable predicted probability column name
 #' @param targetEventValue target class name for ROC reference, if model is nominal, all other class will be counted as "not target"
-#' @param path default to current work dir
+#' @param path directory where the JSON file is written; required when
+#'   `noFile = FALSE`
 #' @param noFile if you don't want to write to a file, only the output
 #' @return 
 #' - `list` that reflects the 'dmcas_roc.json'
@@ -978,7 +985,7 @@ calculateLiftStat <- function(targetName,
                               traindf = NULL, 
                               testdf = NULL,
                               targetEventValue = 1,
-                              path = "./", 
+                              path = NULL,
                               noFile = FALSE) {
   
   if (is.null(validadedf)) {
@@ -1135,8 +1142,7 @@ calculateLiftStat <- function(targetName,
   
   if (!noFile) {
     
-    path <- ifelse(grepl("\\/$", path), path, paste0(path, "/"))
-    out_file <- paste0(path, "dmcas_lift.json")
+    out_file <- file.path(check_path(path), "dmcas_lift.json")
     
     
     jsonlite::write_json(outputJSON, 
@@ -1144,10 +1150,10 @@ calculateLiftStat <- function(targetName,
                          pretty = T, 
                          auto_unbox = T)
     
-    print(paste0('File written to ', out_file))
+    message(paste0('File written to ', out_file))
   }
   
-  invisible(outputJSON)
+  return(outputJSON)
 }
 
 #' calculate Lift coordinates
@@ -1230,7 +1236,8 @@ compute_lift_coordinates <- function(DepVar,
 #' @param targetEventValue if `type = "binary"` target class name for fit stat reference, if model is nominal, all other class will be counted as "not target"
 #' @param cutoff cutoff to be used for calculation of miss classification for binary
 #' @param label.ordering The default ordering (cf.details) of the classes can be changed by supplying a vector containing the negative and the positive class label. See [ROCR::prediction()]
-#' @param path default to current work dir
+#' @param path directory where the JSON files are written; required when
+#'   `noFile = FALSE`
 #' @param noFile if you don't want to write to a file, only the output
 #' @return 
 #' - `list` of lists that reflects the 'dmcas_fitstat.json', 'dmcas_roc.json' and 'dmcas_lift.json'
@@ -1268,7 +1275,7 @@ diagnosticsJson <- function(targetName,
                             targetEventValue = 1,
                             cutoff = 0.5, 
                             label.ordering = c(0, 1),
-                            path = "./", 
+                            path = NULL,
                             noFile = FALSE
 ) {
   
@@ -1310,6 +1317,6 @@ diagnosticsJson <- function(targetName,
                                    noFile = noFile)
   
   
-  invisible(all_outputs)
+  return(all_outputs)
   
 }

@@ -11,7 +11,7 @@ calculateLiftStat(
   traindf = NULL,
   testdf = NULL,
   targetEventValue = 1,
-  path = "./",
+  path = NULL,
   noFile = FALSE
 )
 }
@@ -28,7 +28,8 @@ calculateLiftStat(
 
 \item{targetEventValue}{target class name for ROC reference, if model is nominal, all other class will be counted as "not target"}
 
-\item{path}{default to current work dir}
+\item{path}{directory where the JSON file is written; required when
+\code{noFile = FALSE}}
 
 \item{noFile}{if you don't want to write to a file, only the output}
 }

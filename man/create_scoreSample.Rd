@@ -4,10 +4,10 @@
 \alias{create_scoreSample}
 \title{Create Score Code template}
 \usage{
-create_scoreSample(path = ".", openFile = TRUE)
+create_scoreSample(path = NULL, openFile = TRUE)
 }
 \arguments{
-\item{path}{path to create file, default current working directory}
+\item{path}{directory where the example file is created; required}
 
 \item{openFile}{automatically open file for editing}
 }
@@ -34,7 +34,7 @@ script.
 \examples{
 
 \dontrun{
-create_scoreSample()
+create_scoreSample(path = tempdir(), openFile = FALSE)
 }
 
 # SAS does not expect the following outputs necessarily

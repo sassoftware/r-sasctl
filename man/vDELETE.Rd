@@ -29,7 +29,7 @@ folders <- vGET(session,
 
 
 newFolder <- vPOST(session,
-                   path = paste0("folders/folders/"),
+                   path = "folders/folders/",
                    query = list(parentFolderUri = folders$items$parentFolderUri[1]),
                    payload = list(name = "newFolder"))
 

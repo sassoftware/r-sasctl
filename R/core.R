@@ -225,6 +225,8 @@ session <- function(hostname, username = NULL, password = NULL,
 #' 
 #' @param session viya_connection object, obtained through `session` function
 #' @param verbose logical, return print API call information
+#' @return A `viya_connection` object with its access token and related
+#' authentication fields updated from the refresh-token response.
 #' 
 #' @examples 
 #' 
@@ -751,7 +753,7 @@ vPUT <- function(session,
 #' 
 #' 
 #' newFolder <- vPOST(session,
-#'                    path = paste0("folders/folders/"),
+#'                    path = "folders/folders/",
 #'                    query = list(parentFolderUri = folders$items$parentFolderUri[1]),
 #'                    payload = list(name = "newFolder"))
 #' 
@@ -1103,5 +1105,4 @@ single_id_from_object <- function(session, object, class ,type, exact = TRUE) {
     
     
     
-
 

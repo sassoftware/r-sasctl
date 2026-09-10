@@ -11,6 +11,10 @@ refresh_session(session, verbose = FALSE)
 
 \item{verbose}{logical, return print API call information}
 }
+\value{
+A \code{viya_connection} object with its access token and related
+authentication fields updated from the refresh-token response.
+}
 \description{
 Refresh a viya session object Oauth token
 }

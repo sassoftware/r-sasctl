@@ -4,14 +4,15 @@
 \alias{write_in_out_json}
 \title{Write variable json}
 \usage{
-write_in_out_json(data, input = TRUE, path = "./", noFile = FALSE)
+write_in_out_json(data, input = TRUE, path = NULL, noFile = FALSE)
 }
 \arguments{
 \item{data}{\code{data.frame} to map the correct variable types to Json}
 
 \item{input}{\code{TRUE} to write inputVar.json and \code{FALSE} to write \code{outputVar.json}}
 
-\item{path}{default to current work dir}
+\item{path}{directory where the JSON file is written; required when
+\code{noFile = FALSE}}
 
 \item{noFile}{if you don't want to write to a file, only the output}
 }

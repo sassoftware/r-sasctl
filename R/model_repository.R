@@ -1376,13 +1376,13 @@ add_model_content <-  function(session, file,
 #' - To pass the information back to SAS it must return a list of the variables defined at the beginning of the
 #' script.
 #' 
-#' @param path path to create file, default current working directory
+#' @param path directory where the example file is created; required
 #' @param openFile automatically open file for editing
 #' @return nothing
 #' @examples
 #' 
 #' \dontrun{
-#' create_scoreSample()
+#' create_scoreSample(path = tempdir(), openFile = FALSE)
 #' }
 #'
 #' # SAS does not expect the following outputs necessarily
@@ -1396,7 +1396,12 @@ add_model_content <-  function(session, file,
 #' 
 #' @export
 
-create_scoreSample <- function(path = ".", openFile = TRUE){
+create_scoreSample <- function(path = NULL, openFile = TRUE){
+
+  if (is.null(path) || !is.character(path) || length(path) != 1L ||
+      is.na(path) || !dir.exists(path)) {
+    stop("path must be an existing directory", call. = FALSE)
+  }
   
   ### files inside /inst are the top level
 
@@ -1408,15 +1413,13 @@ create_scoreSample <- function(path = ".", openFile = TRUE){
   
   if (openFile) {
     if (.Platform$GUI == "RStudio") {
-      rstudioapi::documentOpen(paste0(path, "/scoreCode.R"))
+      rstudioapi::documentOpen(file.path(path, "/scoreCode.R"))
     } else {
-      utils::file.edit(paste0(path, "/scoreCode.R"))
+      utils::file.edit(file.path(path, "/scoreCode.R"))
       }
   }
   
-  path <- ifelse(grepl("\\/$", path), path, paste0(path, "/"))
-  
-  message(paste0("Example file copied to ", path, "scoreCode.R"))
+  message(paste0("Example file copied to ", file.path(path, "scoreCode.R")))
   
 }
 
@@ -1468,4 +1471,3 @@ convert_to_pmml42 <- function(file_in, file_out) {
   writeLines(lines, file_out)
   
 }
-

@@ -17,7 +17,7 @@ write_ModelProperties_json(
   modeler = " ",
   tool = "R",
   toolVersion = "default",
-  path = "./",
+  path = NULL,
   noFile = FALSE
 )
 }
@@ -46,7 +46,8 @@ write_ModelProperties_json(
 
 \item{toolVersion}{Version of the tool used to build the model}
 
-\item{path}{file path where to write the json (don't include the filename)}
+\item{path}{directory where the JSON file is written; required when
+\code{noFile = FALSE}}
 
 \item{noFile}{if you don't want to write to a file, only list the output}
 }

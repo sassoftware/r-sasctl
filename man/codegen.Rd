@@ -14,7 +14,7 @@ codegen(
   libs,
   inputs,
   output_as_df = TRUE,
-  add_target_name = TRUE,
+  add_target_name = FALSE,
   ...
 )
 
@@ -25,7 +25,7 @@ codegen(
   libs = c(),
   inputs = NULL,
   output_as_df = TRUE,
-  add_target_name = TRUE,
+  add_target_name = FALSE,
   ...
 )
 
@@ -36,7 +36,7 @@ codegen(
   libs = c(),
   inputs = NULL,
   output_as_df = TRUE,
-  add_target_name = TRUE,
+  add_target_name = FALSE,
   cutoff = 0.5,
   ...
 )
@@ -48,7 +48,7 @@ codegen(
   libs = c(),
   inputs = NULL,
   output_as_df = TRUE,
-  add_target_name = TRUE,
+  add_target_name = FALSE,
   referenceLevel = NULL,
   ...
 )

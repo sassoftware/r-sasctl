@@ -12,7 +12,7 @@ calculateROCStat(
   testdf = NULL,
   targetEventValue = 1,
   label.ordering = c(0, 1),
-  path = "./",
+  path = NULL,
   noFile = FALSE
 )
 }
@@ -31,7 +31,8 @@ calculateROCStat(
 
 \item{label.ordering}{The default ordering (cf.details) of the classes can be changed by supplying a vector containing the negative and the positive class label. See \code{\link[ROCR:prediction]{ROCR::prediction()}}}
 
-\item{path}{default to current work dir}
+\item{path}{directory where the JSON file is written; required when
+\code{noFile = FALSE}}
 
 \item{noFile}{if you don't want to write to a file, only the output}
 }

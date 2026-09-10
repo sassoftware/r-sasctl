@@ -12,7 +12,7 @@ calculateFitStat(
   testdf = NULL,
   type = "binary",
   targetEventValue = 1,
-  path = "./",
+  path = NULL,
   label.ordering = c(0, 1),
   cutoff = 0.5,
   noFile = FALSE
@@ -33,7 +33,8 @@ calculateFitStat(
 
 \item{targetEventValue}{if \code{type = "binary"} target class name for fit stat reference, if model is nominal, all other class will be counted as "not target"}
 
-\item{path}{default to current work dir}
+\item{path}{directory where the JSON file is written; required when
+\code{noFile = FALSE}}
 
 \item{label.ordering}{The default ordering (cf.details) of the classes can be changed by supplying a vector containing the negative and the positive class label. See \code{\link[ROCR:prediction]{ROCR::prediction()}}}
 

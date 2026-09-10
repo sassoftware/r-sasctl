@@ -9,7 +9,7 @@ write_fileMetadata_json(
   scoreResource = "model.rda",
   additionalFilesNames = c(),
   additionalFilesRoles = c(),
-  path = "./",
+  path = NULL,
   noFile = FALSE
 )
 }
@@ -22,7 +22,8 @@ write_fileMetadata_json(
 
 \item{additionalFilesRoles}{additional files role names.}
 
-\item{path}{filepath where to write the json (don't include the filename)}
+\item{path}{directory where the JSON file is written; required when
+\code{noFile = FALSE}}
 
 \item{noFile}{if you don't want to write to a file, only list the output}
 }
