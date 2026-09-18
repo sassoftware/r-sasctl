@@ -406,4 +406,6 @@ submit contributions to this project.
 
 ## License
 
-See the `LICENSE` file for details.
+Except for the the contents of the `/man/figures` folder, this project is licensed under the [Apache 2.0 License](LICENSE).
+Elements in the `/man/figures` folder are owned by SAS and are not released under an open source license.
+SAS and all other SAS Institute Inc. product or service names are registered trademarks or trademarks of SAS Institute Inc. in the USA and other countries. ® indicates USA registration.
