@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 # R sasctl
 
 <!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/sasctl)](https://CRAN.R-project.org/package=sasctl)
 [![r-universe status](https://sassoftware.r-universe.dev/badges/:name)](https://sassoftware.r-universe.dev)
 [![r-universe status](https://sassoftware.r-universe.dev/badges/:packages)](https://sassoftware.r-universe.dev)
 [![r-universe status](https://sassoftware.r-universe.dev/sasctl/badges/version)](https://sassoftware.r-universe.dev)
@@ -44,34 +45,19 @@ Web documentation: https://sassoftware.github.io/r-sasctl/
 ## Installation
 
 
-### Install from R
+### Installation
 
 ```{r, eval=FALSE}
+## CRAN
+install.packages('sasctl')
 
-## r-universe (Preferred method)
+## r-universe
 install.packages('sasctl', repos = c('https://sassoftware.r-universe.dev', 'https://cloud.r-project.org'))
 
 ## development version
 remotes::install_github("sassoftware/r-sasctl")
 
-## github released version
-## You first have to install the dependencies
-install.packages(c("jsonlite", "httr", "uuid", "furrr", "ROCR", "reshape2", "base64enc", "dplyr", "glue"))
-
-## then the package (replace X.X.X with the version you want to install)
-install.packages("https://github.com/sassoftware/r-sasctl/archive/refs/tags/X.X.X.tar.gz", type = "source", repos = NULL)
-
 library("sasctl")
-```
-
-### Install from terminal
-
-The sasctl package for R is available from SAS as a tar.gz file. You can download releases from [https://github.com/sassoftware/r-sasctl/releases](https://github.com/sassoftware/r-sasctl/releases).
-
-After you download the package source, you can install the package with a command that is similar to the following:
-
-```{bash}
-R CMD INSTALL X.X.X.tar.gz
 ```
 
 ## Session
@@ -204,7 +190,7 @@ scoreddf <- scoreFunction(LOAN = hmeq[, 'LOAN'],
                         DEBTINC = hmeq[, 'DEBTINC'])
 
 ## because we used as.factor earlier, must fix here so the values are correct
-scoreddf$Actuals <- as.numeric(hmeq$BAD) - 1 
+scoreddf$Actuals <- as.numeric(hmeq$BAD) - 1
 scoreddf$partition <- partition
 
 ### diagnostics requires the true Target column name defined in "targetName"
