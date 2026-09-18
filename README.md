@@ -14,11 +14,11 @@
 ## Table of Contents
 
 1.  [Overview](#overview)
-2.  [Installation](#installation)\
-3.  [Session](#session)\
+2.  [Installation](#installation)
+3.  [Session](#session)
 4.  [Examples](#examples)
-    - [A native R model example](#a-native-r-model-example)\
-    - [PMML to SAS Example](#pmml-to-sas-example)\
+    - [A native R model example](#a-native-r-model-example)
+    - [PMML to SAS Example](#pmml-to-sas-example)
     - [vPOST and vGET convenient
       functions](#vpost-and-vget-convenient-functions)
 5.  [Model Management helpers](#model-management-helpers)
