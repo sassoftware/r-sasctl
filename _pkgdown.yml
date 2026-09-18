@@ -4,7 +4,7 @@ bootstrap: 5
 authors:
   SAS:
     href: https://www.sas.com
-    html: <img src='man/figures/SAS_logo.png' alt='SAS' width='72' />
+    html: <img src='https://www.sas.com/en/news/media-gallery/all-images/sas-logo-midnight/_jcr_content/par/image_360101046.img.png/1694533953092.png' alt='SAS' width='72' />
 navbar:
   right:
   - icon: fa-github fa-lg
